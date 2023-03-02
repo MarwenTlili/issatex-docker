@@ -2,6 +2,7 @@ version: "3.4"
 
 services:
   php:
+    container_name: issatex-php
     build:
       context: ./api
       target: app_php
@@ -24,6 +25,7 @@ services:
       MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
 
   pwa:
+    container_name: issatex-pwa
     build:
       context: ./pwa
       target: prod
@@ -31,6 +33,7 @@ services:
       NEXT_PUBLIC_ENTRYPOINT: http://caddy
 
   caddy:
+    container_name: issatex-caddy
     build:
       context: api/
       target: app_caddy
@@ -63,6 +66,7 @@ services:
 
 ###> doctrine/doctrine-bundle ###
   database:
+    container_name: issatex-database
     image: postgres:${POSTGRES_VERSION:-14}-alpine
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-app}
