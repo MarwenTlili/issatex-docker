@@ -4,8 +4,10 @@ App\Entity\User:
     username: admin
     roles: ["ROLE_ADMIN"]
     password: '\$2y\$13\$1Yat6DdVVoER5V6xntkf/O4b2CNFb6j5w2YNsiuZGcdKQ09PjuTiO'
-  user_{1..99}:
+    avatar: <image()>
+  user_{2..40}:
     email: <email()>
     username: <username()>
     roles: <randomElements(['ROLE_CLIENT','ROLE_SECRETAIRE'], 1)>
     password: <password()>
+    avatar: <image()>
