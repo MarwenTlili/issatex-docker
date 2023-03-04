@@ -23,6 +23,5 @@
 ###> phpunit/phpunit ###
 /phpunit.xml.*
 .phpunit.result.cache
-/.phpunit.cache
-phpunit.xml.*
+.phpunit.cache
 ###< phpunit/phpunit ###
