@@ -5,9 +5,15 @@ App\Entity\User:
     roles: ["ROLE_ADMIN"]
     password: '\$2y\$13\$1Yat6DdVVoER5V6xntkf/O4b2CNFb6j5w2YNsiuZGcdKQ09PjuTiO'
     avatar: <image()>
+    isVerified: true
+    createdAt: <(new DateTimeImmutable('now'))>
+    lastLoginAt: <(new DateTimeImmutable('now'))>
   user_{2..40}:
     email: <email()>
     username: <username()>
     roles: <randomElements(['ROLE_CLIENT','ROLE_SECRETAIRE'], 1)>
     password: <password()>
     avatar: <image()>
+    isVerified: <boolean(50)>
+    createdAt: <(new DateTimeImmutable('now'))>
+    lastLoginAt: <(new DateTimeImmutable('now'))>

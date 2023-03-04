@@ -26,7 +26,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(processor: UserPasswordHasher::class, validationContext: ['groups' => ['Default', 'user:create']]),
         new Get(),
         new Put(processor: UserPasswordHasher::class),
-        // new Put(false), // or remove this line to disable PUT request
         new Patch(processor: UserPasswordHasher::class),
         new Delete(),
     ],
@@ -40,25 +39,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 	#[Groups(['user:read'])]
 	#[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\Column(type: UlidType::NAME, unique: true)]
+	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
+	#[ORM\Column(type: UlidType::NAME, unique: true)]
 	#[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
-    private ?Ulid $id = null;
+	private ?Ulid $id = null;
 
 	#[Assert\NotBlank(groups: ['user:create'])]
-    #[Assert\Email]
-    #[Groups(['user:read', 'user:create', 'user:update'])]
-    #[ORM\Column(length: 180, unique: true)]
-    private ?string $email = null;
+	#[Assert\Email]
+	#[Groups(['user:read', 'user:create', 'user:update'])]
+	#[ORM\Column(length: 180, unique: true)]
+	private ?string $email = null;
 
 	#[Assert\NotBlank(groups: ['user:create'])]
 	#[Groups(['user:read', 'user:create', 'user:update'])]
-    #[ORM\Column(length: 180, unique: true)]
+	#[ORM\Column(length: 180, unique: true)]
 	private ?string $username = null;
 
 	#[Groups(['user:read', 'user:create', 'user:update'])]
-    #[ORM\Column(type: 'json')]
-    private array $roles = [];
+	#[ORM\Column(type: 'json')]
+	private array $roles = [];
 
 	#[Groups(['user:read', 'user:create', 'user:update'])]
 	#[ORM\Column(length:180, unique: true, nullable: true)]
@@ -74,8 +73,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	#[Groups(['user:create', 'user:update'])]
 	private ?string $plainPassword = null;
 
-    public function getId(): ?Ulid
-    {
+	#[Groups(['user:read', 'user:create', 'user:update'])]
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $createdAt = null;
+
+	#[Groups(['user:read', 'user:create', 'user:update'])]
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $lastLoginAt = null;
+
+	#[Groups(['user:read', 'user:create', 'user:update'])]
+    #[ORM\Column(nullable: true)]
+    private ?bool $isVerified = null;
+
+    public function getId(): ?Ulid{
         return $this->id;
     }
 
@@ -205,4 +215,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 		$this->avatar = $avatar;
 		return $this;
 	}
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getLastLoginAt(): ?\DateTimeImmutable
+    {
+        return $this->lastLoginAt;
+    }
+
+    public function setLastLoginAt(?\DateTimeImmutable $lastLoginAt): self
+    {
+        $this->lastLoginAt = $lastLoginAt;
+
+        return $this;
+    }
+
+    public function isIsVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(?bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
 }
