@@ -26,6 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(processor: UserPasswordHasher::class, validationContext: ['groups' => ['Default', 'user:create']]),
         new Get(),
         new Put(processor: UserPasswordHasher::class),
+        // new Put(false), // or remove this line to disable PUT request
         new Patch(processor: UserPasswordHasher::class),
         new Delete(),
     ],
@@ -44,13 +45,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	#[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
     private ?Ulid $id = null;
 
-	#[Assert\NotBlank]
+	#[Assert\NotBlank(groups: ['user:create'])]
     #[Assert\Email]
     #[Groups(['user:read', 'user:create', 'user:update'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
-	#[Assert\NotBlank]
+	#[Assert\NotBlank(groups: ['user:create'])]
 	#[Groups(['user:read', 'user:create', 'user:update'])]
     #[ORM\Column(length: 180, unique: true)]
 	private ?string $username = null;
