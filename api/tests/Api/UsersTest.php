@@ -48,7 +48,10 @@ class UsersTest extends ApiTestCase {
 				"ROLE_TEST"
 			],
 			"plainPassword" => "test",
-			"avatar" => "/tmp/43a97930f87e803c87327e9033c99dda.png"
+			"avatar" => "/tmp/43a97930f87e803c87327e9033c99dda.png",
+			"isVerified" => false,
+			"createdAt" => '1985-07-31T00:00:00+00:00',
+			"lastLoginAt" => '1985-07-31T00:00:00+00:00'
         ]]);
 
         $this->assertResponseStatusCodeSame(201);
@@ -61,7 +64,10 @@ class UsersTest extends ApiTestCase {
 			"roles" => [
 				"ROLE_TEST"
 			],
-			"avatar" => "/tmp/43a97930f87e803c87327e9033c99dda.png"
+			"avatar" => "/tmp/43a97930f87e803c87327e9033c99dda.png",
+			"isVerified" => false,
+			"createdAt" => '1985-07-31T00:00:00+00:00',
+			"lastLoginAt" => '1985-07-31T00:00:00+00:00'
         ]);
         $this->assertMatchesRegularExpression('~[A-Z0-9]{26}$~', $response->toArray()['@id']);
         $this->assertMatchesResourceItemJsonSchema(User::class);
@@ -73,7 +79,10 @@ class UsersTest extends ApiTestCase {
 			"email" => "test@example.com",
 			"roles" => "INVALID_ROLE",
 			"plainPassword" => "test",
-			"avatar" => "/tmp/43a97930f87e803c87327e9033c99dda.png"
+			"avatar" => "/tmp/43a97930f87e803c87327e9033c99dda.png",
+			"isVerified" => false,
+			"createdAt" => '1985-07-31T00:00:00+00:00',
+			"lastLoginAt" => '1985-07-31T00:00:00+00:00'
         ]]);
 
         $this->assertResponseStatusCodeSame(400);
