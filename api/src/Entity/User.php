@@ -39,9 +39,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 	#[Groups(['user:read'])]
 	#[ORM\Id]
-	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
-	#[ORM\Column(type: UlidType::NAME, unique: true)]
-	#[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
+    #[ORM\Column(type: UlidType::NAME, unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
 	private ?Ulid $id = null;
 
 	#[Assert\NotBlank(groups: ['user:create'])]
@@ -69,6 +69,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+	/**
+     * @var string The unmaped plain password
+     */
 	#[Assert\NotBlank(groups: ['user:create'])]
 	#[Groups(['user:create', 'user:update'])]
 	private ?string $plainPassword = null;
