@@ -9,5 +9,5 @@ lexik_jwt_authentication:
     # -> modify the default configuration
     api_platform:
         check_path: /auth
-        username_path: username
+        username_path: email
         password_path: password

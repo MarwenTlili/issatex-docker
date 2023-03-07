@@ -15,7 +15,7 @@ security:
         users:
             entity:
                 class: App\Entity\User
-                property: username
+                property: email
         # user provider which is able to create User instances from the JWT payload.
         # there should be no need for loading the user from the database when authenticating a JWT Token
         jwt:
@@ -35,7 +35,7 @@ security:
             provider: users
             json_login:
                 check_path: auth # The name in routes.yaml is enough for mapping
-                username_path: username
+                username_path: email
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
