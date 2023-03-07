@@ -2,16 +2,27 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use App\Entity\User;
+use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 
+/**
+ * Summary of UsersTest
+ */
 class UsersTest extends ApiTestCase {
     // This trait provided by AliceBundle will take care of refreshing the database content to a known state before each test
     use RefreshDatabaseTrait;
 
+	private $token;
+	
+	function setUp(): void{
+		$this->token = $this->getToken();
+	}
+
     public function testGetCollection(): void {
         // The client implements Symfony HttpClient's `HttpClientInterface`, and the response `ResponseInterface`
-        $response = static::createClient()->request('GET', '/api/users');
+        $response = static::createClient()->request('GET', '/api/users', [
+			'auth_bearer' => $this->token
+		]);
 
         $this->assertResponseIsSuccessful();
         // Asserts that the returned content type is JSON-LD (the default)
@@ -41,18 +52,21 @@ class UsersTest extends ApiTestCase {
     }
 
     public function testCreateUser(): void {
-        $response = static::createClient()->request('POST', '/api/users', ['json' => [
-            "username" => "test",
-			"email" => "test@example.com",
-			"roles" => [
-				"ROLE_TEST"
-			],
-			"plainPassword" => "test",
-			"avatar" => "/tmp/43a97930f87e803c87327e9033c99dda.png",
-			"isVerified" => false,
-			"createdAt" => '1985-07-31T00:00:00+00:00',
-			"lastLoginAt" => '1985-07-31T00:00:00+00:00'
-        ]]);
+        $response = static::createClient()->request('POST', '/api/users', [
+			'auth_bearer' => $this->token,
+			'json' => [
+				"username" => "test",
+				"email" => "test@example.com",
+				"roles" => [
+					"ROLE_TEST"
+				],
+				"plainPassword" => "test",
+				"avatar" => "/tmp/43a97930f87e803c87327e9033c99dda.png",
+				"isVerified" => false,
+				"createdAt" => '1985-07-31T00:00:00+00:00',
+				"lastLoginAt" => '1985-07-31T00:00:00+00:00'
+        	]
+		]);
 
         $this->assertResponseStatusCodeSame(201);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -74,16 +88,19 @@ class UsersTest extends ApiTestCase {
     }
 
     public function testCreateInvalidUser(): void {
-        static::createClient()->request('POST', '/api/users', ['json' => [
-            "username" => "test",
-			"email" => "test@example.com",
-			"roles" => "INVALID_ROLE",
-			"plainPassword" => "test",
-			"avatar" => "/tmp/43a97930f87e803c87327e9033c99dda.png",
-			"isVerified" => false,
-			"createdAt" => '1985-07-31T00:00:00+00:00',
-			"lastLoginAt" => '1985-07-31T00:00:00+00:00'
-        ]]);
+        static::createClient()->request('POST', '/api/users', [
+			'auth_bearer' => $this->token,
+			'json' => [
+				"username" => "test",
+				"email" => "test@example.com",
+				"roles" => "INVALID_ROLE",
+				"plainPassword" => "test",
+				"avatar" => "/tmp/43a97930f87e803c87327e9033c99dda.png",
+				"isVerified" => false,
+				"createdAt" => '1985-07-31T00:00:00+00:00',
+				"lastLoginAt" => '1985-07-31T00:00:00+00:00'
+			]
+		]);
 
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -104,6 +121,7 @@ class UsersTest extends ApiTestCase {
         $iri = $this->findIriBy(User::class, ['email' => 'wziemann@hotmail.com']);
 
         $client->request('PATCH', $iri, [
+			'auth_bearer' => $this->token,
 			'headers' => [
 				'Content-Type' => 'application/merge-patch+json',
 			],
@@ -124,7 +142,7 @@ class UsersTest extends ApiTestCase {
         $client = static::createClient();
         $iri = $this->findIriBy(User::class, ['email' => 'wziemann@hotmail.com']);
 
-        $client->request('DELETE', $iri);
+        $client->request('DELETE', $iri, ['auth_bearer' => $this->token]);
 
         $this->assertResponseStatusCodeSame(204);
         $this->assertNull(
@@ -133,12 +151,16 @@ class UsersTest extends ApiTestCase {
         );
     }
 
-//     public function testLogin(): void {
-//         $response = static::createClient()->request('POST', '/login', ['json' => [
-//             'email' => 'admin@example.com',
-//             'password' => 'admin',
-//         ]]);
-        
-//         $this->assertResponseIsSuccessful();
-//     }
+    public function getToken(): string {
+        $response = static::createClient()->request('POST', '/auth', [
+			'headers' => ['Content-Type' => 'application/json'],
+			'json' => [
+				'username' => 'admin',
+				'password' => 'admin',
+				]
+			]
+		);
+        $json = $response->toArray();
+		return $json['token'];
+    }
 }
