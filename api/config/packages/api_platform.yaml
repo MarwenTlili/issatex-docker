@@ -11,3 +11,10 @@ api_platform:
         extra_properties:
             standard_put: true
         route_prefix: 'api'
+    
+    # Documenting the Authentication Mechanism with Swagger/Open API
+    swagger:
+        api_keys:
+            JWT:
+                name: Authorization
+                type: header
