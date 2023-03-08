@@ -152,10 +152,10 @@ class UsersTest extends ApiTestCase {
     }
 
     public function getToken(): string {
-        $response = static::createClient()->request('POST', '/auth', [
+        $response = static::createClient()->request('POST', '/api/login', [
 			'headers' => ['Content-Type' => 'application/json'],
 			'json' => [
-				'username' => 'admin',
+				'email' => 'admin@example.com',
 				'password' => 'admin',
 				]
 			]
