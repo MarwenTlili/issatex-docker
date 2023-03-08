@@ -4,6 +4,7 @@ controllers:
         namespace: App\Controller
     type: attribute
 
+# used in security.yaml firewalls: login: json_login: check_path
 auth:
-    path: /auth
+    path: /api/login
     methods: ['POST']
