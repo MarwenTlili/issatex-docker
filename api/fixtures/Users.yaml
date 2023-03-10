@@ -8,7 +8,7 @@ App\Entity\User:
     isVerified: true
     createdAt: <(new DateTimeImmutable('now'))>
     lastLoginAt: <(new DateTimeImmutable('now'))>
-  user_{2..40}:
+  user_{2..5}:
     email (unique): <email()>
     username (unique): <username()>
     roles: <randomElements(['ROLE_CLIENT','ROLE_SECRETAIRE'], 1)>

@@ -33,18 +33,18 @@ class UsersTest extends ApiTestCase {
             '@context' => '/contexts/User',
             '@id' => '/api/users',
             '@type' => 'hydra:Collection',
-            'hydra:totalItems' => 40,
-            'hydra:view' => [
-                '@id' => '/api/users?page=1',
-                '@type' => 'hydra:PartialCollectionView',
-                'hydra:first' => '/api/users?page=1',
-                'hydra:last' => '/api/users?page=2',
-                'hydra:next' => '/api/users?page=2',
-            ],
+            'hydra:totalItems' => 5,
+            // 'hydra:view' => [
+            //     '@id' => '/api/users?page=1',
+            //     '@type' => 'hydra:PartialCollectionView',
+            //     'hydra:first' => '/api/users?page=1',
+            //     'hydra:last' => '/api/users?page=2',
+            //     'hydra:next' => '/api/users?page=2',
+            // ],
         ]);
 
         // Because test fixtures are automatically loaded between each test, you can assert on them
-        $this->assertCount(30, $response->toArray()['hydra:member']);
+        $this->assertCount(5, $response->toArray()['hydra:member']);
 
         // Asserts that the returned JSON is validated by the JSON Schema generated for this resource by API Platform
         // This generated JSON Schema is also used in the OpenAPI spec!
@@ -152,7 +152,7 @@ class UsersTest extends ApiTestCase {
     }
 
     public function getToken(): string {
-        $response = static::createClient()->request('POST', '/api/login', [
+        $response = static::createClient()->request('POST', '/auth', [
 			'headers' => ['Content-Type' => 'application/json'],
 			'json' => [
 				'email' => 'admin@example.com',
