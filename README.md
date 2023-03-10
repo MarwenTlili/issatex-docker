@@ -265,7 +265,7 @@ php bin/console doctrine:migrations:migrate
 gesdinet_jwt_refresh_token:
     refresh_token_class: App\Entity\RefreshToken
     token_parameter_name: refresh_token
-    logout_firewall: login
+    logout_firewall: main
 ```
 
 > api/config/packages/security.yaml
@@ -287,7 +287,7 @@ firewalls:
         stateless: true
         provider: jwt
         jwt: ~
-    login:
+    main:
         provider: users
         stateless: true
         json_login:
