@@ -3,8 +3,6 @@ security:
     password_hashers:
         # Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
         App\Entity\User: 'auto'
-        # uses Doctrine to load the User entity using the email property as "user identifier".
-        property: email # the key that will be set in token payload
     
     # https://symfony.com/doc/current/security/authenticator_manager.html
     enable_authenticator_manager: true
