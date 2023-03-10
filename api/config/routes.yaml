@@ -6,5 +6,11 @@ controllers:
 
 # used in security.yaml firewalls: login: json_login: check_path
 auth:
-    path: /api/login
+    path: /auth
     methods: ['POST']
+
+api_refresh_token:
+    path: /token/refresh
+
+api_token_invalidate:
+    path: /token/invalidate

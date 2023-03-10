@@ -26,9 +26,13 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        api:
+            pattern: ^/api/
+            stateless: true
+            provider: jwt
+            jwt: ~
         login:
             provider: users
-            pattern: ^/api/login
             stateless: true
             json_login:
                 check_path: auth # or api_login_check as defined in config/routes.yaml
@@ -36,12 +40,11 @@ security:
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-        api:
-            pattern: ^/api/
-            stateless: true
-            provider: jwt
-            jwt: ~
-        
+            refresh_jwt:
+                check_path: api_refresh_token # or, you may use the `api_refresh_token` route name
+            logout:
+                path: api_token_invalidate
+
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -55,7 +58,8 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/$, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
         - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI docs
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        # Allows /auth OR /token/refresh OR /token/invalidate
+        - { path: ^/(auth|token/(refresh|invalidate)), roles: PUBLIC_ACCESS } 
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
