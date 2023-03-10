@@ -31,7 +31,7 @@ security:
             stateless: true
             provider: jwt
             jwt: ~
-        login:
+        main:
             provider: users
             stateless: true
             json_login:
