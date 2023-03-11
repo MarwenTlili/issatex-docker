@@ -10,6 +10,6 @@ lexik_jwt_authentication:
     # to conveniently retrieve the token in Swagger UI.
     # -> modify the default configuration
     api_platform:
-        check_path: /api/login
+        check_path: /auth
         username_path: email
         password_path: password
