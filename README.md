@@ -373,6 +373,9 @@ revoke all invalid tokens
 ```
 php bin/console gesdinet:jwt:clear
 ```
+---
+### JWT Data (payload or header) customization  
+https://github.com/lexik/LexikJWTAuthenticationBundle/blob/2.x/Resources/doc/2-data-customization.rst  
 
 ---
 ## Helpers
