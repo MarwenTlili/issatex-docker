@@ -146,7 +146,13 @@ php bin/console doctrine:migrations:migrate
 ---
 ### Testing 
 https://api-platform.com/docs/distribution/testing/
-#### Fixtures  
+
+#### official
+```
+composer require --dev doctrine/doctrine-fixtures-bundle
+```
+
+##### Alice Fixtures  - DEPRECATED 11/03/2023
 https://github.com/nelmio/alice/tree/2.x
 ```
 composer require --dev alice
