@@ -39,6 +39,9 @@ class JWTCreatedListener{
 		$user = $event->getUser();
 		$payload['username'] = $user->getUserName();
 
+		// add avatar path to token payload
+		$payload['avatar'] = $user->getAvatar();
+		
 		// add client ip address to payload
 		$payload['ip'] = $request->getClientIp();
 		
