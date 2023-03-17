@@ -383,7 +383,39 @@ php bin/console gesdinet:jwt:clear
 ### JWT Data (payload or header) customization  
 https://github.com/lexik/LexikJWTAuthenticationBundle/blob/2.x/Resources/doc/2-data-customization.rst  
 
----
+-------------------------------------------------------------------------------
+### Admin UI
+https://api-platform.com/docs/admin/
+
+> generate routes for one entity (-g: --generator)
+```
+pnpm create @api-platform/client --resource user -g next
+```
+
+> generate all routes (-g: --generator)
+```
+pnpm create @api-platform/client -g next
+```
+
+> dependencies form api-latform/admin, react-admin:
+```
+pnpm add react-router-dom react-admin @api-platform/api-doc-parser 
+```
+
+> dependencies for JWT authentication
+```
+pnpm add jwt-decode 
+```
+
+> dependencies for admin component
+```
+pnpm add ra-i18n-polyglot ra-language-english ra-language-french
+```
+
+> dependencies for MUI material design
+pnpm add @mui/material @mui/icons-material
+
+-------------------------------------------------------------------------------
 ## Helpers
 ```
 DROP SCHEMA public CASCADE;
