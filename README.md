@@ -386,7 +386,19 @@ https://github.com/lexik/LexikJWTAuthenticationBundle/blob/2.x/Resources/doc/2-d
 -------------------------------------------------------------------------------
 ### Admin UI
 https://api-platform.com/docs/admin/
+already installed if you use https://api-platform.com/docs/distribution/
 
+> dependencies form api-latform/admin, react-admin:
+```
+pnpm add react-router-dom react-admin @api-platform/api-doc-parser 
+```
+
+> dependencies for admin component
+```
+pnpm add ra-i18n-polyglot ra-language-english ra-language-french
+```
+
+### Client
 > generate routes for one entity (-g: --generator)
 ```
 pnpm create @api-platform/client --resource user -g next
@@ -397,19 +409,15 @@ pnpm create @api-platform/client --resource user -g next
 pnpm create @api-platform/client -g next
 ```
 
-> dependencies form api-latform/admin, react-admin:
+> create typescript interfaces that you can embed in any TypeScript-enabled project (React, Vue.js, Angular..).
 ```
-pnpm add react-router-dom react-admin @api-platform/api-doc-parser 
+npm init @api-platform/client http://caddy src/ -- --generator typescript --resource article
+npm init @api-platform/client http://caddy src/ -- --generator typescript
 ```
 
 > dependencies for JWT authentication
 ```
 pnpm add jwt-decode 
-```
-
-> dependencies for admin component
-```
-pnpm add ra-i18n-polyglot ra-language-english ra-language-french
 ```
 
 > dependencies for MUI material design
