@@ -1,4 +1,7 @@
-@tailwind base;
+/* ######################################################################### */
+/* Teilwind */
+/* ######################################################################### */
+/* @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -22,7 +25,8 @@
         position: absolute;
         top: 0;
         right: 0;
-        transform: translate(13.397459%, -100%) rotate(30deg); /* translateX: 100%*(1-cos(angleRotation) */
+        transform: translate(13.397459%, -100%) rotate(30deg);
         transform-origin: bottom left;
   }
-}
+} */
+/* ######################################################################### */
