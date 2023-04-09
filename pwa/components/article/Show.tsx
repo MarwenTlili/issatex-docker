@@ -16,13 +16,14 @@ import { useSession } from "next-auth/react";
 interface Props {
 	article: Article;
 	text: string;
+	token: string | undefined;
 }
 
-export const Show: FunctionComponent<Props> = ({ article, text }) => {
+export const Show: FunctionComponent<Props> = ({ article, text, token}) => {
 	const [error, setError] = useState<string | null>(null);
 	const router = useRouter();
-	const { data: session, status } = useSession();
-	let token = session?.user.tokens.token;
+	// const { data: session, status } = useSession();
+	// let token = session?.user.tokens.token;
 
 	const handleDelete = async () => {
 		if (!article["@id"]) return;
@@ -40,13 +41,13 @@ export const Show: FunctionComponent<Props> = ({ article, text }) => {
 	return (
 		<Template>
 			<Container>
-				<Head>
+				{/* <Head>
 					<title>{`Show Article ${article["@id"]}`}</title>
 					<script
 						type="application/ld+json"
 						dangerouslySetInnerHTML={{ __html: text }}
 					/>
-				</Head>
+				</Head> */}
 				{/* <Link
 					href="/articles"
 					className="text-sm text-cyan-500 font-bold hover:text-cyan-700"

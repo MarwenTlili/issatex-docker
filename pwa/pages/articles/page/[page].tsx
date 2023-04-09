@@ -14,8 +14,11 @@ import { getSession } from "next-auth/react";
 export const getStaticProps: GetStaticProps = async ({
 	params: { page } = {},
 }) => {
+	const session = await getSession();
+	const token = session? session.user.tokens.token : "";
+
 	const queryClient = new QueryClient();
-	await queryClient.prefetchQuery(getArticlesPath(page), getArticles(page));
+	await queryClient.prefetchQuery(getArticlesPath(page), getArticles(page, token));
 
 	return {
 		props: {

@@ -18,17 +18,20 @@ import { getSession } from "next-auth/react";
 
 const getArticle = async (
 	id: string | string[] | undefined,
-	token?: string | undefined
-)  => id ? await fetch<Article>(`/api/articles/${id}`, {},token) : Promise.resolve(undefined);
+	token: string | undefined
+)  => id ? await fetch<Article>(`/api/articles/${id}`, {}, token) : Promise.resolve(undefined);
 
-const Page: NextComponentType<NextPageContext> & {auth: boolean} = () => {
+// const Page: NextComponentType<NextPageContext> & {auth: boolean} = async () => {
+const Page = async () => {
 	const router = useRouter();
 	const { id } = router.query;
+	const session = await getSession();
+	const token = session? session.user.tokens.token : "";
 
 	const { 
 		data: { data: article, hubURL, text } = { hubURL: null, text: "" } 
 	} = useQuery<FetchResponse<Article> | undefined>(
-		["article", id], () => getArticle(id)
+		["article", id], () => getArticle(id, token)
 	);
 	const articleData = useMercure(article, hubURL);
 
@@ -43,7 +46,7 @@ const Page: NextComponentType<NextPageContext> & {auth: boolean} = () => {
 					<title>{`Show Article ${articleData["@id"]}`}</title>
 				</Head>
 			</div>
-			<Show article={articleData} text={text} />
+			<Show article={articleData} text={text} token={token}/>
 		</div>
 	);
 };
@@ -52,10 +55,13 @@ Page.auth = true;
 export const getStaticProps: GetStaticProps = async ({
 	params: { id } = {},
 }) => {
+	const session = await getSession();
+	const token = session? session.user.tokens.token : "";
+	
 	if (!id) throw new Error("id not in query param");
 	const queryClient = new QueryClient();
 	try {
-		await queryClient.prefetchQuery(["article", id], () => getArticle(id));
+		await queryClient.prefetchQuery(["article", id], () => getArticle(id, token));
 	} catch (error) {
 		console.error(error);
 	}
@@ -71,8 +77,6 @@ export const getStaticProps: GetStaticProps = async ({
 export const getStaticPaths: GetStaticPaths = async () => {
 	const session = await getSession();
 	const token = session? session.user.tokens.token : "";
-	console.log(token);
-	
 
 	const response = await fetch<PagedCollection<Article>>(
 		"/api/articles", {}, 

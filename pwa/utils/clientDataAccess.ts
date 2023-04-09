@@ -38,7 +38,7 @@ const extractHubURL = (response: Response): null | URL => {
 export const fetch = async <TData>( 
 	id: string, 
 	init: RequestInit = {},
-	token: string | undefined
+	token: string | undefined 
 ): Promise<FetchResponse<TData> | undefined> => {
 	// console.log("fetch called.");
 
