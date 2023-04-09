@@ -1,12 +1,13 @@
 import { FunctionComponent } from "react";
-import Link from "next/link";
 
-import ReferenceLinks from "../common/ReferenceLinks";
+// import ReferenceLinks from "../common/ReferenceLinks";
 import { getItemPath } from "../../utils/dataAccess";
 import { Article } from "../../types/Article";
 import { 
 	Box, 
+	Button, 
 	Container, 
+	Link, 
 	Paper, 
 	Table, 
 	TableBody, 
@@ -17,6 +18,7 @@ import {
 	styled, 
 	tableCellClasses 
 } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 
 interface Props {
 	articles: Article[];
@@ -24,12 +26,18 @@ interface Props {
 
 export const List: FunctionComponent<Props> = ({ articles }) => (
 	<Container component="span" >
-		<div className="flex justify-between items-center">
-			<h1 className="text-3xl mb-2">Article List</h1>
-			<Link href="/articles/create" >
-				Create
+
+		<Box  sx={{ display: 'flex', justifyContent: 'center' }} >
+			<h1>Articles List</h1>
+		</Box>
+
+		<Box sx={{ m: 1, display: 'flex', justifyContent: 'flex-end' }} >
+			<Link href="/articles/create" underline="none">
+				<Button variant="contained" color="primary" endIcon={<AddIcon />}>
+					Create
+				</Button>
 			</Link>
-		</div>
+		</Box>
 
 		<TableContainer component={Paper}>
 			<Table sx={{ minWidth: 700 }} aria-label="customized table" >

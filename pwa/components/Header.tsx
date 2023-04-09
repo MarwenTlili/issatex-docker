@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -16,11 +16,42 @@ import MenuIcon from '@mui/icons-material/Menu';
 import FactoryIcon from '@mui/icons-material/Factory';
 
 import { signOut, useSession } from "next-auth/react"
-import Link from '@mui/material/Link';
+import Link from 'next/link';
+import {Link as MuiLink} from '@mui/material';
+// import MuiLink from '@mui/material/Link';
 import { useRouter } from 'next/router';
 
 const PAGES = ['articles', 'Manufacturing_Orders', 'Blog'];
 // const COMPANY_SETTINGS = ['Profile', 'Dashboard', 'Logout'];
+
+const Pages = (props: any) => (
+	<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} >
+		<MuiLink href='/articles'>
+			<Button 
+				onClick={props.handleCloseNavMenu} 
+				sx={{ my: 2, color: 'white', display: 'block' }} 
+			>
+				Articles
+			</Button>
+		</MuiLink>
+		<MuiLink href='/manufacturing_orders'>
+			<Button 
+				onClick={props.handleCloseNavMenu} 
+				sx={{ my: 2, color: 'white', display: 'block' }} 
+			>
+				manufacturing_orders
+			</Button>
+		</MuiLink>
+		<MuiLink href='/blog'>
+			<Button 
+				onClick={props.handleCloseNavMenu} 
+				sx={{ my: 2, color: 'white', display: 'block' }} 
+			>
+				blog
+			</Button>
+		</MuiLink>
+	</Box>
+)
 
 function Header() {
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -84,9 +115,9 @@ function Header() {
 									key={page} 
 									onClick={handleCloseNavMenu}
 								>
-									<Link href={page} >
+									<MuiLink href={page}>
 										<Typography textAlign="center">{page}</Typography>
-									</Link>
+									</MuiLink>
 								</MenuItem>
 							))}
 						</Menu>
@@ -126,34 +157,23 @@ function Header() {
 								textDecoration: 'none',
 							}} 
 						>
-							<Link href='/auth/signin' style={{ textDecoration: 'none' }}>
+							<MuiLink href='/auth/signin' style={{ textDecoration: 'none' }}>
 								<Button key='' onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white', display: 'block' }} >
 									Login
 								</Button>
-							</Link>
+							</MuiLink>
 						</Box>
 					)}
 
-					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} >
-						{PAGES.map((page) => (
-							<Link href={page} key={page} >
-								<Button 
-									onClick={handleCloseNavMenu} 
-									sx={{ my: 2, color: 'white', display: 'block' }} 
-								>
-									{page}
-								</Button>
-							</Link>
-						))}
-					</Box>
+					<Pages handleCloseNavMenu={handleCloseNavMenu} />
 
 					{!session && (
 						<Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }} >
-							<Link href='/auth/signin' style={{ textDecoration: 'none' }}>
+							<MuiLink href='/auth/signin' style={{ textDecoration: 'none' }}>
 								<Button key='' onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white', display: 'block' }} >
 									Login
 								</Button>
-							</Link>
+							</MuiLink>
 						</Box>
 					)}
 
@@ -184,12 +204,12 @@ function Header() {
 									open={Boolean(anchorElUser)}
 									onClose={handleCloseUserMenu}
 								>
-										<Link href='#' underline='none'>
+										<MuiLink href='#' underline='none'>
 											<MenuItem key='dashboard' onClick={handleCloseUserMenu}>
 													Dashboard
 											</MenuItem>
-										</Link>
-										<Link underline='none' 
+										</MuiLink>
+										<MuiLink underline='none' 
 											onClick={(e) => {
 												e.preventDefault()
 												signOut()
@@ -198,7 +218,7 @@ function Header() {
 											<MenuItem key='logout' onClick={handleCloseUserMenu}>
 												Signout
 											</MenuItem>
-										</Link>
+										</MuiLink>
 								</Menu>
 							</Box>
 						</>

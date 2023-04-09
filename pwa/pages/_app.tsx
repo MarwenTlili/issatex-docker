@@ -1,16 +1,17 @@
 import { SessionProvider, useSession } from "next-auth/react"
 
 import '../styles/globals.css'
-// import '@fontsource/roboto/300.css';
-// import '@fontsource/roboto/400.css';
-// import '@fontsource/roboto/500.css';
-// import '@fontsource/roboto/700.css';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
 import type { AppProps } from 'next/app'
 
 import Layout from "../components/common/Layout";
 import { NextComponentType } from "next";
 import { ReactElement } from "react";
+import Template from "../components/Template";
 
 type CustomAppProps = AppProps & {
 	Component: NextComponentType & {auth?: boolean}
@@ -25,12 +26,16 @@ function App( {Component, pageProps: { session, ...pageProps } }: CustomAppProps
 			{Component.auth ? (
 				<Auth>
 					<Layout dehydratedState={pageProps.dehydratedState} >
-						<Component {...pageProps} />
+						{/* <Template> */}
+							<Component {...pageProps} />
+						{/* </Template> */}
 					</Layout>
 				</Auth>
 			) : (
 				<Layout dehydratedState={pageProps.dehydratedState} >
-					<Component {...pageProps} />
+					{/* <Template> */}
+						<Component {...pageProps} />
+					{/* </Template> */}
 				</Layout>
 			)}
 		</SessionProvider>
@@ -41,6 +46,7 @@ export default App;
 function Auth({ children }: {children: ReactElement}): JSX.Element {
 	// if `{ required: true }` is supplied, `status` can only be "loading" or "authenticated"
 	const { status } = useSession({ required: true })
+	// console.log("_app status: ", status);
   
 	if (status === "loading") {
 		return <div>Loading...</div>

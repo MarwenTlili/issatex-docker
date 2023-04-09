@@ -1,108 +1,146 @@
 import { FunctionComponent, useState } from "react";
-import Link from "next/link";
+// import Link from "next/link";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
-import ReferenceLinks from "../common/ReferenceLinks";
-import { fetch, getItemPath } from "../../utils/dataAccess";
+// import ReferenceLinks from "../common/ReferenceLinks";
+import { fetch, getItemPath } from "../../utils/clientDataAccess";
 import { Article } from "../../types/Article";
+import { Box, Container, Fab, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+// import Link from '@mui/material/Link';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Template from "../Template";
+import { useSession } from "next-auth/react";
 
 interface Props {
-  article: Article;
-  text: string;
+	article: Article;
+	text: string;
 }
 
 export const Show: FunctionComponent<Props> = ({ article, text }) => {
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+	const [error, setError] = useState<string | null>(null);
+	const router = useRouter();
+	const { data: session, status } = useSession();
+	let token = session?.user.tokens.token;
 
-  const handleDelete = async () => {
-    if (!article["@id"]) return;
-    if (!window.confirm("Are you sure you want to delete this item?")) return;
+	const handleDelete = async () => {
+		if (!article["@id"]) return;
+		if (!window.confirm("Are you sure you want to delete this item?")) return;
 
-    try {
-      await fetch(article["@id"], { method: "DELETE" });
-      router.push("/articles");
-    } catch (error) {
-      setError("Error when deleting the resource.");
-      console.error(error);
-    }
-  };
+		try {
+			await fetch(article["@id"], { method: "DELETE" }, token);
+			router.push("/articles");
+		} catch (error) {
+			setError("Error when deleting the resource.");
+			console.error(error);
+		}
+	};
 
-  return (
-    <div className="p-4">
-      <Head>
-        <title>{`Show Article ${article["@id"]}`}</title>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: text }}
-        />
-      </Head>
-      <Link
-        href="/articles"
-        className="text-sm text-cyan-500 font-bold hover:text-cyan-700"
-      >
-        {"< Back to list"}
-      </Link>
-      <h1 className="text-3xl mb-2">{`Show Article ${article["@id"]}`}</h1>
-      <table
-        cellPadding={10}
-        className="shadow-md table border-collapse min-w-full leading-normal table-auto text-left my-3"
-      >
-        <thead className="w-full text-xs uppercase font-light text-gray-700 bg-gray-200 py-2 px-4">
-          <tr>
-            <th>Field</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody className="text-sm divide-y divide-gray-200">
-          <tr>
-            <th scope="row">designation</th>
-            <td>{article["designation"]}</td>
-          </tr>
-          <tr>
-            <th scope="row">model</th>
-            <td>{article["model"]}</td>
-          </tr>
-          <tr>
-            <th scope="row">composition</th>
-            <td>{article["composition"]}</td>
-          </tr>
-          <tr>
-            <th scope="row">manufacturingOrders</th>
-            <td>
-              <ReferenceLinks
-                items={article["manufacturingOrders"].map((ref: any) => ({
-                  href: getItemPath(ref, "/manufacturingorders/[id]"),
-                  name: ref,
-                }))}
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      {error && (
-        <div
-          className="border px-4 py-3 my-4 rounded text-red-700 border-red-400 bg-red-100"
-          role="alert"
-        >
-          {error}
-        </div>
-      )}
-      <div className="flex space-x-2 mt-4 items-center justify-end">
-        <Link
-          href={getItemPath(article["@id"], "/articles/[id]/edit")}
-          className="inline-block mt-2 border-2 border-cyan-500 bg-cyan-500 hover:border-cyan-700 hover:bg-cyan-700 text-xs text-white font-bold py-2 px-4 rounded"
-        >
-          Edit
-        </Link>
-        <button
-          className="inline-block mt-2 border-2 border-red-400 hover:border-red-700 hover:text-red-700 text-xs text-red-400 font-bold py-2 px-4 rounded"
-          onClick={handleDelete}
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  );
+	return (
+		<Template>
+			<Container>
+				<Head>
+					<title>{`Show Article ${article["@id"]}`}</title>
+					<script
+						type="application/ld+json"
+						dangerouslySetInnerHTML={{ __html: text }}
+					/>
+				</Head>
+				{/* <Link
+					href="/articles"
+					className="text-sm text-cyan-500 font-bold hover:text-cyan-700"
+				>
+					{"< Back to list"}
+				</Link> */}
+				<h3>{`Article ${article["designation"]}`}</h3>
+
+				<Stack spacing={2} direction="row">
+					<div style={{width: '100%'}}>
+						<Box 
+							sx={{
+								display: 'flex',
+								'& > :not(style)': { m: 1 },
+								// alignItems: 'flex-end',
+								justifyContent: 'flex-end'
+							}}
+						>
+							<Fab 
+								href={getItemPath(article["@id"], "/articles/[id]/edit")}
+								size="small"
+								color="secondary" aria-label="edit"
+							>
+								<EditIcon />
+							</Fab>
+							<Fab 
+								onClick={handleDelete}
+								size="small"
+								color="error" aria-label="delete" 
+							>
+								<DeleteIcon/>
+							</Fab>
+						</Box>
+					</div>
+					{/* <Link href={getItemPath(article["@id"], "/articles/[id]/edit")}
+						sx={{
+							textDecoration: 'none'
+						}}
+					>
+						Edit <EditIcon />
+					</Link>
+					<Link component="button"
+						variant="body2"
+						onClick={handleDelete}
+						sx={{
+							textDecoration: 'none'
+						}}
+					>
+						Delete <DeleteIcon />
+					</Link> */}
+				</Stack>
+
+				<TableContainer component={Paper}>
+					<Table cellPadding={10} >
+						<TableHead>
+							<TableRow>
+								<TableCell>Field</TableCell>
+								<TableCell>Value</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							<TableRow>
+								<TableCell>designation</TableCell>
+								<TableCell>{article["designation"]}</TableCell>
+							</TableRow>
+							<TableRow>
+								<TableCell>model</TableCell>
+								<TableCell>{article["model"]}</TableCell>
+							</TableRow>
+							<TableRow>
+								<TableCell>composition</TableCell>
+								<TableCell>{article["composition"]}</TableCell>
+							</TableRow>
+							{/* <TableRow>
+							<TableHead>manufacturingOrders</TableHead>
+								<TableCell>
+									<ReferenceLinks
+									items={article["manufacturingOrders"].map((ref: any) => ({
+										href: getItemPath(ref, "/manufacturingorders/[id]"),
+										name: ref,
+									}))}
+									/>
+								</TableCell>
+							</TableRow> */}
+						</TableBody>
+					</Table>
+				</TableContainer>
+
+				{error && (
+					<div>
+						{error}
+					</div>
+				)}
+			</Container>
+		</Template>
+	);
 };

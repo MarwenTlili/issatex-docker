@@ -3,7 +3,7 @@ import isomorphicFetch from "isomorphic-unfetch";
 import { PagedCollection } from "../types/collection";
 import { Item } from "../types/item";
 import { ENTRYPOINT } from "../config/entrypoint";
-import { getSession, useSession } from "next-auth/react";
+// import { getSession } from "next-auth/react";
 
 const MIME_TYPE = "application/ld+json";
 
@@ -35,29 +35,16 @@ const extractHubURL = (response: Response): null | URL => {
 	return matches && matches[1] ? new URL(matches[1], ENTRYPOINT) : null;
 };
 
-export const Fetch = async <TData>( 
+export const fetch = async <TData>( 
 	id: string, 
 	init: RequestInit = {},
+	token: string | undefined
 ): Promise<FetchResponse<TData> | undefined> => {
-	///////////////////////////////////////////////////////////////////////////
-	// useAuthentication();
-
-	const authHeader = new Headers()
-
-	/** read the session outside of the context of React. */
-	const session = await getSession()
-	if (!session) {
-		// push('/auth/signin')
-	}
-
-	if (session && session.user) {
-		authHeader.append('Authorization', `Bearer ${session.user.tokens.token}`)
-	}
-	///////////////////////////////////////////////////////////////////////////
+	// console.log("fetch called.");
 
 	if (typeof init.headers === "undefined") init.headers = {};
 	if (!init.headers.hasOwnProperty("Accept"))
-	init.headers = { ...init.headers, Accept: MIME_TYPE };
+		init.headers = { ...init.headers, Accept: MIME_TYPE };
 	if (
 		init.body !== undefined &&
 		!(init.body instanceof FormData) &&
@@ -66,7 +53,30 @@ export const Fetch = async <TData>(
 	init.headers = { ...init.headers, "Content-Type": MIME_TYPE };
 
 	///////////////////////////////////////////////////////////////////////////
-	init.headers = authHeader
+	/** read the session outside of the context of React. */
+	// const session = await getSession()
+	// console.log(session);
+	
+	/** if User exists in session, then add his TOKEN to authorization headers 
+	 * set in "init: RequestInit" 
+	 */
+	// if (session) {
+	// 	init.headers = { 
+	// 		...init.headers, // spread syntax 
+	// 		'Authorization': `Bearer ${session.user.tokens.token}` 
+	// 	}
+	// }
+
+	if (token) {
+		// console.log("token: ", token);
+		init.headers = {
+			...init.headers,
+			"Authorization": `Bearer ${token}`
+		}
+		// console.log("init: ", init);
+	}
+	
+	
 	///////////////////////////////////////////////////////////////////////////
 
 	/** fetch data from RestAPI BackEnd (API-Platform) */
@@ -77,7 +87,10 @@ export const Fetch = async <TData>(
 	if (resp.status === 204) return;
 
 	const text = await resp.text();
+	// console.log("text: ", text);
 	const json = JSON.parse(text);
+	console.log("json: ", json);
+
 	if (resp.ok) {
 		return {
 			hubURL: extractHubURL(resp)?.toString() || null, // URL cannot be serialized as JSON, must be sent as string
@@ -85,7 +98,7 @@ export const Fetch = async <TData>(
 			text,
 		};
 	}
-
+	
 	const errorMessage = json["hydra:title"];
 	const status = json["hydra:description"] || resp.statusText;
 	if (!json.violations) throw Error(errorMessage);
@@ -119,7 +132,8 @@ export const parsePage = (resourceName: string, path: string) =>
 export const getItemPaths = async <TData extends Item>(
 	response: FetchResponse<PagedCollection<TData>> | undefined,
 	resourceName: string,
-	pathTemplate: string
+	pathTemplate: string,
+	token: string | undefined
 ) => {
 	if (!response) return [];
 
@@ -135,7 +149,7 @@ export const getItemPaths = async <TData extends Item>(
 		for (let page = 2; page <= lastPage; page++) {
 			paths.push(
 				...((
-					await Fetch<PagedCollection<TData>>(`/${resourceName}?page=${page}`)
+					await fetch<PagedCollection<TData>>(`/${resourceName}?page=${page}`, {}, token)
 				)?.data["hydra:member"]?.map((resourceData) =>
 					getItemPath(resourceData["@id"] ?? "", pathTemplate)
 				) ?? [])

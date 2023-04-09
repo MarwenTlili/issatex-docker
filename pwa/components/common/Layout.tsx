@@ -6,12 +6,20 @@ import {
 	QueryClientProvider,
 } from "react-query";
 
+/**
+ * 
+ * @param children: JSX.Element
+ * @param dehydratedState: DehydratedState (react-query)
+ * @returns JSX.Element
+ * dehydratedState? should be optional to no prevent worning when children 
+ * daesn't have dehydratedState e.g components/artile/Show
+ */
 const Layout = ({
 	children,
 	dehydratedState,
 }: {
 	children: ReactNode;
-	dehydratedState: DehydratedState;
+	dehydratedState?: DehydratedState | null;
 }) => {
 	const [queryClient] = useState(() => new QueryClient());
 

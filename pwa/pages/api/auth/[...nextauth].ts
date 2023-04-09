@@ -173,23 +173,23 @@ export const authOptions: NextAuthOptions = {
 				token.name = user.username
 				token.picture = user.avatar
 				token.user = user;
-				info("jwt {user}: ", user);
+				// info("jwt {user}: ", user);
 			}
 
 			if (account) {
-				info("jwt {account}: ", account);
+				// info("jwt {account}: ", account);
 			}
 
 			if (profile) {
-				info("jwt {profile}: ", profile);
+				// info("jwt {profile}: ", profile);
 			}
 
 			if (isNewUser) {
-				info("jwt {isNewUser}: ", isNewUser);
+				// info("jwt {isNewUser}: ", isNewUser);
 			}
 
 			if (account && user) {
-				info("Initial SignIn from: ", user.ip)
+				// info("Initial SignIn from: ", user.ip)
 			}
 
             return Promise.resolve(token);
@@ -213,7 +213,7 @@ export const authOptions: NextAuthOptions = {
 			// session.user = token.user as User;
 			session.user = token.user as User
 			
-			info("session {session}: ", session)
+			// info("session {session}: ", session)
 			// info("session {token}: ", token)
 			// info("session {user}: ", user)
 			
