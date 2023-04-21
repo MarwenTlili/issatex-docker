@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 
 // import ReferenceLinks from "../common/ReferenceLinks";
-import { getItemPath } from "../../utils/clientDataAccess";
+import { getItemPath } from "../../utils/dataAccess";
 import { Article } from "../../types/Article";
 import Link from "next/link";
 import Image from "next/image";

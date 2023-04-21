@@ -14,10 +14,14 @@ import {
 	fetch, 
 	FetchError, 
 	FetchResponse 
-} from "../../utils/clientDataAccess";
+} from "../../utils/dataAccess";
 
 import { Article } from "../../types/Article";
-import SnackbarCustomized, { AlertColor, SnackbarOrigin, SnackbarState } from "../SnackbarCustomized";
+import SnackbarCustomized, { 
+	AlertColor, 
+	SnackbarOrigin, 
+	SnackbarState 
+} from "../SnackbarCustomized";
 
 interface FormProps {
 	article?: Article;

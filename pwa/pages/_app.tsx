@@ -1,5 +1,4 @@
 import '../styles/globals.css'
-import { SessionProvider } from "next-auth/react"
 import { NextComponentType } from "next";
 import Layout from "../components/common/Layout";
 import type { AppProps } from 'next/app'
@@ -13,12 +12,9 @@ type CustomAppProps = AppProps & {
 // `useSession()` anywhere in your application to access the `session` object.
 function App( {Component, pageProps: { session, ...pageProps } }: CustomAppProps): JSX.Element {
 	return (
-		<SessionProvider session={session}>
-			<Layout dehydratedState={pageProps.dehydratedState} >
-				<Component {...pageProps} />
-			</Layout>
-		</SessionProvider>
-
+		<Layout dehydratedState={pageProps.dehydratedState} >
+			<Component {...pageProps} />
+		</Layout>
 	)
 }
 export default App;

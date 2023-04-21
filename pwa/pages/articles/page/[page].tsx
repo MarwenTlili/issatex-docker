@@ -8,7 +8,7 @@ import {
 } from "../../../components/article/PageList";
 import { PagedCollection } from "../../../types/collection";
 import { Article } from "../../../types/Article";
-import { fetch, getCollectionPaths } from "../../../utils/clientDataAccess";
+import { fetch, getCollectionPaths } from "../../../utils/dataAccess";
 
 export const getStaticProps: GetStaticProps = async ({
 	params: { page } = {},

@@ -12,7 +12,7 @@ import { dehydrate, QueryClient, useQuery } from "react-query";
 import { Form } from "../../../components/article/Form";
 import { PagedCollection } from "../../../types/collection";
 import { Article } from "../../../types/Article";
-import { fetch, FetchResponse, getItemPaths } from "../../../utils/clientDataAccess";
+import { fetch, FetchResponse, getItemPaths } from "../../../utils/dataAccess";
 import Template from "../../../components/Template";
 
 const getArticle = async (id: string | string[] | undefined) =>

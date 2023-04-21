@@ -1,14 +1,10 @@
-import type { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { SignInResponse, getCsrfToken } from "next-auth/react"
-import { signIn } from "next-auth/react"
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]";
-
-import SnackbarCustomized, { AlertColor, SnackbarOrigin, SnackbarState } from "../../components/SnackbarCustomized";
-import { ENTRYPOINT } from "../../config/entrypoint";
+import SnackbarCustomized, { 
+	AlertColor, 
+	SnackbarOrigin, 
+	SnackbarState 
+} from "../../components/SnackbarCustomized";
 
 const snackbarPosition: SnackbarOrigin = {
 	vertical: 'bottom',		// 'top' | 'bottom'
@@ -20,13 +16,12 @@ const snackbarPosition: SnackbarOrigin = {
  * @param csrfToken 
  * @returns MUI Signin Form
  */
-function SignInTailwind({ csrfToken }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	const { push } = useRouter();
+function SignInTailwind() {
 	const router = useRouter();
 	const {error} = router.query;
 	const {callbackUrl} = router.query;
 
-	const [showSnackbar, setShowSnackbar] = useState(true);
+	const [, setShowSnackbar] = useState(true);
 
 	useEffect( () => {
 		if (callbackUrl) {
@@ -57,42 +52,6 @@ function SignInTailwind({ csrfToken }: InferGetServerSidePropsType<typeof getSer
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
-
-		const data = new FormData(event.currentTarget);
-		const email = data.get("email");
-		const password = data.get("password");
-
-		// will handle obtaining the CSRF token for you
-		// https://next-auth.js.org/getting-started/client#using-the-redirect-false-option
-        await signIn( "credentials", {
-			email, 
-			password,
-			// which URL the user will be redirected after signing in.
-			callbackUrl: ENTRYPOINT,	// default: /auth/signin, window.location.origin(bwowser URL)
-			redirect: false	// false: to handle errors in same page 'siginin' / 'credentials-signin'
-		})
-		.then( ( value: SignInResponse | undefined) => {
-			if (value) {
-				// console.log("status: ", value.status);
-				switch (value.status) {
-					case 200:
-						push('/'); break;
-					case 401:
-						handleSnackbarOpen( snackbarPosition, "warning", "Wrong credentials !")
-						break;
-					case 500:
-						handleSnackbarOpen( snackbarPosition, "error", "Internal server error !")
-						break;
-					default: break;
-				}
-			}
-		})
-		.catch( ({ error, status, ok} ) => {
-			console.log(`signIn credentials callbacks: ${error}, ${status}, ${ok}`);
-			if (status == 401) {
-				handleSnackbarOpen( snackbarPosition, "error", error)
-			}
-		});
     };
 
 	return (
@@ -193,28 +152,3 @@ function SignInTailwind({ csrfToken }: InferGetServerSidePropsType<typeof getSer
 }
 
 export default SignInTailwind;
-
-/**
- * Server-Side Rendering
- * pre-render this page on each request using the data returned by getServerSideProps
- */
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-	const serverSession = await getServerSession(context.req, context.res, authOptions)
-
-	// redirect to home '/' if user is already signed in 
-	if (serverSession) {
-		return {
-			redirect: {
-				destination: "/",
-				permanent: false,
-			},
-		}
-	}
-	
-	return {
-		props: {
-			csrfToken: (!context) && await getCsrfToken(context),
-			session: serverSession
-		},
-	}
-}

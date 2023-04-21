@@ -11,7 +11,7 @@ import { dehydrate, QueryClient, useQuery } from "react-query";
 import { Show } from "../../../components/article/Show";
 import { PagedCollection } from "../../../types/collection";
 import { Article } from "../../../types/Article";
-import { fetch, FetchResponse, getItemPaths } from "../../../utils/clientDataAccess";
+import { fetch, FetchResponse, getItemPaths } from "../../../utils/dataAccess";
 import { useMercure } from "../../../utils/mercure";
 
 const getArticle = async (

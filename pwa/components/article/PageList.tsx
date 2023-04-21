@@ -7,7 +7,7 @@ import Pagination from "../common/Pagination";
 import { List } from "./List";
 import { PagedCollection } from "../../types/collection";
 import { Article } from "../../types/Article";
-import { fetch, FetchResponse, parsePage } from "../../utils/clientDataAccess";
+import { fetch, FetchResponse, parsePage } from "../../utils/dataAccess";
 import { useMercure } from "../../utils/mercure";
 import Template from "../Template";
 
