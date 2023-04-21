@@ -59,7 +59,7 @@ security:
         - { path: ^/(auth|token/(refresh|invalidate)), roles: PUBLIC_ACCESS } 
         - { path: ^/contexts, roles: PUBLIC_ACCESS } # Allow /contexts/Entrypoint, /contexts/Article, ...
         - { path: ^/_profiler, roles: PUBLIC_ACCESS } # Allow _profiler for debuging (DISABLE IT IN PRODUCTION)
-        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        # - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:
