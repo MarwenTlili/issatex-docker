@@ -1,28 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import { Container } from "@mui/material";
-
-import { useRouter } from "next/router";
 import Template from "../components/Template";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
 // import { useQuery } from "react-query";
-// import { ENTRYPOINT } from "../config/entrypoint";
 // import { User } from "next-auth";
 
 function IndexPage() {
-	const { push } = useRouter();
-	// const [users, setUsers] = useState<User[]>([])
-
-	const { status, data: session } = useSession({
-		required: true,
-		onUnauthenticated() {
-			console.log("onUnauthenticated()");
-			push('/auth/signin')
-		},
-	})
-
-	// ENTRYPOINT => https://localhost
 	/* ********************************************************************* */
+	// const {user, setUser} = useState();
+	// const { status, data: session } = useSession()
+
 	/** react-query */
 	// const { isLoading, error, data, isFetching } = useQuery("repoData", () => {
 	// 	if (session && status === "authenticated") {
@@ -44,23 +31,13 @@ function IndexPage() {
 	// });
 	/* ********************************************************************* */
 
-	// useEffect( () => {
-	// 	if (session) {
-	// 		// console.log("session: ", session);
-	// 	}
-	// 	if (data){
-	// 		console.log("data: ", data);
-	// 	}
-	// }, [session, data])
-	if (status === 'loading') {
-		return 'Loading or not authenticated...'
-	}
+	// if (status === 'loading') {
+	// 	return 'Loading or not authenticated...'
+	// }
 
-	// if (error) console.log(`ERROR: ${error}`);
-	
 	return (
 		<Template>
-			<Container>
+			<div className="container mx-auto px-4 text-lg h-screen">
 				<h1>Lorem ipsum dolor sit amet</h1>
 				{/* {isLoading && (
 					<p>isLoading ...</p>
@@ -74,10 +51,9 @@ function IndexPage() {
 					Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequuntur reprehenderit error iure nihil laudantium. Nesciunt sequi recusandae, voluptatem architecto cumque excepturi unde aperiam, eius quos ipsum culpa labore eligendi autem?
 					Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia facere facilis eligendi excepturi placeat necessitatibus eos cum rem dolorum pariatur culpa, voluptates error sint tenetur nihil magnam in, libero alias.
 				</p>
-			</Container>
+			</div>
 		</Template>
 	)
 }
-IndexPage.auth = true;
 
 export default IndexPage;

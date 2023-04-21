@@ -6,17 +6,12 @@ import {
 	getArticles,
 	getArticlesPath,
 } from "../../components/article/PageList";
-import { getSession } from "next-auth/react";
-// import { getSession, useSession } from "next-auth/react";
 
 export const getStaticProps: GetStaticProps = async () => {
-	/** read the session outside of the context of React. */
-	// const session = await getSession();
-	const session = await getSession();
-	const token = session? session.user.tokens.token : "";
+	let token: string | undefined = undefined;
 
 	const queryClient = new QueryClient();
-	await queryClient.prefetchQuery(getArticlesPath(), getArticles(undefined, token));
+	await queryClient.prefetchQuery(getArticlesPath(), getArticles(token));
 
 	return {
 		props: {
@@ -25,5 +20,4 @@ export const getStaticProps: GetStaticProps = async () => {
 		revalidate: 1,
 	};
 };
-
 export default PageList;

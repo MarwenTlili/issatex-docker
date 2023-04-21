@@ -9,16 +9,12 @@ import {
 import { PagedCollection } from "../../../types/collection";
 import { Article } from "../../../types/Article";
 import { fetch, getCollectionPaths } from "../../../utils/clientDataAccess";
-import { getSession } from "next-auth/react";
 
 export const getStaticProps: GetStaticProps = async ({
 	params: { page } = {},
 }) => {
-	const session = await getSession();
-	const token = session? session.user.tokens.token : "";
-
 	const queryClient = new QueryClient();
-	await queryClient.prefetchQuery(getArticlesPath(page), getArticles(page, token));
+	await queryClient.prefetchQuery(getArticlesPath(page), getArticles(page));
 
 	return {
 		props: {
@@ -29,10 +25,7 @@ export const getStaticProps: GetStaticProps = async ({
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const session = await getSession();
-	const token = session? session.user.tokens.token : "";
-
-	const response = await fetch<PagedCollection<Article>>("/api/articles", {}, token);
+	const response = await fetch<PagedCollection<Article>>("/api/articles");
 	const paths = await getCollectionPaths(
 		response,
 		"api/articles",

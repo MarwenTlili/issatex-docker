@@ -2,6 +2,7 @@
  * Extend default next-auth interface properties
  */
 import NextAuth, { DefaultSession } from "next-auth"
+import { DefaultJWT } from "next-auth/jwt"
 
 declare module "next-auth" {
 	/**
@@ -50,17 +51,26 @@ declare module "next-auth" {
 	}
 }
 
-declare module "@auth/core/types" {
-	interface Session {
-		error?: "RefreshAccessTokenError"
+declare module "next-auth/jwt" {
+	interface JWT extends Record<string, unknown>, DefaultJWT {
+		user?: User;
+		iat?: string;
+		exp?: string;
+		jti?: string;
 	}
 }
 
-declare module "@auth/core/jwt" {
-	interface JWT {
-		access_token: string
-		expires_at: number
-		refresh_token: string
-		error?: "RefreshAccessTokenError"
-	}
-}
+// declare module "@auth/core/types" {
+// 	interface Session {
+// 		error?: "RefreshAccessTokenError"
+// 	}
+// }
+
+// declare module "next-auth/jwt" {
+// 	interface JWT {
+// 		access_token: string
+// 		expires_at: number
+// 		refresh_token: string
+// 		error?: "RefreshAccessTokenError"
+// 	}
+// }

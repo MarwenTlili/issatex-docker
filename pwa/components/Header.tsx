@@ -1,231 +1,193 @@
-import React, { forwardRef, useEffect, useState } from 'react';
-
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-
-import MenuIcon from '@mui/icons-material/Menu';
-import FactoryIcon from '@mui/icons-material/Factory';
+import React from 'react';
 
 import { signOut, useSession } from "next-auth/react"
+
+import { Fragment } from 'react'
+import { Disclosure, Menu, Transition } from '@headlessui/react'
+import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image';
+import ActiveLink from './ActiveLink';
 import Link from 'next/link';
-import {Link as MuiLink} from '@mui/material';
-// import MuiLink from '@mui/material/Link';
-import { useRouter } from 'next/router';
 
-const PAGES = ['articles', 'Manufacturing_Orders', 'Blog'];
-// const COMPANY_SETTINGS = ['Profile', 'Dashboard', 'Logout'];
+const navigations = [
+	{ name: 'Home', href: '/', isCurrent: true },
+	{ name: 'Articles', href: '/articles', isCurrent: false },
+	{ name: 'Manufacturing Orders', href: '/manufacturing_orders', isCurrent: false },
+];
 
-const Pages = (props: any) => (
-	<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} >
-		<MuiLink href='/articles'>
-			<Button 
-				onClick={props.handleCloseNavMenu} 
-				sx={{ my: 2, color: 'white', display: 'block' }} 
-			>
-				Articles
-			</Button>
-		</MuiLink>
-		<MuiLink href='/manufacturing_orders'>
-			<Button 
-				onClick={props.handleCloseNavMenu} 
-				sx={{ my: 2, color: 'white', display: 'block' }} 
-			>
-				manufacturing_orders
-			</Button>
-		</MuiLink>
-		<MuiLink href='/blog'>
-			<Button 
-				onClick={props.handleCloseNavMenu} 
-				sx={{ my: 2, color: 'white', display: 'block' }} 
-			>
-				blog
-			</Button>
-		</MuiLink>
-	</Box>
-)
+function classNames(...classes: any[]) {
+	return classes.filter(Boolean).join(' ')
+}
 
 function Header() {
-	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-	const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
     const { data: session, status } = useSession();
-	// console.log(`session status: ${status}`);
-
-	// const {asPath} = useRouter();
-
-	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorElNav(event.currentTarget);
-	};
-	const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorElUser(event.currentTarget);
-	};
-
-	const handleCloseNavMenu = () => {
-		setAnchorElNav(null);
-	};
-
-	const handleCloseUserMenu = () => {
-		setAnchorElUser(null);
-	};
+	// console.log("status: ", status);
 
 	return (
-		<AppBar position="static">
-			<Container maxWidth="xl">
-				<Toolbar disableGutters>
-					<FactoryIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-					<Typography variant="h6" noWrap component="a" href="/"
-						sx={{
-							mr: 2,
-							display: { xs: 'none', md: 'flex' },
-							fontFamily: 'monospace',
-							fontWeight: 700,
-							letterSpacing: '.3rem',
-							color: 'inherit',
-							textDecoration: 'none',
-						}}
-					>
-						Issatex
-					</Typography>
+		<Disclosure as="nav" className="bg-slate-100 dark:bg-slate-800">
+			{({ open }) => (
+				<>
+					<div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+						<div className="relative flex h-16 items-center justify-between">
+							
+							<div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+								{/* Mobile menu button*/}
+								<Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-black hover:bg-slate-700 hover:text-white focus:outline-none focus:ring-inset focus:ring-white dark:bg-slate-700 dark:text-white">
+								<span className="sr-only">Open main menu</span>
+								{open ? (
+									<XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+								) : (
+									<Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+								)}
+								</Disclosure.Button>
+							</div>
 
-					<Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-						<IconButton size="large" aria-label="account of current user" aria-controls="menu-appbar"
-							aria-haspopup="true" onClick={handleOpenNavMenu} color="inherit"
-						>
-							<MenuIcon />
-						</IconButton>
-						<Menu id="menu-appbar" anchorEl={anchorElNav}
-							anchorOrigin={{ vertical: 'bottom', horizontal: 'left', }}
-							keepMounted
-							transformOrigin={{ vertical: 'top', horizontal: 'left', }}
-							open={Boolean(anchorElNav)}
-							onClose={handleCloseNavMenu}
-							sx={{ display: { xs: 'block', md: 'none' }, }}
-						>
-							{PAGES.map((page) => (
-								<MenuItem 
-									key={page} 
-									onClick={handleCloseNavMenu}
-								>
-									<MuiLink href={page}>
-										<Typography textAlign="center">{page}</Typography>
-									</MuiLink>
-								</MenuItem>
-							))}
-						</Menu>
-					</Box>
+							{/* left nav */}
+							<div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+								<div className="flex flex-shrink-0 items-center">
+									<Image
+										className="block h-8 w-auto lg:hidden"
+										src="/images/tailwind-logo.png"
+										width={512}
+										height={306}
+										alt="Your Company"
+									/>
+									<Image
+										className="hidden h-8 w-auto lg:block"
+										src="/images/tailwind-logo.png"
+										width={512}
+										height={306}
+										alt="Your Company"
+									/>
+								</div>
+								<div className="hidden sm:ml-6 sm:block">
+									<div className="flex space-x-4">
+										{navigations.map((item) => (
+											<ActiveLink
+												key={item.name}
+												href={item.href}
+												className="text-base text-black hover:bg-primary-300 rounded-md px-3 py-2 font-sans dark:text-white dark:hover:bg-slate-700"
+												aria-current={item.isCurrent ? 'page' : undefined}
+												activeClassName="text-base bg-primary-800 text-white hover:text-white dark:bg-primary-900"
+											>
+												{item.name}
+											</ActiveLink>
+										))}
+									</div>
+								</div>
+							</div>
 
-					{!session && (
-						<>
-							<FactoryIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-							<Typography
-								variant="h5" noWrap component="a" 
-								sx={{
-									mr: 2,
-									display: { xs: 'flex', md: 'none' },
-									flexGrow: 1,
-									fontFamily: 'monospace',
-									fontWeight: 700,
-									letterSpacing: '.3rem',
-									color: 'inherit',
-									textDecoration: 'none',
-								}}
-							>
-								ISSATEX
-							</Typography>
-						</>
-					)}
+							{/* right nav */}
+							<div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+								{session && (
+									<>
+										<div className='font-sans text-base text-black hidden mr-2 md:inline dark:text-white'>
+											{session.user.email}
+										</div>
 
-					{!session && (
-						<Box 
-							sx={{
-								mr: 2,
-								display: { xs: 'flex', md: 'none' },
-								flexGrow: 0,
-								fontFamily: 'monospace',
-								fontWeight: 700,
-								letterSpacing: '.3rem',
-								color: 'inherit',
-								textDecoration: 'none',
-							}} 
-						>
-							<MuiLink href='/auth/signin' style={{ textDecoration: 'none' }}>
-								<Button key='' onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white', display: 'block' }} >
-									Login
-								</Button>
-							</MuiLink>
-						</Box>
-					)}
-
-					<Pages handleCloseNavMenu={handleCloseNavMenu} />
-
-					{!session && (
-						<Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }} >
-							<MuiLink href='/auth/signin' style={{ textDecoration: 'none' }}>
-								<Button key='' onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white', display: 'block' }} >
-									Login
-								</Button>
-							</MuiLink>
-						</Box>
-					)}
-
-					{session && (
-						<>
-							<Typography variant="h6" noWrap component="a" sx={{
-								my: 2,
-								mr: 2
-							}}>
-								{session.user.username}
-							</Typography>
-							<Box sx={{ flexGrow: 0 }}>
-								<Tooltip title="Open settings">
-									<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-									<Avatar alt={session.user.avatar} src={session.user.avatar} />
-									</IconButton>
-								</Tooltip>
-								<Menu sx={{ mt: '45px' }} id="menu-appbar" anchorEl={anchorElUser}
-									anchorOrigin={{
-										vertical: 'top',
-										horizontal: 'right',
-									}}
-									keepMounted
-									transformOrigin={{
-										vertical: 'top',
-										horizontal: 'right',
-									}}
-									open={Boolean(anchorElUser)}
-									onClose={handleCloseUserMenu}
-								>
-										<MuiLink href='#' underline='none'>
-											<MenuItem key='dashboard' onClick={handleCloseUserMenu}>
-													Dashboard
-											</MenuItem>
-										</MuiLink>
-										<MuiLink underline='none' 
-											onClick={(e) => {
-												e.preventDefault()
-												signOut()
-											}}
+										{/* notification element */}
+										<button
+											type="button"
+											className="rounded-full bg-slate-300 p-1 text-black hover:text-primary-500 dark:text-white dark:bg-slate-700 dark:hover:bg-slate-500 dark:hover:text-white"
 										>
-											<MenuItem key='logout' onClick={handleCloseUserMenu}>
-												Signout
-											</MenuItem>
-										</MuiLink>
-								</Menu>
-							</Box>
-						</>
-					)}
-				</Toolbar>
-			</Container>
-		</AppBar>
+											<span className="sr-only">View notifications</span>
+											<BellIcon className="h-6 w-6" aria-hidden="true" />
+										</button>
+
+										{/* profile menu */}
+										<Menu as="div" className="relative ml-2">
+											<div>
+												<Menu.Button className="flex rounded-full bg-slate-800 text-base ">
+													<span className="sr-only">Open user menu</span>
+													<Image
+														className="h-10 w-auto rounded-full"
+														src="/images/me.jpg"
+														width={1024}
+														height={1365}
+														alt="Your Company"
+													/>
+												</Menu.Button>
+											</div>
+											<Transition
+												as={Fragment}
+												enter="transition ease-out duration-100"
+												enterFrom="transform opacity-0 scale-95"
+												enterTo="transform opacity-100 scale-100"
+												leave="transition ease-in duration-75"
+												leaveFrom="transform opacity-100 scale-100"
+												leaveTo="transform opacity-0 scale-95"
+												>
+												<Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-slate-700">
+													<Menu.Item>
+														{({ active }) => (
+														<a
+															href="#"
+															className={classNames(active ? 'bg-slate-100' : '', 'block px-4 py-2 font-sans text-base text-black dark:text-white dark:bg-slate-700 dark:hover:bg-slate-600')}
+														>
+															Your Profile
+														</a>
+														)}
+													</Menu.Item>
+													<Menu.Item>
+														{({ active }) => (
+															<a
+															href="#"
+															className={classNames(active ? 'bg-slate-100' : '', 'block px-4 py-2 font-sans text-base text-black dark:text-white dark:bg-slate-700 dark:hover:bg-slate-600')}
+															>
+															Settings
+														</a>
+														)}
+													</Menu.Item>
+													<Menu.Item>
+														{({ active }) => (
+															<a
+																className={classNames(active ? 'bg-slate-100' : '', 'block px-4 py-2 font-sans text-base text-black dark:text-white dark:bg-slate-700 dark:hover:bg-slate-600')}
+																onClick={ (e) => {
+																	e.preventDefault; 
+																	signOut();	// {callbackUrl: ENTRYPOINT}
+																} }
+															>
+																Sign out
+															</a>
+														)}
+													</Menu.Item>
+												</Menu.Items>
+											</Transition>
+										</Menu>
+									</>
+								)}
+
+								{status === "unauthenticated" && (
+									<Link href="/auth/signin"
+										className="text-base text-black hover:bg-primary-300 rounded-md px-3 py-2 font-sans dark:text-white dark:hover:bg-slate-700"
+									>
+										Sign-in
+									</Link>
+								)}
+								
+							</div>
+						</div>
+					</div>
+
+					<Disclosure.Panel className="sm:hidden">
+						<div className="space-y-1 px-2 pb-3 pt-2">
+							{navigations.map((item) => (
+								<ActiveLink
+									key={item.name}
+									href={item.href}
+									className="font-sans text-base text-black hover:bg-primary-300 hover:text-white  block rounded-md px-3 py-2 dark:text-white dark:hover:bg-slate-700 dark:hover:text-white"
+									aria-current={item.isCurrent ? 'page' : undefined}
+									activeClassName="text-base bg-primary-900 text-white"
+								>
+									{item.name}
+								</ActiveLink>
+							))}
+						</div>
+					</Disclosure.Panel>
+
+				</>
+			)}
+		</Disclosure>
 	);
 }
 export default Header;

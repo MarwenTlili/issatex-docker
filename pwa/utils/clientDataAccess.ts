@@ -3,7 +3,6 @@ import isomorphicFetch from "isomorphic-unfetch";
 import { PagedCollection } from "../types/collection";
 import { Item } from "../types/item";
 import { ENTRYPOINT } from "../config/entrypoint";
-// import { getSession } from "next-auth/react";
 
 const MIME_TYPE = "application/ld+json";
 
@@ -38,10 +37,7 @@ const extractHubURL = (response: Response): null | URL => {
 export const fetch = async <TData>( 
 	id: string, 
 	init: RequestInit = {},
-	token: string | undefined 
 ): Promise<FetchResponse<TData> | undefined> => {
-	// console.log("fetch called.");
-
 	if (typeof init.headers === "undefined") init.headers = {};
 	if (!init.headers.hasOwnProperty("Accept"))
 		init.headers = { ...init.headers, Accept: MIME_TYPE };
@@ -54,29 +50,16 @@ export const fetch = async <TData>(
 
 	///////////////////////////////////////////////////////////////////////////
 	/** read the session outside of the context of React. */
-	// const session = await getSession()
-	// console.log(session);
+	// const session = await getSession();
+	// console.log("session: ", session);
 	
-	/** if User exists in session, then add his TOKEN to authorization headers 
-	 * set in "init: RequestInit" 
-	 */
-	// if (session) {
-	// 	init.headers = { 
-	// 		...init.headers, // spread syntax 
-	// 		'Authorization': `Bearer ${session.user.tokens.token}` 
+	// if (token) {
+	// 	init.headers = {
+	// 		...init.headers,
+	// 		"Authorization": `Bearer ${token}`
 	// 	}
+	// 	// console.log("init: ", init);
 	// }
-
-	if (token) {
-		// console.log("token: ", token);
-		init.headers = {
-			...init.headers,
-			"Authorization": `Bearer ${token}`
-		}
-		// console.log("init: ", init);
-	}
-	
-	
 	///////////////////////////////////////////////////////////////////////////
 
 	/** fetch data from RestAPI BackEnd (API-Platform) */
@@ -87,9 +70,7 @@ export const fetch = async <TData>(
 	if (resp.status === 204) return;
 
 	const text = await resp.text();
-	// console.log("text: ", text);
 	const json = JSON.parse(text);
-	console.log("json: ", json);
 
 	if (resp.ok) {
 		return {
@@ -133,7 +114,6 @@ export const getItemPaths = async <TData extends Item>(
 	response: FetchResponse<PagedCollection<TData>> | undefined,
 	resourceName: string,
 	pathTemplate: string,
-	token: string | undefined
 ) => {
 	if (!response) return [];
 
@@ -149,7 +129,7 @@ export const getItemPaths = async <TData extends Item>(
 		for (let page = 2; page <= lastPage; page++) {
 			paths.push(
 				...((
-					await fetch<PagedCollection<TData>>(`/${resourceName}?page=${page}`, {}, token)
+					await fetch<PagedCollection<TData>>(`/${resourceName}?page=${page}`)
 				)?.data["hydra:member"]?.map((resourceData) =>
 					getItemPath(resourceData["@id"] ?? "", pathTemplate)
 				) ?? [])

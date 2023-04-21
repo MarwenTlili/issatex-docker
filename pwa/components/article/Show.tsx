@@ -1,36 +1,28 @@
 import { FunctionComponent, useState } from "react";
-// import Link from "next/link";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
 // import ReferenceLinks from "../common/ReferenceLinks";
 import { fetch, getItemPath } from "../../utils/clientDataAccess";
 import { Article } from "../../types/Article";
-import { Box, Container, Fab, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-// import Link from '@mui/material/Link';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import Template from "../Template";
-import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 interface Props {
 	article: Article;
 	text: string;
-	token: string | undefined;
 }
 
-export const Show: FunctionComponent<Props> = ({ article, text, token}) => {
+export const Show: FunctionComponent<Props> = ({ article, text}) => {
 	const [error, setError] = useState<string | null>(null);
 	const router = useRouter();
-	// const { data: session, status } = useSession();
-	// let token = session?.user.tokens.token;
-
+	
 	const handleDelete = async () => {
 		if (!article["@id"]) return;
 		if (!window.confirm("Are you sure you want to delete this item?")) return;
 
 		try {
-			await fetch(article["@id"], { method: "DELETE" }, token);
+			await fetch(article["@id"], { method: "DELETE" });
 			router.push("/articles");
 		} catch (error) {
 			setError("Error when deleting the resource.");
@@ -39,109 +31,57 @@ export const Show: FunctionComponent<Props> = ({ article, text, token}) => {
 	};
 
 	return (
-		<Template>
-			<Container>
-				{/* <Head>
-					<title>{`Show Article ${article["@id"]}`}</title>
-					<script
-						type="application/ld+json"
-						dangerouslySetInnerHTML={{ __html: text }}
-					/>
-				</Head> */}
-				{/* <Link
-					href="/articles"
-					className="text-sm text-cyan-500 font-bold hover:text-cyan-700"
-				>
-					{"< Back to list"}
-				</Link> */}
-				<h3>{`Article ${article["designation"]}`}</h3>
+		<>
+			<Head>
+				<title>{`Show Article ${article["@id"]}`}</title>
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{ __html: text }}
+				/>
+			</Head>
+			<Template>
+				<div className="flex flex-col items-center justify-start h-screen p-4 mt-8">
 
-				<Stack spacing={2} direction="row">
-					<div style={{width: '100%'}}>
-						<Box 
-							sx={{
-								display: 'flex',
-								'& > :not(style)': { m: 1 },
-								// alignItems: 'flex-end',
-								justifyContent: 'flex-end'
-							}}
-						>
-							<Fab 
+					<div className="grid place-content-center font-mono text-2xl">
+						{`Article ${article["designation"]}`}
+					</div>
+					
+					<div className="w-full md:w-4/5 p-4">
+
+						<div className="flex flex-row justify-end">
+							<Link
 								href={getItemPath(article["@id"], "/articles/[id]/edit")}
-								size="small"
-								color="secondary" aria-label="edit"
+								className="font-mono text-lg text-cyan-600/100 hover:text-indigo-800"
 							>
-								<EditIcon />
-							</Fab>
-							<Fab 
+								Edit
+							</Link>
+							<button
 								onClick={handleDelete}
-								size="small"
-								color="error" aria-label="delete" 
+								className="font-mono text-lg text-red-500 hover:text-indigo-800 ml-2"
 							>
-								<DeleteIcon/>
-							</Fab>
-						</Box>
-					</div>
-					{/* <Link href={getItemPath(article["@id"], "/articles/[id]/edit")}
-						sx={{
-							textDecoration: 'none'
-						}}
-					>
-						Edit <EditIcon />
-					</Link>
-					<Link component="button"
-						variant="body2"
-						onClick={handleDelete}
-						sx={{
-							textDecoration: 'none'
-						}}
-					>
-						Delete <DeleteIcon />
-					</Link> */}
-				</Stack>
+								Delete
+							</button>
+						</div>
 
-				<TableContainer component={Paper}>
-					<Table cellPadding={10} >
-						<TableHead>
-							<TableRow>
-								<TableCell>Field</TableCell>
-								<TableCell>Value</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							<TableRow>
-								<TableCell>designation</TableCell>
-								<TableCell>{article["designation"]}</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell>model</TableCell>
-								<TableCell>{article["model"]}</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell>composition</TableCell>
-								<TableCell>{article["composition"]}</TableCell>
-							</TableRow>
-							{/* <TableRow>
-							<TableHead>manufacturingOrders</TableHead>
-								<TableCell>
-									<ReferenceLinks
-									items={article["manufacturingOrders"].map((ref: any) => ({
-										href: getItemPath(ref, "/manufacturingorders/[id]"),
-										name: ref,
-									}))}
-									/>
-								</TableCell>
-							</TableRow> */}
-						</TableBody>
-					</Table>
-				</TableContainer>
+						<div className="grid place-content-start">
+							<div className="flex flex-col pb-8">
+								<div className="font-bold">Designation</div>
+								<div>{article["designation"]}</div>
+							</div>
+							<div className="flex flex-col pb-8">
+								<div className="font-bold">Model</div>
+								<div>{article["model"]}</div>
+							</div>
+							<div className="flex flex-col pb-8">
+								<div className="font-bold">Composition</div>
+								<div>{article["composition"]}</div>
+							</div>
+						</div>
 
-				{error && (
-					<div>
-						{error}
 					</div>
-				)}
-			</Container>
-		</Template>
+
+				</div>
+			</Template>
+		</>
 	);
 };

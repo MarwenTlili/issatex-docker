@@ -1,127 +1,69 @@
 import { FunctionComponent } from "react";
 
 // import ReferenceLinks from "../common/ReferenceLinks";
-import { getItemPath } from "../../utils/dataAccess";
+import { getItemPath } from "../../utils/clientDataAccess";
 import { Article } from "../../types/Article";
-import { 
-	Box, 
-	Button, 
-	Container, 
-	Link, 
-	Paper, 
-	Table, 
-	TableBody, 
-	TableCell, 
-	TableContainer, 
-	TableHead, 
-	TableRow, 
-	styled, 
-	tableCellClasses 
-} from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
+import Link from "next/link";
+import Image from "next/image";
 
-interface Props {
+interface ListProps {
 	articles: Article[];
 }
 
-export const List: FunctionComponent<Props> = ({ articles }) => (
-	<Container component="span" >
-
-		<Box  sx={{ display: 'flex', justifyContent: 'center' }} >
-			<h1>Articles List</h1>
-		</Box>
-
-		<Box sx={{ m: 1, display: 'flex', justifyContent: 'flex-end' }} >
-			<Link href="/articles/create" underline="none">
-				<Button variant="contained" color="primary" endIcon={<AddIcon />}>
-					Create
-				</Button>
+export const List: FunctionComponent<ListProps> = ({ articles }) => (
+	<div className="w-full p-2">
+		<div className="flex">
+			<Link
+				href="/articles/create"
+				className="font-mono text-lg text-cyan-600 hover:text-indigo-800"
+			>
+				Create
 			</Link>
-		</Box>
-
-		<TableContainer component={Paper}>
-			<Table sx={{ minWidth: 700 }} aria-label="customized table" >
-				<TableHead >
-					<TableRow>
-						{/* <StyledTableCell>id</StyledTableCell> */}
-						<StyledTableCell align="left">designation</StyledTableCell>
-						<StyledTableCell align="left">model</StyledTableCell>
-						<StyledTableCell align="left">composition</StyledTableCell>
-						{/* <StyledTableCell align="left">manufacturingOrders</StyledTableCell> */}
-						<StyledTableCell colSpan={2} />
-					</TableRow>
-				</TableHead>
-				<TableBody className="text-sm divide-y divide-gray-200">
-					{articles &&
-						articles.length !== 0 &&
-						articles.map(
-						(article) =>
-							article["@id"] && (
-							<StyledTableRow className="py-2" key={article["@id"]}>
-								{/* <th scope="row">
-								<ReferenceLinks
-									items={{
-									href: getItemPath(article["@id"], "/articles/[id]"),
-									name: article["@id"],
-									}}
-								/> */}
-								<StyledTableCell>{article["designation"]}</StyledTableCell>
-								<StyledTableCell>{article["model"]}</StyledTableCell>
-								<StyledTableCell>{article["composition"]}</StyledTableCell>
-								{/* <StyledTableCell>
-									<ReferenceLinks
-										items={article["manufacturingOrders"].map((ref: any) => ({
-											href: getItemPath(ref, "/manufacturingorders/[id]"),
-											name: ref,
-										}))}
-									/>
-								</StyledTableCell> */}
-								<StyledTableCell className="w-8">
-									<Link
-										href={getItemPath(article["@id"], "/articles/[id]")}
-										className="text-cyan-500"
-									>
-										Show
-										
-									</Link>
-								</StyledTableCell>
-								<StyledTableCell className="w-8">
-									<Link
-										href={getItemPath(article["@id"], "/articles/[id]/edit")}
-										className="text-cyan-500"
-									>
-										Edit
-										
-									</Link>
-								</StyledTableCell>
-							</StyledTableRow>
-							)
-						)
-					}
-				</TableBody>
-			</Table>
-		</TableContainer>
-
-	</Container>
+		</div>
+		<p>total articles: {articles.length}</p>
+		<div className="grid grid-cols-1 gap-1 place-items-center md:place-items-start md:grid-cols-2 lg:grid-cols-4 ">
+			{articles &&
+				articles.length !== 0 &&
+				articles.map( (article, id) =>
+					article["@id"] && (
+						<div key={article["@id"]} 
+							className="max-w-sm bg-white border border-gray-200 rounded-lg shadow p-2 m-2">
+							<a href={getItemPath(article["@id"], "/articles/[id]")}>
+								<Image className="rounded-t-lg" 
+									src={"https://picsum.photos/id/" + id + "/500/200"}
+									width={500}
+									height={200}
+									alt={article["designation"] || ""} />
+							</a>
+							<div className="p-5">
+								<a href={getItemPath(article["@id"], "/articles/[id]")}>
+									<h5 className="mb-2 text-xl font-mono tracking-tight text-gray-900 hover:text-indigo-800">
+										{article["designation"]}
+									</h5>
+								</a>
+								<div className="mb-3 text-lg font-mono text-gray-700 py-2 ">
+									<p className="line-clamp-3">
+										{article["composition"]}
+									</p>
+								</div>
+								<Link
+									href={getItemPath(article["@id"], "/articles/[id]")}
+									className="font-mono text-lg text-cyan-600/100 hover:text-indigo-800"
+								>
+									Show
+								</Link>
+								<Link
+									href={getItemPath(article["@id"], "/articles/[id]/edit")}
+									className="font-mono text-lg text-orange-800/100 hover:text-indigo-800 ml-2"
+								>
+									Edit
+								</Link>
+							</div>
+						</div>
+					)
+				)
+			}
+			
+		</div>
+	</div>
 );
-
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-	[`&.${tableCellClasses.head}`]: {
-		backgroundColor: theme.palette.common.black,
-		color: theme.palette.common.white,
-	},
-	[`&.${tableCellClasses.body}`]: {
-		fontSize: 14,
-	},
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-	'&:nth-of-type(odd)': {
-		backgroundColor: theme.palette.action.hover,
-	},
-	// hide last border
-	'&:last-child td, &:last-child th': {
-		border: 0,
-	},
-}));

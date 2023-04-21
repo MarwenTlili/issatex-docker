@@ -6,7 +6,6 @@ import CredentialsProvider from "next-auth/providers/credentials"
 
 import jwt_decode from 'jwt-decode';
 import { ENTRYPOINT } from "../../../config/entrypoint"
-import { info } from "console";
 import { JWT } from "next-auth/jwt";
 import { AdapterUser } from "next-auth/adapters";
 // import { PrismaAdapter } from "@next-auth/prisma-adapter"
