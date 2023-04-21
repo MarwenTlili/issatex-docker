@@ -41,17 +41,17 @@ class JWTDecodedListener{
 		$payload = $event->getPayload();
 
 		/**
+		 * with Next-Auth this test will be a problem, cause:
+		 * 		getClientIp(): 172.29.0.4	(issatex-pwa)
+		 * 		payload['ip']: 172.29.0.1	(Gateway)
+		 */
+		/**
 		 * invalidate token if payload doesn't have 'ip'
 		 * or it's different than $request->getClientIp()
 		 */
-		if (!isset($payload['ip']) || $payload['ip'] !== $request->getClientIp()) {
-			/**
-			 * with Next-Auth this test will be a problem, cause:
-			 * 		getClientIp(): 172.29.0.4	(issatex-pwa)
-			 * 		payload['ip']: 172.29.0.1	(Gateway)
-			 */
+		// if (!isset($payload['ip']) || $payload['ip'] !== $request->getClientIp()) {
 			// $event->markAsInvalid();
-		}
+		// }
 
 		/**
 		 * Add additional data to payload

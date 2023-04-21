@@ -9,34 +9,39 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { dehydrate, QueryClient, useQuery } from "react-query";
 
-import { Form } from "../../../components/user/Form";
+import { Form } from "../../../components/article/Form";
 import { PagedCollection } from "../../../types/collection";
-import { User } from "../../../types/User";
-import { fetch, FetchResponse, getItemPaths } from "../../../utils/dataAccess";
+import { Article } from "../../../types/Article";
+import { fetch, FetchResponse, getItemPaths } from "../../../utils/clientDataAccess";
+import Template from "../../../components/Template";
 
-const getUser = async (id: string | string[] | undefined) =>
-	id ? await fetch<User>(`/api/users/${id}`) : Promise.resolve(undefined);
+const getArticle = async (id: string | string[] | undefined) =>
+	id ? await fetch<Article>(`/api/articles/${id}`) : Promise.resolve(undefined);
 
 const Page: NextComponentType<NextPageContext> = () => {
 	const router = useRouter();
 	const { id } = router.query;
 
-	const { data: { data: user } = {} } = useQuery<
-		FetchResponse<User> | undefined
-	>(["user", id], () => getUser(id));
+	const { 
+		data: { data: article } = {} 
+	} = useQuery< FetchResponse<Article> | undefined >(
+		["article", id], () => getArticle(id)
+	);
 
-	if (!user) {
+	if (!article) {
 		return <DefaultErrorPage statusCode={404} />;
 	}
 
 	return (
 		<div>
 			<div>
-			<Head>
-				<title>{user && `Edit User ${user["@id"]}`}</title>
-			</Head>
+				<Head>
+					<title>{article && `Edit Article ${article["designation"]}`}</title>
+				</Head>
 			</div>
-			<Form user={user} />
+			<Template>
+				<Form article={article} />
+			</Template>
 		</div>
 	);
 };
@@ -46,7 +51,7 @@ export const getStaticProps: GetStaticProps = async ({
 }) => {
 	if (!id) throw new Error("id not in query param");
 	const queryClient = new QueryClient();
-	await queryClient.prefetchQuery(["user", id], () => getUser(id));
+	await queryClient.prefetchQuery(["article", id], () => getArticle(id));
 
 	return {
 		props: {
@@ -57,8 +62,12 @@ export const getStaticProps: GetStaticProps = async ({
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const response = await fetch<PagedCollection<User>>("/api/users");
-	const paths = await getItemPaths(response, "api/users", "/users/[id]/edit");
+	const response = await fetch<PagedCollection<Article>>("/api/articles");
+	const paths = await getItemPaths(
+		response,
+		"api/articles",
+		"/articles/[id]/edit"
+	);
 
 	return {
 		paths,
