@@ -21,7 +21,10 @@ function classNames(...classes: any[]) {
 
 function Header() {
     const { data: session, status } = useSession();
-	// console.log("status: ", status);
+
+	if (status === "loading") {
+		return <>loading ...</>
+	}
 
 	return (
 		<Disclosure as="nav" className="bg-slate-100 dark:bg-slate-800">
@@ -82,7 +85,7 @@ function Header() {
 								{session && (
 									<>
 										<div className='font-sans text-base text-black hidden mr-2 md:inline dark:text-white'>
-											{session.user.email}
+											{session.user? session.user.email : "loading ..."}
 										</div>
 
 										{/* notification element */}
@@ -144,7 +147,7 @@ function Header() {
 																className={classNames(active ? 'bg-slate-100' : '', 'block px-4 py-2 font-sans text-base text-black dark:text-white dark:bg-slate-700 dark:hover:bg-slate-600')}
 																onClick={ (e) => {
 																	e.preventDefault; 
-																	signOut();	// {callbackUrl: ENTRYPOINT}
+																	signOut();	// {redirect: false, callbackUrl: ENTRYPOINT}
 																} }
 															>
 																Sign out

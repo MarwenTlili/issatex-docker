@@ -1,4 +1,3 @@
-import { GetStaticProps } from "next";
 import { dehydrate, QueryClient } from "react-query";
 
 import {
@@ -7,17 +6,23 @@ import {
 	getArticlesPath,
 } from "../../components/article/PageList";
 
-export const getStaticProps: GetStaticProps = async () => {
-	let token: string | undefined = undefined;
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]";
+import { GetServerSidePropsContext } from "next";
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+	let session = await getServerSession(context.req, context.res, authOptions);
+	// console.log("session: ", session);
 
 	const queryClient = new QueryClient();
-	await queryClient.prefetchQuery(getArticlesPath(), getArticles(token));
+	await queryClient.prefetchQuery(getArticlesPath(), getArticles(undefined, session));
 
 	return {
 		props: {
 			dehydratedState: dehydrate(queryClient),
+			user: session?.user
 		},
-		revalidate: 1,
 	};
 };
+
 export default PageList;

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 
 // import ReferenceLinks from "../common/ReferenceLinks";
-import { fetch, getItemPath } from "../../utils/clientDataAccess";
+import { fetch, getItemPath } from "../../utils/dataAccess";
 import { Article } from "../../types/Article";
 import Template from "../Template";
 import Link from "next/link";

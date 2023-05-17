@@ -12,7 +12,7 @@ import { dehydrate, QueryClient, useQuery } from "react-query";
 import { Form } from "../../../components/article/Form";
 import { PagedCollection } from "../../../types/collection";
 import { Article } from "../../../types/Article";
-import { fetch, FetchResponse, getItemPaths } from "../../../utils/clientDataAccess";
+import { fetch, FetchResponse, getItemPaths } from "../../../utils/dataAccess";
 import Template from "../../../components/Template";
 
 const getArticle = async (id: string | string[] | undefined) =>
@@ -29,7 +29,8 @@ const Page: NextComponentType<NextPageContext> = () => {
 	);
 
 	if (!article) {
-		return <DefaultErrorPage statusCode={404} />;
+		return <>loading ...</>
+		// return <DefaultErrorPage statusCode={404} />;
 	}
 
 	return (
@@ -46,33 +47,33 @@ const Page: NextComponentType<NextPageContext> = () => {
 	);
 };
 
-export const getStaticProps: GetStaticProps = async ({
-	params: { id } = {},
-}) => {
-	if (!id) throw new Error("id not in query param");
-	const queryClient = new QueryClient();
-	await queryClient.prefetchQuery(["article", id], () => getArticle(id));
+// export const getStaticProps: GetStaticProps = async ({
+// 	params: { id } = {},
+// }) => {
+// 	if (!id) throw new Error("id not in query param");
+// 	const queryClient = new QueryClient();
+// 	await queryClient.prefetchQuery(["article", id], () => getArticle(id));
 
-	return {
-		props: {
-			dehydratedState: dehydrate(queryClient),
-		},
-		revalidate: 1,
-	};
-};
+// 	return {
+// 		props: {
+// 			dehydratedState: dehydrate(queryClient),
+// 		},
+// 		revalidate: 1,
+// 	};
+// };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-	const response = await fetch<PagedCollection<Article>>("/api/articles");
-	const paths = await getItemPaths(
-		response,
-		"api/articles",
-		"/articles/[id]/edit"
-	);
+// export const getStaticPaths: GetStaticPaths = async () => {
+// 	const response = await fetch<PagedCollection<Article>>("/api/articles");
+// 	const paths = await getItemPaths(
+// 		response,
+// 		"api/articles",
+// 		"/articles/[id]/edit"
+// 	);
 
-	return {
-		paths,
-		fallback: true,
-	};
-};
+// 	return {
+// 		paths,
+// 		fallback: true,
+// 	};
+// };
 
 export default Page;

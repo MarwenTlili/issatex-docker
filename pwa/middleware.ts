@@ -3,31 +3,47 @@ import { withAuth } from "next-auth/middleware"
 import { NextRequest } from "next/server";
 
 /**
- * checks if the user is authenticated/authorized. 
- * If if they aren't, they will be redirected to the login page.
+ * checks if the user is authenticated/authorized.
+ * If they aren't, they will be redirected to the login page.
  */
 // More on how NextAuth.js middleware works: https://next-auth.js.org/configuration/nextjs#middleware
 export default withAuth({
 	callbacks: {
 		authorized({ req, token }: {req: NextRequest, token: JWT | null}) {
-			// if(token) return true /** If there is a token, the user is authenticated */
+      /** If there is a token, the user is authenticated */
+			// if(token) return true
 
-			/** `/admin` requires admin role */
-			if (req.nextUrl.pathname === "/articles") {
-				// return token?.userRole === "admin"
-				
-				// console.log("token: ", token);
-				return token?.user.roles.includes("ROLE_COMPANY")
+			if(!token) return false;
+
+			if (req.nextUrl.pathname.startsWith("/articles")) {
+				let isAuthorized: boolean = false;
+        const articleAuthorizedRoles: Array<string> = ["ROLE_COMPANY"];
+        isAuthorized = articleAuthorizedRoles.every( role => {
+          if(token.user){
+            return token.user.roles.includes(role);
+          }
+        });
+				return isAuthorized;
 			}
+
 			/** `/` only requires the user to be logged in */
-			return !!token
+			return !!token;
 		},
 	},
 })
 
-export const config = { 
+export const config = {
 	matcher: [
-		// "/",
-		"/articles"
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - auth/signin
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|auth/signin|_next/static|_next/image|favicon.ico).*)',
+		// '/articles',
+		// '/articles/(.*)'
 	]
 }

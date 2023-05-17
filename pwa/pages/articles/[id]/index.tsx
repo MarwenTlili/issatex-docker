@@ -1,6 +1,5 @@
 import {
 	GetStaticPaths,
-	GetStaticProps,
 	NextComponentType,
 	NextPageContext,
 } from "next";
@@ -11,8 +10,10 @@ import { dehydrate, QueryClient, useQuery } from "react-query";
 import { Show } from "../../../components/article/Show";
 import { PagedCollection } from "../../../types/collection";
 import { Article } from "../../../types/Article";
-import { fetch, FetchResponse, getItemPaths } from "../../../utils/clientDataAccess";
+import { fetch, FetchResponse, getItemPaths } from "../../../utils/dataAccess";
 import { useMercure } from "../../../utils/mercure";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../api/auth/[...nextauth]";
 
 const getArticle = async (
 	id: string | string[] | undefined,
@@ -33,7 +34,8 @@ const Page: (
 	const articleData = useMercure(article, hubURL);
 
 	if (!articleData) {
-		return <DefaultErrorPage statusCode={404} />;
+		// return <DefaultErrorPage statusCode={404} />;
+		return <>loading ...</>
 	}
 
 	return (
@@ -48,36 +50,37 @@ const Page: (
 	);
 };
 
-export const getStaticProps: GetStaticProps = async ({
-	params: { id } = {},
-}) => {
-	if (!id) throw new Error("id not in query param");
-	const queryClient = new QueryClient();
-	try {
-		await queryClient.prefetchQuery(["article", id], () => getArticle(id));
-	} catch (error) {
-		console.error(error);
-	}
+// export const getStaticProps: GetStaticProps = async ({
+// 	params: { id } = {},
+// }) => {
+// 	if (!id) throw new Error("id not in query param");
+// 	const queryClient = new QueryClient();
+// 	try {
+// 		await queryClient.prefetchQuery(["article", id], () => getArticle(id));
+// 	} catch (error) {
+// 		console.error(error);
+// 	}
 
-	return {
-		props: {
-			dehydratedState: dehydrate(queryClient),
-		},
-		revalidate: 1,
-	};
-};
+// 	return {
+// 		props: {
+// 			dehydratedState: dehydrate(queryClient),
+// 		},
+// 		revalidate: 1,
+// 	};
+// };
 
-export const getStaticPaths: GetStaticPaths = async () => {
+// export const getStaticPaths: GetStaticPaths = async () => {
 	
-	const response = await fetch<PagedCollection<Article>>(
-		"/api/articles"
-	);
-	const paths = await getItemPaths(response, "api/articles", "/articles/[id]");
+// 	const response = await fetch<PagedCollection<Article>>(
+// 		"/api/articles"
+// 	);
+// 	const paths = await getItemPaths(response, "api/articles", "/articles/[id]");
 
-	return {
-		paths,
-		fallback: true
-	};
-};
+// 	return {
+// 		paths,
+// 		fallback: true
+// 	};
+// };
+
 
 export default Page;
