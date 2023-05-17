@@ -1,10 +1,14 @@
+import type { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { SignInResponse, getCsrfToken } from "next-auth/react"
+import { signIn } from "next-auth/react"
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import SnackbarCustomized, { 
-	AlertColor, 
-	SnackbarOrigin, 
-	SnackbarState 
-} from "../../components/SnackbarCustomized";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]";
+
+import SnackbarCustomized, { AlertColor, SnackbarOrigin, SnackbarState } from "../../components/SnackbarCustomized";
+import { ENTRYPOINT } from "../../config/entrypoint";
 
 const snackbarPosition: SnackbarOrigin = {
 	vertical: 'bottom',		// 'top' | 'bottom'
@@ -12,22 +16,23 @@ const snackbarPosition: SnackbarOrigin = {
 }
 
 /**
- * 
- * @param csrfToken 
+ *
+ * @param csrfToken
  * @returns MUI Signin Form
  */
-function SignInTailwind() {
+function SignInTailwind({ csrfToken }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	const { push } = useRouter();
 	const router = useRouter();
 	const {error} = router.query;
 	const {callbackUrl} = router.query;
 
-	const [, setShowSnackbar] = useState(true);
+	const [showSnackbar, setShowSnackbar] = useState(true);
 
 	useEffect( () => {
 		if (callbackUrl) {
 			handleSnackbarOpen(snackbarPosition, "warning", "authentication is required");
 		}
-		
+
 		if (error) {
 			handleSnackbarOpen(snackbarPosition, "warning", error);
 		}
@@ -36,9 +41,9 @@ function SignInTailwind() {
 	const [snackbarState, setSnackbarState] = useState<SnackbarState>({
 		open: false,	// false | true
 		severity: "error",	// 'success' | 'info' | 'warning' | 'error'
-		message: "UNKNOWN",	// string 
-		vertical: snackbarPosition.vertical,		// 'top' | 'bottom' 
-		horizontal: snackbarPosition.horizontal,	// 'start' | 'center' | 'end' 
+		message: "UNKNOWN",	// string
+		vertical: snackbarPosition.vertical,		// 'top' | 'bottom'
+		horizontal: snackbarPosition.horizontal,	// 'start' | 'center' | 'end'
 	});
 
 	const handleSnackbarOpen = (newState: any, severity: AlertColor, message: string | string[]) => {
@@ -52,6 +57,42 @@ function SignInTailwind() {
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
+
+		const data = new FormData(event.currentTarget);
+		const email = data.get("email");
+		const password = data.get("password");
+
+		// will handle obtaining the CSRF token for you
+		// https://next-auth.js.org/getting-started/client#using-the-redirect-false-option
+        await signIn( "credentials", {
+			email,
+			password,
+			// which URL the user will be redirected after signing in.
+			callbackUrl: ENTRYPOINT,	// default: /auth/signin, window.location.origin(bwowser URL)
+			redirect: false	// false: to handle errors in same page 'siginin' / 'credentials-signin'
+		})
+		.then( ( value: SignInResponse | undefined) => {
+			if (value) {
+				// console.log("status: ", value.status);
+				switch (value.status) {
+					case 200:
+						push('/'); break;
+					case 401:
+						handleSnackbarOpen( snackbarPosition, "warning", "Wrong credentials !")
+						break;
+					case 500:
+						handleSnackbarOpen( snackbarPosition, "error", "Internal server error !")
+						break;
+					default: break;
+				}
+			}
+		})
+		.catch( ({ error, status, ok} ) => {
+			console.log(`signIn credentials callbacks: ${error}, ${status}, ${ok}`);
+			if (status == 401) {
+				handleSnackbarOpen( snackbarPosition, "error", error)
+			}
+		});
     };
 
 	return (
@@ -62,7 +103,7 @@ function SignInTailwind() {
 					<div className="grid place-content-center mt-4">
 						<div className="mx-auto h-12 w-auto" >
 							<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" className="bi bi-shield-lock-fill" viewBox="0 0 16 16">
-								<path className="fill-indigo-500" fillRule="evenodd" d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.465 9.99a11.777 11.777 0 0 0 2.517 2.453c.386.273.744.482 1.048.625.28.132.581.24.829.24s.548-.108.829-.24a7.159 7.159 0 0 0 1.048-.625 11.775 11.775 0 0 0 2.517-2.453c1.678-2.195 3.061-5.513 2.465-9.99a1.541 1.541 0 0 0-1.044-1.263 62.467 62.467 0 0 0-2.887-.87C9.843.266 8.69 0 8 0zm0 5a1.5 1.5 0 0 1 .5 2.915l.385 1.99a.5.5 0 0 1-.491.595h-.788a.5.5 0 0 1-.49-.595l.384-1.99A1.5 1.5 0 0 1 8 5z" /> 
+								<path className="fill-indigo-500" fillRule="evenodd" d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.465 9.99a11.777 11.777 0 0 0 2.517 2.453c.386.273.744.482 1.048.625.28.132.581.24.829.24s.548-.108.829-.24a7.159 7.159 0 0 0 1.048-.625 11.775 11.775 0 0 0 2.517-2.453c1.678-2.195 3.061-5.513 2.465-9.99a1.541 1.541 0 0 0-1.044-1.263 62.467 62.467 0 0 0-2.887-.87C9.843.266 8.69 0 8 0zm0 5a1.5 1.5 0 0 1 .5 2.915l.385 1.99a.5.5 0 0 1-.491.595h-.788a.5.5 0 0 1-.49-.595l.384-1.99A1.5 1.5 0 0 1 8 5z" />
 							</svg>
 						</div>
 						<h2 className="pose prose-2xl mt-6 font-bold tracking-tight text-gray-900">
@@ -87,25 +128,25 @@ function SignInTailwind() {
 											<path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
 										</svg>
 									</div>
-									<input 
-										className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+									<input
+										className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 										type="text" id="email" name="email" placeholder="mail@example.com" />
 								</div>
-								
+
 								<label htmlFor="password" className="pose md:prose-lg lg:prose-xl block mb-2 font-medium text-gray-900 dark:text-white">Your Password</label>
 								<div className="relative mb-2">
 									<div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-key-fill text-gray-500 dark:text-gray-400" viewBox="0 0 16 16"> 
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-key-fill text-gray-500 dark:text-gray-400" viewBox="0 0 16 16">
 											<path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2zM2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
 										</svg>
 									</div>
-									<input 
+									<input
 										className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 										type="password" id="password" name="password" autoComplete="on" placeholder="********" />
 								</div>
 
 							</div>
-							
+
 						</div>
 
 						<div className="block-flex sm:flex sm:justify-between sm:items-center">
@@ -152,3 +193,28 @@ function SignInTailwind() {
 }
 
 export default SignInTailwind;
+
+/**
+ * Server-Side Rendering
+ * pre-render this page on each request using the data returned by getServerSideProps
+ */
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+	const serverSession = await getServerSession(context.req, context.res, authOptions)
+
+	// redirect to home '/' if user is already signed in
+	if (serverSession) {
+		return {
+			redirect: {
+				destination: "/",
+				permanent: false,
+			},
+		}
+	}
+
+	return {
+		props: {
+			csrfToken: (!context) && await getCsrfToken(context),
+			session: serverSession
+		},
+	}
+}

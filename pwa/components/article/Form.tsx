@@ -1,27 +1,23 @@
-import { 
-	FunctionComponent, 
-	useState 
+import {
+	FunctionComponent,
+	useState
 } from "react";
 
 import { useRouter } from "next/router";
 import { useMutation } from "react-query";
-import { 
-	ErrorMessage, 
-	Formik 
+import {
+	ErrorMessage,
+	Formik
 } from "formik";
 
-import { 
-	fetch, 
-	FetchError, 
-	FetchResponse 
+import {
+	fetch,
+	FetchError,
+	FetchResponse
 } from "../../utils/dataAccess";
 
 import { Article } from "../../types/Article";
-import SnackbarCustomized, { 
-	AlertColor, 
-	SnackbarOrigin, 
-	SnackbarState 
-} from "../SnackbarCustomized";
+import SnackbarCustomized, { AlertColor, SnackbarOrigin, SnackbarState } from "../SnackbarCustomized";
 
 interface FormProps {
 	article?: Article;
@@ -85,7 +81,7 @@ export const Form: FunctionComponent<FormProps> = ({ article }) => {
 		open: false,			// CustomizedSnackbar -> SnackbarState<I>
 		severity: 'info',	// CustomizedSnackbar -> SnackbarState<I>
 		message: 'UNKNOWN',		// CustomizedSnackbar -> SnackbarState<I>
-		vertical: snackbarPosition.vertical,		// 'top' | 'bottom' Snackbar.d.ts -> SnackbarOrigin<I> 
+		vertical: snackbarPosition.vertical,		// 'top' | 'bottom' Snackbar.d.ts -> SnackbarOrigin<I>
 		horizontal: snackbarPosition.horizontal,	// 'start' | 'center' | 'end' Snackbar.d.ts -> SnackbarOrigin<I>
 	});
 
@@ -159,12 +155,12 @@ export const Form: FunctionComponent<FormProps> = ({ article }) => {
 				}) => (
 					<form className="relative p-2 space-y-4 w-5/6 md:w-4/5 lg:w-2/3 " onSubmit={handleSubmit}>
 						<div className="relative z-0 w-full pb-4 group">
-							<input 
+							<input
 								name="designation"
-								id="article_designation" 
+								id="article_designation"
 								value={values.designation ?? ""}
-								type="text" 
-								placeholder=" " 
+								type="text"
+								placeholder=" "
 								className={`block py-2.5 px-0 w-full font-mono text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600  peer ${
 									errors.designation && touched.designation
 									? "border-red-500"
@@ -177,8 +173,8 @@ export const Form: FunctionComponent<FormProps> = ({ article }) => {
 								onBlur={handleBlur}
 								// required
 							/>
-							<label 
-								htmlFor="article_designation" 
+							<label
+								htmlFor="article_designation"
 								className="peer-focus:font-mono absolute font-mono text-sm text-gray-700 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
 							>
 								Designation
@@ -191,12 +187,12 @@ export const Form: FunctionComponent<FormProps> = ({ article }) => {
 						</div>
 
 						<div className="relative z-0 w-full pb-4 group">
-							<input 
-								name="model" 
-								id="article_model" 
+							<input
+								name="model"
+								id="article_model"
 								value={values.model ?? ""}
-								type="text" 
-								placeholder=" " 
+								type="text"
+								placeholder=" "
 								className={`block py-2.5 px-0 w-full font-mono text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600  peer ${
 									errors.model && touched.model
 									? "border-red-500"
@@ -209,8 +205,8 @@ export const Form: FunctionComponent<FormProps> = ({ article }) => {
 								onBlur={handleBlur}
 								// required
 							/>
-							<label 
-								htmlFor="article_model" 
+							<label
+								htmlFor="article_model"
 								className="peer-focus:font-mono absolute font-mono text-sm text-gray-700 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
 							>
 								Model
@@ -223,12 +219,12 @@ export const Form: FunctionComponent<FormProps> = ({ article }) => {
 						</div>
 
 						<div className="relative z-0 w-full pb-4 group">
-							<textarea 
+							<textarea
 								rows={2}
-								name="composition" 
-								id="article_composition" 
+								name="composition"
+								id="article_composition"
 								value={values.composition ?? ""}
-								placeholder=" " 
+								placeholder=" "
 								className={`block py-2.5 px-0 w-full font-mono text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600  peer ${
 									errors.composition && touched.composition
 									? "border-red-500"
@@ -240,8 +236,8 @@ export const Form: FunctionComponent<FormProps> = ({ article }) => {
 								onChange={handleChange}
 								onBlur={handleBlur}
 							/>
-							<label 
-								htmlFor="article_composition" 
+							<label
+								htmlFor="article_composition"
 								className="peer-focus:font-mono absolute font-mono text-sm text-gray-700 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
 							>
 								Composition
@@ -294,10 +290,10 @@ export const Form: FunctionComponent<FormProps> = ({ article }) => {
 								)}
 							/>
 						</div> */}
-						
+
 						<div className="flex" >
-							<button 
-								type="submit" 
+							<button
+								type="submit"
 								className="text-white bg-cyan-500 hover:bg-cyan-800 focus:ring-4 focus:outline-none focus:ring-cyan-300 font-semibold rounded-full text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 "
 								disabled={isSubmitting}
 							>
@@ -307,8 +303,8 @@ export const Form: FunctionComponent<FormProps> = ({ article }) => {
 									Submit
 							</button>
 							{article && (
-								<button 
-									type="button" 
+								<button
+									type="button"
 									className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-semibold rounded-full text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 "
 									onClick={handleDelete}
 								>

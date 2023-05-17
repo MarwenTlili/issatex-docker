@@ -31,7 +31,7 @@ class JWTCreatedListener{
 	public function onJWTCreated(JWTCreatedEvent $event){
 		$request = $this->requestStack->getCurrentRequest();
 		$payload = $event->getData();
-		
+
 		/**
 		 * Add client IP address to the encoded payload
 		 */
@@ -41,20 +41,20 @@ class JWTCreatedListener{
 
 		// add avatar path to token payload
 		$payload['avatar'] = $user->getAvatar();
-		
+
 		// add client ip address to payload
 		$payload['ip'] = $request->getClientIp();
-		
+
 		$header = $event->getHeader();
 		$header['cty'] = 'JWT';
-		
+
 		/**
 		 * Override token expiration date calculation to be more flexible
 		 */
-		$expiration = new \DateTime('+1 day');
-		$expiration->setTime(2, 0, 0);
+		$expiration = new \DateTime('+1 day');  // options: +1 minutes, +1 hours
+		// $expiration->setTime(2, 0, 0);
 		$payload['exp'] = $expiration->getTimestamp();
-		
+
 		$event->setData($payload);
 
 		$event->setHeader($header);

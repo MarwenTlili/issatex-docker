@@ -3,6 +3,8 @@ import isomorphicFetch from "isomorphic-unfetch";
 import { PagedCollection } from "../types/collection";
 import { Item } from "../types/item";
 import { ENTRYPOINT } from "../config/entrypoint";
+import { getSession } from "next-auth/react";
+import { Session } from "next-auth";
 
 const MIME_TYPE = "application/ld+json";
 
@@ -23,6 +25,18 @@ export interface FetchError {
 	fields: { [key: string]: string };
 }
 
+/**
+ * return access_token from session,
+ * if session is passed on params, then use it
+ */
+export const getAccessToken = async (session: Session | null | undefined) => {
+	if (session) {
+		return session? session.user.tokens.token : undefined
+	}
+	session = await getSession();
+	return session? session.user.tokens.token : undefined
+}
+
 const extractHubURL = (response: Response): null | URL => {
 	const linkHeader = response.headers.get("Link");
 	if (!linkHeader) return null;
@@ -36,7 +50,8 @@ const extractHubURL = (response: Response): null | URL => {
 
 export const fetch = async <TData>(
 	id: string,
-	init: RequestInit = {}
+	init: RequestInit = {},
+	session?: Session | null
 ): Promise<FetchResponse<TData> | undefined> => {
 	if (typeof init.headers === "undefined") init.headers = {};
 	if (!init.headers.hasOwnProperty("Accept"))
@@ -47,6 +62,19 @@ export const fetch = async <TData>(
 		!init.headers?.hasOwnProperty("Content-Type")
 	)
 	init.headers = { ...init.headers, "Content-Type": MIME_TYPE };
+
+	///////////////////////////////////////////////////////////////////////////
+	/** if token exists in session, then add it to authorization header */
+	let token: string | undefined = undefined;
+	token = await getAccessToken(session);
+
+	if (token) {
+		init.headers = {
+			...init.headers,
+			"Authorization": `Bearer ${token}`
+		}
+	}
+	///////////////////////////////////////////////////////////////////////////
 
 	const resp = await isomorphicFetch(ENTRYPOINT + id, init);
 	if (resp.status === 204) return;
