@@ -4,7 +4,7 @@ const nextConfig = {
 	swcMinify: true,
 	output: 'standalone',
 	images: {
-		domains: ['tailwindui.com', 'picsum.photos']
+		domains: ['tailwindui.com', 'picsum.photos', 'caddy']
 	},
 }
 

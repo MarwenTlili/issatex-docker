@@ -8,6 +8,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image';
 import ActiveLink from './ActiveLink';
 import Link from 'next/link';
+import { BACKEND_URL } from '../config/entrypoint';
 
 const navigations = [
 	{ name: 'Home', href: '/', isCurrent: true },
@@ -102,13 +103,13 @@ function Header() {
 											<div>
 												<Menu.Button className="flex rounded-full bg-slate-800 text-base ">
 													<span className="sr-only">Open user menu</span>
-													<Image
-														className="h-10 w-auto rounded-full"
-														src="/images/me.jpg"
-														width={1024}
-														height={1365}
-														alt="Your Company"
-													/>
+                                                    <Image
+                                                        className="h-10 w-auto rounded-full"
+                                                        src={session.user.avatarContentUrl? `${BACKEND_URL}${session.user.avatarContentUrl}` :"/images/profile.png"}
+                                                        width={128}
+                                                        height={128}
+                                                        alt=""
+                                                    />
 												</Menu.Button>
 											</div>
 											<Transition
@@ -124,7 +125,7 @@ function Header() {
 													<Menu.Item>
 														{({ active }) => (
 														<a
-															href="#"
+															href="/profile"
 															className={classNames(active ? 'bg-slate-100' : '', 'block px-4 py-2 font-sans text-base text-black dark:text-white dark:bg-slate-700 dark:hover:bg-slate-600')}
 														>
 															Your Profile
@@ -133,10 +134,10 @@ function Header() {
 													</Menu.Item>
 													<Menu.Item>
 														{({ active }) => (
-															<a
-															href="#"
-															className={classNames(active ? 'bg-slate-100' : '', 'block px-4 py-2 font-sans text-base text-black dark:text-white dark:bg-slate-700 dark:hover:bg-slate-600')}
-															>
+															<a 
+                                                                href="#"
+                                                                className={classNames(active ? 'bg-slate-100' : '', 'block px-4 py-2 font-sans text-base text-black dark:text-white dark:bg-slate-700 dark:hover:bg-slate-600')} 
+                                                            >
 															Settings
 														</a>
 														)}

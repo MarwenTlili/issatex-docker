@@ -19,7 +19,10 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use ApiPlatform\Metadata\ApiProperty;
 
+#[Vich\Uploadable]
 #[ApiResource(
     operations: [
         new GetCollection(),
@@ -59,10 +62,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	#[ORM\Column(type: 'json')]
 	private array $roles = [];
 
-	#[Groups(['user:read', 'user:create', 'user:update'])]
-	#[ORM\Column(length:180, unique: true, nullable: true)]
-	private ?string $avatar = null;
-
     /**
      * @var string The hashed password
      */
@@ -87,6 +86,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	#[Groups(['user:read', 'user:create', 'user:update'])]
     #[ORM\Column(nullable: true)]
     private ?bool $isVerified = null;
+
+    #[ApiProperty(types: ['https://schema.org/image'])]
+	#[Groups(['user:read', 'user:create', 'user:update'])]
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])] // (fetch: "EAGER")
+    private ?MediaObject $avatar = null;
 
     public function getId(): ?Ulid{
         return $this->id;
@@ -203,21 +207,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 		return $this;
 	}
 
-	/**
-	 * @return string|null
-	 */
-	public function getAvatar(): ?string {
-		return $this->avatar;
-	}
-	
-	/**
-	 * @param string|null $avatar 
-	 * @return self
-	 */
-	public function setAvatar(?string $avatar): self {
-		$this->avatar = $avatar;
-		return $this;
-	}
+    /**
+     * @return MediaObject|null
+     */
+    public function getAvatar(): ?MediaObject 
+	{
+        return $this->avatar;
+    }
+
+    /**
+     * @param MediaObject|null $avatar
+     * @return self
+     */
+    public function setAvatar(?MediaObject $avatar): self
+    {
+        $this->avatar = $avatar;
+        return $this;
+    }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {

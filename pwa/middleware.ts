@@ -15,7 +15,9 @@ export default withAuth({
 
 			if(!token) return false;
 
-			if (req.nextUrl.pathname.startsWith("/articles")) {
+			if (req.nextUrl.pathname.startsWith("/articles")
+        || req.nextUrl.pathname.startsWith("/profile")
+      ) {
 				let isAuthorized: boolean = false;
         const articleAuthorizedRoles: Array<string> = ["ROLE_COMPANY"];
         isAuthorized = articleAuthorizedRoles.every( role => {

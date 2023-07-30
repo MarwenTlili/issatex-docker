@@ -7,7 +7,6 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import jwt_decode from 'jwt-decode';
 import { ENTRYPOINT } from "../../../config/entrypoint"
 import { AuthResponse } from "../../../types/next-auth";
-import { info } from "console";
 
 /**
  * For more information on each option (and a full list of options) go to
@@ -129,13 +128,13 @@ export const authOptions: NextAuthOptions = {
 		 * -> after the user signs in. In subsequent calls, only token will
 		 * be available.
 		 */
-		async jwt({token, user, account, profile, isNewUser}) {
+		async jwt({token, user, account, session, trigger}) {
       const now = Date.now();
 
       /** Initial sign in */
 			if (account && user ) { // user provided from async authorize()
 				token.name = user.username;
-				token.picture = user.avatar
+				token.picture = user.avatarContentUrl
 				token.iat = user.iat;
 				token.exp = user.exp;
         // token.email = user.email;  // already detected and set
@@ -147,6 +146,16 @@ export const authOptions: NextAuthOptions = {
           user
         };
         return signin_user;
+      }
+
+      /**
+       * session.avatar sent by the front-end
+       * eg in: components/profile/form.tsx
+       * update({avatar : response.data.contentUrl});
+       */
+      if (trigger === "update" && session?.avatar) {
+        console.log("trigger: ", trigger);
+        if (token.user) token.user.avatarContentUrl = session.avatar;
       }
 
       /** Return previous token if the access token has not expired yet */
@@ -170,7 +179,7 @@ export const authOptions: NextAuthOptions = {
         // session.expires = token.user.exp;
         session.expires = toLocaleIso(token.user.exp * 1000);
         session.error = token.error;
-        // info("session (session): ", session);
+        // console.log("session (session): ", session);
       }
 			return session;
     },

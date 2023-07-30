@@ -1,3 +1,4 @@
+import { MediaObject } from './MediaObject';
 /**
  * Extend default next-auth interface properties
  */
@@ -15,7 +16,8 @@ declare module "next-auth" {
     roles: Array<string>;
     email: string;
     username: string;
-    avatar: string;
+    id: string;
+    avatarContentUrl: string;
     ip: string;
     tokens: AuthResponse;
   }
@@ -26,7 +28,7 @@ declare module "next-auth" {
 	interface Session {
 		user: User & DefaultSession["user"];
     expires: ISODateString;
-    error?: string;
+    error?: string | null;
 	}
 
 	/**

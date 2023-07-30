@@ -30,9 +30,7 @@ export interface FetchError {
  * if session is passed on params, then use it
  */
 export const getAccessToken = async (session: Session | null | undefined) => {
-	if (session) {
-		return session? session.user.tokens.token : undefined
-	}
+	if (session) return session.user.tokens.token;
 	session = await getSession();
 	return session? session.user.tokens.token : undefined
 }
@@ -89,7 +87,7 @@ export const fetch = async <TData>(
 		};
 	}
 
-	const errorMessage = json["hydra:title"];
+	const errorMessage = json["message"];   // json["hydra:title"]
 	const status = json["hydra:description"] || resp.statusText;
 	if (!json.violations) throw Error(errorMessage);
 	const fields: { [key: string]: string } = {};

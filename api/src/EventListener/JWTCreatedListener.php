@@ -32,15 +32,19 @@ class JWTCreatedListener{
 		$request = $this->requestStack->getCurrentRequest();
 		$payload = $event->getData();
 
-		/**
-		 * Add client IP address to the encoded payload
-		 */
-		/** @var App/Entity/User $user */
+        /** @var App/Entity/User $user */
 		$user = $event->getUser();
+
+		// add user's username to token payload
 		$payload['username'] = $user->getUserName();
 
+		// add user's id to token payload
+        $payload['id'] = $user->getId();
+
 		// add avatar path to token payload
-		$payload['avatar'] = $user->getAvatar();
+        /** @var App/Entity/MediaObject $avatar */
+        $avatar = $user->getAvatar();
+        $payload['avatarContentUrl'] = $avatar? $avatar->getContentUrl() : null;     // ternary
 
 		// add client ip address to payload
 		$payload['ip'] = $request->getClientIp();
@@ -49,11 +53,18 @@ class JWTCreatedListener{
 		$header['cty'] = 'JWT';
 
 		/**
-		 * Override token expiration date calculation to be more flexible
+         * Override token expiration date calculation to be more flexible
 		 */
-		$expiration = new \DateTime('+1 day');  // options: +1 minutes, +1 hours
+        $expiration = new \DateTime('+1 day');  // options: +1 minutes, +1 hours
 		// $expiration->setTime(2, 0, 0);
 		$payload['exp'] = $expiration->getTimestamp();
+
+        /**
+         * How To: add additional data
+         * https://github.com/lexik/LexikJWTAuthenticationBundle/blob/2.x/Resources/doc/2-data-customization.rst#example-add-additional-data-to-payload---to-get-it-in-your-doccustom-userprovider-8-jwt-user-provider
+         */
+        // $user = $this->userRepository->findOneByUsername($payload['username']);
+        // $payload['custom_user_data'] = $user->getCustomUserInformations();
 
 		$event->setData($payload);
 
