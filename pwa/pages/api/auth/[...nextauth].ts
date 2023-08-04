@@ -102,6 +102,11 @@ export const authOptions: NextAuthOptions = {
 			// 		isAllowedToSignIn = true
 			// 	}
 			// }
+      
+      // Allow only verified users to signin
+      if (typeof user.isVerified != "undefined"){
+        isAllowedToSignIn = user.isVerified
+      }
 
 			if (isAllowedToSignIn) {
 				return true

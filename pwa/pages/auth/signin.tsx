@@ -80,6 +80,9 @@ function SignInTailwind({ csrfToken }: InferGetServerSidePropsType<typeof getSer
 					case 401:
 						handleSnackbarOpen( snackbarPosition, "warning", "Wrong credentials !")
 						break;
+					case 403:
+						handleSnackbarOpen( snackbarPosition, "error", "Access Denied,check with admin if you are allowed do sign in!")
+						break;
 					case 500:
 						handleSnackbarOpen( snackbarPosition, "error", "Internal server error !")
 						break;
@@ -111,7 +114,7 @@ function SignInTailwind({ csrfToken }: InferGetServerSidePropsType<typeof getSer
 						</h2>
 						<p className="mt-2 text-center text-sm text-gray-600">
 						Or{' '}
-						<a href="/auth/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+						<a href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
 							Sign up
 						</a>
 						</p>

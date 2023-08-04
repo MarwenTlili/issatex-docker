@@ -19,6 +19,7 @@ declare module "next-auth" {
     id: string;
     avatarContentUrl: string;
     ip: string;
+    isVerified: boolean;
     tokens: AuthResponse;
   }
 

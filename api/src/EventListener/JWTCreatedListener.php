@@ -58,6 +58,9 @@ class JWTCreatedListener{
         $expiration = new \DateTime('+1 day');  // options: +1 minutes, +1 hours
 		// $expiration->setTime(2, 0, 0);
 		$payload['exp'] = $expiration->getTimestamp();
+		
+		// add isVerified to payload
+		$payload['isVerified'] = $user->isIsVerified();
 
         /**
          * How To: add additional data
