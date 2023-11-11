@@ -13,7 +13,7 @@ import { BACKEND_URL } from '../config/entrypoint';
 const navigations = [
 	{ name: 'Home', href: '/', isCurrent: true },
 	{ name: 'Articles', href: '/articles', isCurrent: false },
-	{ name: 'Manufacturing Orders', href: '/manufacturing_orders', isCurrent: false },
+	{ name: 'Manufacturing Orders', href: '/manufacturing-orders', isCurrent: false },
 ];
 
 function classNames(...classes: any[]) {

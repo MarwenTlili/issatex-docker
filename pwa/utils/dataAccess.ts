@@ -111,11 +111,18 @@ export const getItemPath = (
 	return pathTemplate.replace("[id]", resourceId);
 };
 
-export const parsePage = (resourceName: string, path: string) =>
-	parseInt(
-		new RegExp(`^/${resourceName}\\?page=(\\d+)`).exec(path)?.[1] ?? "1",
-		10
-	);
+/**
+ * Use RegEXP to parse page path
+ * @param string resourceName (ex: /api/manufacturing_orders)
+ * @param string path (ex: https://localhost/api/manufacturing_orders?perPage=10&page=1)
+ * @return number (page number)
+ */
+export const parsePage = (resourceName: string, path: string) =>{
+    const pageRegExpMatchArray = path.match(
+        new RegExp(`^/${resourceName}\\?.*?page=(\\d+)`)
+    )
+    return pageRegExpMatchArray ? parseInt(pageRegExpMatchArray[1]) : 1
+}
 
 export const getItemPaths = async <TData extends Item>(
 	response: FetchResponse<PagedCollection<TData>> | undefined,

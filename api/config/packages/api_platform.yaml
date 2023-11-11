@@ -7,11 +7,15 @@ api_platform:
     defaults:
         stateless: true
         cache_headers:
-            vary: ['Content-Type', 'Authorization', 'Origin']
+            vary: ["Content-Type", "Authorization", "Origin"]
         extra_properties:
             standard_put: true
-        route_prefix: 'api'
-    
+        route_prefix: "api"
+
+    collection:
+        pagination:
+            items_per_page_parameter_name: perPage # Default: itemsPerPage
+
     # Documenting the Authentication Mechanism with Swagger/Open API
     swagger:
         api_keys:

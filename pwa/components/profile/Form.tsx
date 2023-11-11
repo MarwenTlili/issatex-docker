@@ -2,7 +2,7 @@ import { FunctionComponent, useState, ChangeEvent, useRef } from "react";
 import { ErrorMessage, Formik, FormikHelpers } from "formik";
 import { useMutation } from "react-query";
 import { fetch, FetchError, FetchResponse } from "../../utils/dataAccess";
-import { MEDIAOBJECTS_URL } from "../../config/entrypoint";
+import { MEDIA_OBJECTS_URL } from "../../config/entrypoint";
 import { User } from "../../types/User";
 import { MediaObject } from "../../types/MediaObject";
 import { useSession } from "next-auth/react";
@@ -34,7 +34,7 @@ const saveUser = async ( {values}: SaveParams) =>
 /** upload avatar file using fetch (defined in utils/dataAccess) */
 const uploadAvatar = async ( formData: FormData) =>
 	await fetch<MediaObject>(
-		MEDIAOBJECTS_URL,
+		MEDIA_OBJECTS_URL,
 		{method: "POST", body: formData}
 	);
 

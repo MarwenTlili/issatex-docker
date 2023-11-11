@@ -415,6 +415,9 @@ pnpm add ra-i18n-polyglot ra-language-english ra-language-french
 > dependencies for MUI material design
 pnpm add @mui/material @mui/icons-material
 
+> help
+pnpm create @api-platform/client --help
+
 -------------------------------------------------------------------------------
 ## Helpers
 ```
