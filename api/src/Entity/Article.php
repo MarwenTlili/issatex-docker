@@ -12,9 +12,10 @@ use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\ApiProperty;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
-#[ApiResource]
+#[ApiResource(paginationClientItemsPerPage: true)]
 #[ApiResource(
     uriTemplate: '/clients/{clientId}/articles', # used in "pwa/pages/manufacturing-orders/[id]/edit.tsx"
     uriVariables: [
@@ -37,6 +38,10 @@ class Article {
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $composition = null;
+
+    #[ApiProperty(types: ['https://schema.org/image'])]
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])] // (fetch: "EAGER")
+    private ?ArticleImage $image = null;
 
     #[ORM\OneToMany(mappedBy: 'article', targetEntity: ManufacturingOrder::class)]
     private Collection $manufacturingOrders;
@@ -79,6 +84,16 @@ class Article {
 
     public function setComposition(?string $composition): self {
         $this->composition = $composition;
+
+        return $this;
+    }
+
+    public function getImage(): ?ArticleImage {
+        return $this->image;
+    }
+
+    public function setImage(?ArticleImage $image): self {
+        $this->image = $image;
 
         return $this;
     }

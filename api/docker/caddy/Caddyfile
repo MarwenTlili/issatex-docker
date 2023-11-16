@@ -14,7 +14,7 @@ log
     && !path(
         '/docs*', '/graphql*', '/bundles*', '/contexts*', '/_profiler*', '/_wdt*',
         '*.json*', '*.html', '*.csv', '*.yml', '*.yaml', '*.xml', '/uploads/media/*',
-        '/uploads/tech_docs/*'
+        '/uploads/tech_docs/*', '/uploads/*'
     )
 ) || path('/favicon.ico', '/manifest.json', '/robots.txt', '/_next*', '/sitemap*', '/api/auth/*')`
 

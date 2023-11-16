@@ -10,6 +10,7 @@ export class Article implements Item {
         public designation?: string,
         public model?: string,
         public composition?: string,
+        public image?: string,
         public manufacturingOrders?: string[],
         public client?: string
     ) {
