@@ -39,3 +39,7 @@ services:
         arguments: [ '@request_stack' ]
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_decoded, method: onJWTDecoded }
+
+    App\EventListener\SignInListener:
+        tags:
+            - { name: kernel.event_subscriber }
