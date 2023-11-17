@@ -32,8 +32,8 @@ export const authOptions: NextAuthOptions = {
     },
 
     /**
-   * https://next-auth.js.org/configuration/providers/oauth
-   */
+     * https://next-auth.js.org/configuration/providers/oauth
+     */
     providers: [
         CredentialsProvider({
             /** The name to display on the sign in form (e.g. "Sign in with...") */
@@ -88,7 +88,7 @@ export const authOptions: NextAuthOptions = {
 
     /**
      * Custom JWT encode/decode methods
-   * https://next-auth.js.org/configuration/options#override-jwt-encode-and-decode-methods
+     * https://next-auth.js.org/configuration/options#override-jwt-encode-and-decode-methods
      */
     callbacks: {
         async signIn({ user, account, profile, email, credentials }) {
