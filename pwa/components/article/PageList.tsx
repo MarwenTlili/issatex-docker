@@ -14,7 +14,7 @@ import { Session } from "next-auth"
 import { useSession } from "next-auth/react"
 
 export const getArticlesPath = (page?: string | string[] | undefined, perPage?: string) => {
-    const pp = typeof perPage === "string" ? `?perPage=${perPage}` : ``
+    const pp = typeof perPage === "string" ? `?itemsPerPage=${perPage}` : ``
     const p = typeof page === "string" ? `&page=${page}` : ``
 	// return `/api/articles${typeof page === "string" ? `?page=${page}` : ""}`
 	return `/api/articles${pp}${p}`
@@ -24,14 +24,13 @@ export const getArticles = (
 	page?: string | string[] | undefined,
     perPage?: string,
 	session?: Session | null
-) => async () =>
-	await fetch<PagedCollection<Article>>(getArticlesPath(page), {}, session)
+) => async () => await 
+    fetch<PagedCollection<Article>>(
+        getArticlesPath(page, perPage), {}, session
+    )
 
 const getPagePath = (path: string) =>
 	`/articles/page/${parsePage("api/articles", path)}`
-
-const getClientArticles = async (id: string | undefined, session: Session) =>
-    id ? fetch<PagedCollection<Article>>(`/api/clients/${id}/articles`, {}, session) : Promise.resolve(undefined)
 
 type pageListProps = (
 	NextComponentType<NextPageContext> | JSX.Element | null
@@ -45,7 +44,8 @@ export const PageList: pageListProps = ( props ) => {
 	const {
 		data: { data: articles, hubURL } = { hubURL: null }
 	} = useQuery<FetchResponse<PagedCollection<Article>> | undefined>(
-		getArticlesPath(page), getArticles(page, perPage, session)
+		getArticlesPath(page, perPage), 
+        getArticles(page, perPage, session)
 	)
 
 	const collection = useMercure(articles, hubURL)
@@ -58,8 +58,7 @@ export const PageList: pageListProps = ( props ) => {
 				<title>Article List</title>
 			</Head>
 			<Template>
-				<List 
-                    articles={collection["hydra:member"]}
+				<List articles={collection["hydra:member"]}
                     totalItems={collection["hydra:totalItems"]}
                     perPage={perPage}
                     setPerPage={setPerPage}
