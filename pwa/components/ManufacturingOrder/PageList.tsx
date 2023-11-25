@@ -11,9 +11,10 @@ import { useMercure } from "../../utils/mercure"
 import Template from "../Template"
 import { useState } from "react"
 import { Session } from "next-auth"
+import { useSession } from "next-auth/react"
 
 export const getManufacturingOrdersPath = (page?: string | string[] | undefined, perPage?: string) => {
-    const pp = typeof perPage === "string" ? `?perPage=${perPage}` : ``
+    const pp = typeof perPage === "string" ? `?itemsPerPage=${perPage}` : ``
     const p = typeof page === "string" ? `&page=${page}` : ``
     return `/api/manufacturing_orders${pp}${p}`
 }
@@ -23,21 +24,22 @@ export const getManufacturingOrders = (
     perPage?: string,
     session?: Session | null
 ) => async () =>
-        await fetch<PagedCollection<ManufacturingOrder>>(
-            getManufacturingOrdersPath(page, perPage), {}, session
-        )
+    await fetch<PagedCollection<ManufacturingOrder>>(
+        getManufacturingOrdersPath(page, perPage), {}, session
+    )
 
 const getPagePath = (path: string) =>
     `/manufacturing-orders/page/${parsePage("api/manufacturing_orders", path)}`
 
 export const PageList: NextComponentType<NextPageContext> = () => {
     const { query: { page }, } = useRouter()
+	const { data: session, status} = useSession()
     const [perPage, setPerPage] = useState<string>(ORDERS_ITEMS_PER_PAGE[1])
 
     const { data: { data: manufacturingorders, hubURL } = { hubURL: null } } =
         useQuery<FetchResponse<PagedCollection<ManufacturingOrder>> | undefined>(
             getManufacturingOrdersPath(page, perPage),
-            getManufacturingOrders(page, perPage)
+            getManufacturingOrders(page, perPage, session)
         )
 
     const collection = useMercure(manufacturingorders, hubURL)
