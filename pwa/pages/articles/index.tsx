@@ -1,8 +1,6 @@
 import { DehydratedState } from "react-query"
 
-import {
-    PageList,
-} from "../../components/article/PageList"
+import { PageList } from "../../components/article/PageList"
 
 import { getServerSession, Session } from "next-auth"
 import { authOptions } from "../api/auth/[...nextauth]"
