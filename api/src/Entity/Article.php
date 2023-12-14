@@ -21,7 +21,7 @@ use ApiPlatform\Metadata\ApiProperty;
     uriVariables: [
         'clientId' => new Link(fromClass: Client::class, toProperty: 'client')
     ],
-    operations: [new GetCollection()]
+    operations: [new GetCollection(paginationClientItemsPerPage: true)]
 )]
 class Article {
     #[ORM\Id]

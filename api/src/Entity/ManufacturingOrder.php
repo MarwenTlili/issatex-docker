@@ -12,9 +12,18 @@ use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Ulid;
 use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\GetCollection;
 
 #[ORM\Entity(repositoryClass: ManufacturingOrderRepository::class)]
 #[ApiResource(paginationClientItemsPerPage: true)]
+#[ApiResource(
+    uriTemplate: '/clients/{clientId}/manufacturing_orders',
+    uriVariables: [
+        'clientId' => new Link(fromClass: Client::class, toProperty: 'client')
+    ],
+    operations: [new GetCollection(paginationClientItemsPerPage: true)]
+)]
 class ManufacturingOrder {
     #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]

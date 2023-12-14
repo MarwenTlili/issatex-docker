@@ -119,7 +119,7 @@ export const getItemPath = (
  */
 export const parsePage = (resourceName: string, path: string) =>{
     const pageRegExpMatchArray = path.match(
-        new RegExp(`^/${resourceName}\\?.*?page=(\\d+)`)
+        new RegExp(`^.*?page=(\\d+)`)
     )
     return pageRegExpMatchArray ? parseInt(pageRegExpMatchArray[1]) : 1
 }

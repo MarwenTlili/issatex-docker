@@ -13,7 +13,7 @@ use ApiPlatform\Metadata\ApiFilter;
 use App\Filter\CustomClientAccountFilter;
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
-#[ApiResource]
+#[ApiResource(paginationClientItemsPerPage: true)]
 class Client {
     #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]

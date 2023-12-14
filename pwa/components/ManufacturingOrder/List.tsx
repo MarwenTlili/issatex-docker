@@ -6,7 +6,7 @@ import { Article } from "../../types/Article"
 import useSWR from 'swr'
 import { useMutation } from "react-query"
 
-export const ORDERS_ITEMS_PER_PAGE = ["5", "10", "20", "30"]
+export const ORDERS_ITEMS_PER_PAGE = ["1", "10", "20", "30"]
 
 const fetcher = (id: string | undefined) =>
     id ? fetch<Article>(`${id}`).then((res) => res?.data) : Promise.resolve(undefined)

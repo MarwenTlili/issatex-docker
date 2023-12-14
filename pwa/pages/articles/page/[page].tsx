@@ -1,41 +1,41 @@
-import { GetServerSidePropsContext } from "next";
-import { dehydrate, QueryClient } from "react-query";
+import { GetServerSidePropsContext } from "next"
+import { DehydratedState } from "react-query"
 
 import {
 	PageList,
-	getArticles,
-	getArticlesPath,
-} from "../../../components/article/PageList";
-import { PagedCollection } from "../../../types/collection";
-import { Article } from "../../../types/Article";
+} from "../../../components/article/PageList"
+import { PagedCollection } from "../../../types/collection"
 
-import { fetch, getCollectionPaths } from "../../../utils/dataAccess";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../api/auth/[...nextauth]";
+import { fetch } from "../../../utils/dataAccess"
+import { getServerSession, Session } from "next-auth"
+import { authOptions } from "../../api/auth/[...nextauth]"
+import { Client } from "../../../types/Client"
+
+export const getClient = async (id: string | undefined, session: Session) =>
+    id ? fetch<PagedCollection<Client>>(`/api/clients?account=${id}`, {}, session) : Promise.resolve(undefined)
+
+interface Data {
+    props: {
+        dehydratedState?: DehydratedState
+        client?: Client
+    }
+}
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-	let session = await getServerSession(context.req, context.res, authOptions);
-	const params = context.params;
-	const page = params?.page
-	// console.log("session: ", session);
+	let session = await getServerSession(context.req, context.res, authOptions)
+    const data: Data = { props: {} }
+    
+    if (!session) return data
 
+    if (session.user) {
+        const client = await getClient(session.user.id, session)
+        if (client?.data["hydra:member"]) {
+            const [first] = client.data["hydra:member"]
+            data.props.client = first
+        }
+    }
 
-	const queryClient = new QueryClient();
-	await queryClient.prefetchQuery(getArticlesPath(), getArticles(page, session));
+	return data
+}
 
-	const response = await fetch<PagedCollection<Article>>("/api/articles", {}, session);
-	const paths = await getCollectionPaths(
-		response,
-		"api/articles",
-		"/articles/page/[page]"
-	);
-
-	return {
-		props: {
-			dehydratedState: dehydrate(queryClient),
-			paths
-		},
-	};
-};
-
-export default PageList;
+export default PageList

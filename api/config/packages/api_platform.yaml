@@ -14,7 +14,7 @@ api_platform:
 
     collection:
         pagination:
-            items_per_page_parameter_name: perPage # Default: itemsPerPage
+            items_per_page_parameter_name: itemsPerPage # Default: itemsPerPage
 
     # Documenting the Authentication Mechanism with Swagger/Open API
     swagger:

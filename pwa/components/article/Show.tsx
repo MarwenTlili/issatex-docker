@@ -2,7 +2,6 @@ import { FunctionComponent, useState } from "react"
 import { useRouter } from "next/router"
 import Head from "next/head"
 
-// import ReferenceLinks from "../common/ReferenceLinks"
 import { fetch, getItemPath } from "../../utils/dataAccess"
 import { Article } from "../../types/Article"
 import Template from "../Template"
@@ -41,8 +40,7 @@ export const Show: FunctionComponent<Props> = ({ article, text }) => {
                 />
             </Head>
             <Template>
-                <div className="flex flex-col items-center justify-start h-screen p-4 mt-8">
-
+                <div className="flex flex-col items-center justify-start p-4 mt-8">
                     <div className="grid place-content-center font-mono text-2xl">
                         {`Article "${article["designation"]}"`}
                     </div>
@@ -83,7 +81,6 @@ export const Show: FunctionComponent<Props> = ({ article, text }) => {
                             </div>
                             <div className="flex flex-col pb-8">
                                 <div className="font-bold">Composition</div>
-                                {/* <div>{article["composition"]}</div> */}
                                 <div className="prose max-w-full"
                                     dangerouslySetInnerHTML={{ __html: article.composition ?? "" }}
                                 />
