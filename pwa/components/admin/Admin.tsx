@@ -1,170 +1,214 @@
 // https://github.com/api-platform/demo/blob/main/pwa/components/admin/Admin.tsx
 
-import Head from "next/head";
-import { SetStateAction, useContext, useState} from "react";
-import {Navigate, Route} from "react-router-dom";
+import Head from 'next/head'
+import { useContext, useState } from 'react'
+import { Navigate, Route } from 'react-router-dom'
 import {
-	CustomRoutes,
-	Layout,
-	LayoutProps,
-	localStorageStore,
-	Login,
-	LoginClasses,
-	resolveBrowserLocale,
-} from "react-admin";
-import polyglotI18nProvider from "ra-i18n-polyglot";
-import englishMessages from "ra-language-english";
-import frenchMessages from "ra-language-french";
+    Layout,
+    LayoutProps,
+    localStorageStore,
+    Login,
+    LoginClasses,
+    resolveBrowserLocale,
+    Resource,
+} from 'react-admin'
+import polyglotI18nProvider from 'ra-i18n-polyglot'
+import englishMessages from 'ra-language-english'
+import frenchMessages from 'ra-language-french'
 import {
-	fetchHydra as baseFetchHydra,
-	HydraAdmin,
-	hydraDataProvider as baseHydraDataProvider,
-	OpenApiAdmin,
-	useIntrospection,
-} from "@api-platform/admin";
-import {parseHydraDocumentation} from "@api-platform/api-doc-parser";
-import AppBar from "./AppBar";
-import {LoginForm} from "./LoginForm";
-import DocContext from "./DocContext";
-import authProvider from "../../utils/authProvider";
-import {ENTRYPOINT} from "../../config/entrypoint";
+    HydraAdmin,
+    OpenApiAdmin,
+    useIntrospection,
+} from '@api-platform/admin'
+import AppBar from './AppBar'
+import { LoginForm } from './LoginForm'
+import DocContext from './DocContext'
+import authProvider from '../../utils/authProvider'
 
-const getHeaders = () => localStorage.getItem("token") ? {
-	Authorization: `Bearer ${localStorage.getItem("token")}`,
-} : {};
+import ArticleList from './article/List'
+import ArticleShow from './article/Show'
 
-const fetchHydra = (url: URL, options = {}) =>
-	baseFetchHydra(url, {
-		...options,
-		// @ts-ignore
-		headers: getHeaders,
-	}
-);
+import EmployeeList from './employee/List'
+import EmployeeCreate from './employee/Create'
+import EmployeeShow from './employee/Show'
+import EmployeeEdit from './employee/Edit'
+
+import MachineList from './machine/List'
+import MachineCreate from './machine/Create'
+import MachineShow from './machine/Show'
+import MachineEdit from './machine/Edit'
+
+import OrderList from './manufacturingOrder/List'
+import OrderShow from './manufacturingOrder/Show'
+
+import ClientList from './client/List'
+import ClientCreate from './client/Create'
+import ClientShow from './client/Show'
+import ClientEdit from './client/Edit'
+
+import UserList from './user/List';
+import UserCreate from './user/Create'
+import UserShow from './user/Show'
+import UserEdit from './user/Edit'
+
+import {
+    Assignment,
+    Checkroom,
+    Hardware,
+    People,
+    PeopleOutline,
+    PersonSearch
+} from '@mui/icons-material'
+
+import customDataProvider from '../../utils/customDataProvider'
 
 const RedirectToLogin = () => {
-	const introspect = useIntrospection();
+    const introspect = useIntrospection()
 
-	if (localStorage.getItem("token")) {
-		introspect();
-		return <></>;
-	}
-	return <Navigate to="/login"/>;
-};
-const apiDocumentationParser = (setRedirectToLogin: (arg0: boolean) => void) => async () => {
-	try {
-		setRedirectToLogin(false);
-
-		// @ts-ignore
-		return await parseHydraDocumentation(ENTRYPOINT, {headers: getHeaders});
-	} catch (result) {
-		// @ts-ignore
-		const {api, response, status} = result;
-		if (status !== 401 || !response) {
-			throw result;
-		}
-
-		// Prevent infinite loop if the token is expired
-		localStorage.removeItem("token");
-
-		setRedirectToLogin(true);
-
-		return {
-			api,
-			response,
-			status,
-		};
-	}
-};
-
-const dataProvider = (setRedirectToLogin: { (value: SetStateAction<boolean>): void; (arg0: boolean): void; }) => baseHydraDataProvider({
-	useEmbedded: false,
-	// @ts-ignore
-	entrypoint: ENTRYPOINT,
-	httpClient: fetchHydra,
-	apiDocumentationParser: apiDocumentationParser(setRedirectToLogin),
-});
+    if (localStorage.getItem('token')) {
+        introspect()
+        return <></>
+    }
+    return <Navigate to='/login' />
+}
 
 const messages = {
-	fr: frenchMessages,
-	en: englishMessages,
-};
+    fr: frenchMessages,
+    en: englishMessages,
+}
+
 const i18nProvider = polyglotI18nProvider(
-	// @ts-ignore
-	(locale) => (messages[locale] ? messages[locale] : messages.en),
-	resolveBrowserLocale(),
-);
+    // @ts-ignore
+    (locale) => (messages[locale] ? messages[locale] : messages.en),
+    resolveBrowserLocale(),
+)
 
 const LoginPage = () => (
-	<Login
-		sx={{
-			backgroundImage:
-			'radial-gradient(circle at 50% 14em, #90dfe7 0%, #288690 60%, #288690 100%)',
-			[`& .${LoginClasses.icon}`]: {
-			backgroundColor: 'secondary.main',
-			},
-		}}
-	>
-		<LoginForm/>
-	</Login>
-);
+    <Login
+        sx={{
+            backgroundImage:
+                'radial-gradient(circle at 50% 14em, #90dfe7 0%, #288690 60%, #288690 100%)',
+            [`& .${LoginClasses.icon}`]: {
+                backgroundColor: 'secondary.main',
+            },
+        }}
+    >
+        <LoginForm />
+    </Login>
+)
 
-const MyLayout = (props: JSX.IntrinsicAttributes & LayoutProps) => <Layout {...props} appBar={AppBar} />;
+const MyLayout = (props: JSX.IntrinsicAttributes & LayoutProps) => <Layout {...props} appBar={AppBar} />
 
 const AdminUI = () => {
-	const { docType } = useContext(DocContext);
-	const [redirectToLogin, setRedirectToLogin] = useState(false);
+    const { docType } = useContext(DocContext)
+    const [redirectToLogin, setRedirectToLogin] = useState(false)
 
-	return docType === 'hydra' ? (
-		<HydraAdmin
-			dataProvider={dataProvider(setRedirectToLogin)}
-			authProvider={authProvider}
-			entrypoint={window.origin}
-			i18nProvider={i18nProvider}
-			layout={MyLayout}
-			loginPage={LoginPage}
-		>
-			<CustomRoutes>
-				{redirectToLogin ? <Route path="/" element={<RedirectToLogin />} /> : null}
-			</CustomRoutes>
-		</HydraAdmin>
-		) : (
-		<OpenApiAdmin
-			authProvider={authProvider}
-			entrypoint={window.origin}
-			docEntrypoint={`${window.origin}/docs.json`}
-			i18nProvider={i18nProvider}
-			layout={MyLayout}
-			loginPage={LoginPage}
-		/>
-	);
-};
+    return docType === 'hydra' ? (
+        <HydraAdmin
+            dataProvider={customDataProvider(setRedirectToLogin)}
+            authProvider={authProvider}
+            entrypoint={window.origin}
+            i18nProvider={i18nProvider}
+            layout={MyLayout}
+            loginPage={LoginPage}
+        >
+            {redirectToLogin
+                ? <Route path='/' element={<RedirectToLogin />} />
+                : <>
+                    <Resource
+                        name='api/articles'
+                        list={ArticleList}
+                        show={ArticleShow}
+                        icon={Checkroom}
+                        recordRepresentation='designation'
+                        options={{ label: 'Articles' }}
+                    />
+                    <Resource
+                        name='api/employees'
+                        list={EmployeeList}
+                        show={EmployeeShow}
+                        create={EmployeeCreate}
+                        edit={EmployeeEdit}
+                        icon={People}
+                        options={{ label: 'Employees' }}
+                    />
+                    <Resource
+                        name='api/machines'
+                        list={MachineList}
+                        show={MachineShow}
+                        create={MachineCreate}
+                        edit={MachineEdit}
+                        icon={Hardware}
+                        options={{ label: 'Machines' }}
+                    />
+                    <Resource
+                        name='api/manufacturing_orders'
+                        list={OrderList}
+                        show={OrderShow}
+                        icon={Assignment}
+                        options={{ label: 'Orders' }}
+                    />
+                    <Resource
+                        name='api/clients'
+                        list={ClientList}
+                        show={ClientShow}
+                        create={ClientCreate}
+                        edit={ClientEdit}
+                        recordRepresentation='name'
+                        options={{ label: 'Clients' }}
+                        icon={PeopleOutline}
+                    />
+                    <Resource
+                        name='api/users'
+                        list={UserList}
+                        show={UserShow}
+                        create={UserCreate}
+                        edit={UserEdit}
+                        recordRepresentation='username'
+                        options={{ label: 'Users' }}
+                        icon={PersonSearch}
+                    />
+                </>
+            }
+        </HydraAdmin>
+    ) : (
+        <OpenApiAdmin
+            authProvider={authProvider}
+            entrypoint={window.origin}
+            docEntrypoint={`${window.origin}/docs.json`}
+            i18nProvider={i18nProvider}
+            layout={MyLayout}
+            loginPage={LoginPage}
+        />
+    )
+}
 
-const store = localStorageStore();
+const store = localStorageStore()
 
 const AdminWithContext = () => {
-	const [docType, setDocType] = useState(
-		store.getItem<string>('docType', 'hydra'),
-	);
+    const [docType, setDocType] = useState(
+        store.getItem<string>('docType', 'hydra'),
+    )
 
-	return (
-		<DocContext.Provider
-			value={{
-				docType,
-				setDocType,
-			}}>
-			<AdminUI />
-		</DocContext.Provider>
-	);
-};
+    return (
+        <DocContext.Provider
+            value={{
+                docType,
+                setDocType,
+            }}>
+            <AdminUI />
+        </DocContext.Provider>
+    )
+}
 
-const Admin = () => (
-	<>
-		<Head>
-			<title>API Platform Admin</title>
-		</Head>
+const AdminCustom = () => (
+    <>
+        <Head>
+            <title>API Platform Admin</title>
+        </Head>
 
-		<AdminWithContext />
-	</>
-);
+        <AdminWithContext />
+    </>
+)
 
-export default Admin;
+export default AdminCustom

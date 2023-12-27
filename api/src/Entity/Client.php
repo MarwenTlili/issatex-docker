@@ -11,7 +11,22 @@ use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 use ApiPlatform\Metadata\ApiFilter;
 use App\Filter\CustomClientAccountFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'name' => 'ipartial',
+        'phone' => 'ipartial',
+    ]
+)]
+#[ApiFilter(
+    BooleanFilter::class,
+    properties: ['isValid', 'isPrivileged']
+)]
+#[ApiFilter(OrderFilter::class)]
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
 #[ApiResource(paginationClientItemsPerPage: true)]
 class Client {

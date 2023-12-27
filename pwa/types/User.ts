@@ -2,6 +2,8 @@ import { Item } from "./item";
 
 export class User implements Item {
 	public "@id"?: string;
+    public "@type"?: string;
+    public id?: string;
 
 	constructor(
 		_id?: string,
@@ -10,6 +12,7 @@ export class User implements Item {
 		public roles?: any,
 		public avatar?: string,
 		public plainPassword?: string,
+        public confirmPassword?: string,
 		public createdAt?: Date,
 		public lastLoginAt?: Date,
 		public isVerified?: boolean

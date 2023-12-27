@@ -45,7 +45,7 @@ export const PageList: FC<PageListProps> = (props) => {
 
     const { query: { page }, } = useRouter()
     const { data: session, status } = useSession()
-    const [perPage, setPerPage] = useState<string>(ORDERS_ITEMS_PER_PAGE[0])
+    const [perPage, setPerPage] = useState<string>(ORDERS_ITEMS_PER_PAGE[1])
 
     const { data: { data: manufacturingorders, hubURL } = { hubURL: null } } =
         useQuery<FetchResponse<PagedCollection<ManufacturingOrder>> | undefined>(

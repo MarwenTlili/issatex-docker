@@ -13,6 +13,9 @@ use Symfony\Component\Uid\Ulid;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 #[ApiResource(paginationClientItemsPerPage: true)]
@@ -22,6 +25,20 @@ use ApiPlatform\Metadata\ApiProperty;
         'clientId' => new Link(fromClass: Client::class, toProperty: 'client')
     ],
     operations: [new GetCollection(paginationClientItemsPerPage: true)]
+)]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'designation' => 'ipartial',
+        'model' => 'ipartial',
+    ]
+)]
+#[ApiFilter(
+    OrderFilter::class,
+    properties: [
+        'designation',
+        'model',
+    ]
 )]
 class Article {
     #[ORM\Id]

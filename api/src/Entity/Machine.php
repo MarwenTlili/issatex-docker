@@ -8,17 +8,28 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Ulid;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 
 #[ORM\Entity(repositoryClass: MachineRepository::class)]
-#[ApiResource]
-class Machine
-{
+#[ApiResource(paginationClientItemsPerPage: true)]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'name' => 'ipartial',
+        'category' => 'ipartial',
+        'brand' => 'ipartial',
+    ]
+)]
+#[ApiFilter(OrderFilter::class)]
+class Machine {
     #[Groups(['user:read'])]
-	#[ORM\Id]
+    #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
-	private ?Ulid $id = null;
+    private ?Ulid $id = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -29,42 +40,35 @@ class Machine
     #[ORM\Column(length: 255)]
     private ?string $brand = null;
 
-    public function getId(): ?Ulid
-    {
+    public function getId(): ?Ulid {
         return $this->id;
     }
 
-    public function getName(): ?string
-    {
+    public function getName(): ?string {
         return $this->name;
     }
 
-    public function setName(string $name): self
-    {
+    public function setName(string $name): self {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getCategory(): ?string
-    {
+    public function getCategory(): ?string {
         return $this->category;
     }
 
-    public function setCategory(string $category): self
-    {
+    public function setCategory(string $category): self {
         $this->category = $category;
 
         return $this;
     }
 
-    public function getBrand(): ?string
-    {
+    public function getBrand(): ?string {
         return $this->brand;
     }
 
-    public function setBrand(string $brand): self
-    {
+    public function setBrand(string $brand): self {
         $this->brand = $brand;
 
         return $this;

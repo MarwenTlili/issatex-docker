@@ -80,10 +80,12 @@ const CustomAppBar = ({ classes, userMenu, ...props }: AppBarProps) => {
 			<Typography
 				variant="h6"
 				color="inherit"
-				className={AppBarClasses.title}
+				className={`${AppBarClasses.title} w-[200px]`}
 				id="react-admin-title"
 			/>
-			<Logo />
+            <div className="flex-1">
+                <Logo/>
+            </div>
 			<Box component="span" sx={{ flex: 0 }} />
 			<DocTypeMenuButton />
 			<Box component="span" sx={{ flex: 0.5 }} />

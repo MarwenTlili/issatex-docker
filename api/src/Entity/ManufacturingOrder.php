@@ -14,6 +14,11 @@ use Symfony\Component\Uid\Ulid;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 
 #[ORM\Entity(repositoryClass: ManufacturingOrderRepository::class)]
 #[ApiResource(paginationClientItemsPerPage: true)]
@@ -23,6 +28,30 @@ use ApiPlatform\Metadata\GetCollection;
         'clientId' => new Link(fromClass: Client::class, toProperty: 'client')
     ],
     operations: [new GetCollection(paginationClientItemsPerPage: true)]
+)]
+#[ApiFilter(
+    RangeFilter::class,
+    properties: [
+        'unitTime',
+        'unitPrice',
+        'totalPrice'
+    ]
+)]
+#[ApiFilter(
+    DateFilter::class,
+    properties: ['createdAt']
+)]
+#[ApiFilter(
+    BooleanFilter::class,
+    properties: ['urgent', 'launched', 'denied']
+)]
+#[ApiFilter(
+    OrderFilter::class,
+    properties: [
+        'createdAt', 'totalQuantity', 'unitTime',
+        'unitPrice', 'totalPrice', 'urgent', 'launched',
+        'denied',
+    ]
 )]
 class ManufacturingOrder {
     #[ORM\Id]

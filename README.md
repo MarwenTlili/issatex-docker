@@ -94,6 +94,17 @@ https://api-platform.com/docs/distribution/
 https://api-platform.com/docs/core/configuration/  
 **configurations**: swagger, profiler, collection, route_prefix, ...  
 
+# Updates
+## PNPM
+```
+corepack prepare pnpm@8.10.5 --activate
+```
+## React-Admin
+**install/update react-admin version
+```
+pnpm add react-admin@4.15
+```
+
 ### Security
 #### create user using SecurityBundle  
 https://symfony.com/doc/current/security  
@@ -390,6 +401,22 @@ https://api-platform.com/docs/admin/
 > generate routes for one entity (-g: --generator)
 ```
 pnpm create @api-platform/client --resource user -g next
+```
+
+**Options:**
+> location: src/  
+> token: --bearer [token]  
+> resource: -r  
+> generator: -g  
+> jwt token: --bearer
+```
+pnpm create @api-platform/client \
+    http://caddy \
+    src/ \
+    -r Employee \
+    -g typescript \
+    --bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImN0eSI6IkpXVCJ9.eyJpYXQiOjE3MDA4MjgyNDQsImV4cCI6MTcwMDkxNDY0NCwicm9sZXMiOlsiUk9MRV9DT01QQU5ZIiwiUk9MRV9URVNUIl0sImVtYWlsIjoieHByZWRvdmljQGxlZG5lci5jb20iLCJ1c2VybmFtZSI6ImpvaGFyYSIsImlkIjoiMDFHVkJUNE01RUpHSlI3VDE5Q0dKRVNUR1MiLCJhdmF0YXJDb250ZW50VXJsIjoiL3VwbG9hZHMvbWVkaWEvNjRjNmIyYTBiNWRjYl80MTQwMDQ3LnBuZyIsImlwIjoiMTcyLjI2LjAuMSIsImlzVmVyaWZpZWQiOnRydWV9.R7GHgNL6F5_Wgmfy4b0urD2geKjdEfzcXvh4c9-VsV1H58mwkIiYpAbIEBdFE0kLViPobLCB9z-xvD1fgsC_b-2Mc3vKWwPXkEiANlBFIkKbCexYhCWdMVC8ht4-aZ9LJdtq4fZB_4hrhodEhIYV1orYqYWNZr59AK2oDPnTPVv_5D68EmmLKKHVQD-X6gczwhUaBkSG5rhqdwOwRjq4rAvxqfERFmPiUWRtF_ZRfuEKqLgEVsjCnA_vtlXOJJsWZMKjGRWBrOBnaOVeU-Um1AjfEEL-m3uKpNv9bsK4L-JPYSv5D8pdMy3Vzy3vXRbFDHp4xgI-GKBskx-QshVr_A
+
 ```
 
 > generate all routes (-g: --generator)
