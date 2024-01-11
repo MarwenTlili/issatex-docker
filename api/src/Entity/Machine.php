@@ -11,6 +11,7 @@ use Symfony\Component\Uid\Ulid;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
 
 #[ORM\Entity(repositoryClass: MachineRepository::class)]
 #[ApiResource(paginationClientItemsPerPage: true)]
@@ -23,6 +24,7 @@ use ApiPlatform\Metadata\ApiFilter;
     ]
 )]
 #[ApiFilter(OrderFilter::class)]
+#[ApiFilter(ExistsFilter::class, properties: ['ilot'])] // ?exists[ilot]=false
 class Machine {
     #[Groups(['user:read'])]
     #[ORM\Id]
@@ -39,6 +41,11 @@ class Machine {
 
     #[ORM\Column(length: 255)]
     private ?string $brand = null;
+
+    #[ORM\ManyToOne(inversedBy: 'machines')]
+    private ?Ilot $ilot = null;
+
+    public function __construct() {}
 
     public function getId(): ?Ulid {
         return $this->id;
@@ -70,6 +77,18 @@ class Machine {
 
     public function setBrand(string $brand): self {
         $this->brand = $brand;
+
+        return $this;
+    }
+
+    public function getIlot(): ?Ilot
+    {
+        return $this->ilot;
+    }
+
+    public function setIlot(?Ilot $ilot): self
+    {
+        $this->ilot = $ilot;
 
         return $this;
     }

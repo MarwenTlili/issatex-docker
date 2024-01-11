@@ -10,13 +10,16 @@ import {
     TextField,
     TextInput,
     TopToolbar,
-    WrapperField
+    WrapperField,
+    CreateButton,
+    ReferenceField
 } from 'react-admin'
 
 const ListActions = () => (
     <TopToolbar>
         <SelectColumnsButton />
         <FilterButton />
+        <CreateButton />
         <ExportButton />
     </TopToolbar>
 )
@@ -36,6 +39,7 @@ const List = () => (
             <TextField source='name' />
             <TextField source='category' />
             <TextField source='brand' />
+            <ReferenceField reference='api/ilots' source='ilot' />
             <WrapperField label='Actions'>
                 <ShowButton />
                 <EditButton />

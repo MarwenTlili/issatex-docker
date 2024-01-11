@@ -34,3 +34,5 @@
 ###> personal temp folder ###
 
 /public/uploads
+
+/migrations

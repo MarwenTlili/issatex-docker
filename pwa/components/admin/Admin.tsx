@@ -51,6 +51,11 @@ import UserCreate from './user/Create'
 import UserShow from './user/Show'
 import UserEdit from './user/Edit'
 
+import IlotList from './Ilot/List'
+import IlotCreate from './Ilot/Create'
+import IlotShow from './Ilot/Show'
+import IlotEdit from './Ilot/Edit'
+
 import {
     Assignment,
     Checkroom,
@@ -59,6 +64,7 @@ import {
     PeopleOutline,
     PersonSearch
 } from '@mui/icons-material'
+import AddHomeWorkIcon from '@mui/icons-material/AddHomeWork'
 
 import customDataProvider from '../../utils/customDataProvider'
 
@@ -130,6 +136,7 @@ const AdminUI = () => {
                         create={EmployeeCreate}
                         edit={EmployeeEdit}
                         icon={People}
+                        recordRepresentation={(record) => `${record.firstName} ${record.lastName}`}
                         options={{ label: 'Employees' }}
                     />
                     <Resource
@@ -139,7 +146,18 @@ const AdminUI = () => {
                         create={MachineCreate}
                         edit={MachineEdit}
                         icon={Hardware}
+                        recordRepresentation='name'
                         options={{ label: 'Machines' }}
+                    />
+                    <Resource
+                        name='api/ilots'
+                        list={IlotList}
+                        show={IlotShow}
+                        edit={IlotEdit}
+                        create={IlotCreate}
+                        icon={AddHomeWorkIcon}
+                        recordRepresentation='name'
+                        options={{ label: 'Ilot' }}
                     />
                     <Resource
                         name='api/manufacturing_orders'

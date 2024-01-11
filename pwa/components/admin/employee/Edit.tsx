@@ -1,10 +1,10 @@
 import React from 'react'
 
 import {
-    DateTimeInput,
     Edit as ReactAdminEdit,
     SimpleForm,
-    TextInput
+    TextInput,
+    ReferenceInput
 } from 'react-admin'
 
 const Edit = () => (
@@ -14,7 +14,8 @@ const Edit = () => (
             <TextInput source='lastName' />
             <TextInput source='registrationCode' />
             <TextInput source='category' />
-            <DateTimeInput source='recuruitmentAt' />
+            <ReferenceInput reference='api/ilots' source='ilot' />
+            {/* <DateTimeInput source='recuruitmentAt' /> */}
         </SimpleForm>
     </ReactAdminEdit>
 )

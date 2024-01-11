@@ -1,8 +1,10 @@
 import React from 'react'
+
 import {
     Edit as ReactAdminEdit,
     SimpleForm,
-    TextInput
+    TextInput,
+    ReferenceInput
 } from 'react-admin'
 
 const Edit = () => (
@@ -11,6 +13,7 @@ const Edit = () => (
             <TextInput source='name' />
             <TextInput source='category' />
             <TextInput source='brand' />
+            <ReferenceInput reference='api/ilots' source='ilot' />
         </SimpleForm>
     </ReactAdminEdit>
 )

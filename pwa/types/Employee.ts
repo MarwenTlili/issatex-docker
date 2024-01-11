@@ -12,8 +12,8 @@ export class Employee implements Item {
         public registrationCode?: string,
         public category?: string,
         public recuruitmentAt?: string,
+        public ilot?: string,
         public employeeAttendances?: string[],
-        public ilotEmployees?: string[],
     ) {
         this["@id"] = _id
     }

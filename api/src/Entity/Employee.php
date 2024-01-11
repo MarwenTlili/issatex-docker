@@ -54,16 +54,15 @@ class Employee {
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $recuruitmentAt = null;
+    
+    #[ORM\ManyToOne(inversedBy: 'employees')]
+    private ?Ilot $ilot = null;
 
     #[ORM\OneToMany(mappedBy: 'employee', targetEntity: EmployeeAttendance::class, orphanRemoval: true)]
     private Collection $employeeAttendances;
 
-    #[ORM\OneToMany(mappedBy: 'employee', targetEntity: IlotEmployee::class, orphanRemoval: true)]
-    private Collection $ilotEmployees;
-
     public function __construct() {
         $this->employeeAttendances = new ArrayCollection();
-        $this->ilotEmployees = new ArrayCollection();
     }
 
     public function getId(): ?Ulid {
@@ -119,6 +118,18 @@ class Employee {
 
         return $this;
     }
+    
+    public function getIlot(): ?Ilot
+    {
+        return $this->ilot;
+    }
+
+    public function setIlot(?Ilot $ilot): self
+    {
+        $this->ilot = $ilot;
+
+        return $this;
+    }
 
     /**
      * @return Collection<int, EmployeeAttendance>
@@ -141,33 +152,6 @@ class Employee {
             // set the owning side to null (unless already changed)
             if ($employeeAttendance->getEmployee() === $this) {
                 $employeeAttendance->setEmployee(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, IlotEmployee>
-     */
-    public function getIlotEmployees(): Collection {
-        return $this->ilotEmployees;
-    }
-
-    public function addIlotEmployee(IlotEmployee $ilotEmployee): self {
-        if (!$this->ilotEmployees->contains($ilotEmployee)) {
-            $this->ilotEmployees->add($ilotEmployee);
-            $ilotEmployee->setEmployee($this);
-        }
-
-        return $this;
-    }
-
-    public function removeIlotEmployee(IlotEmployee $ilotEmployee): self {
-        if ($this->ilotEmployees->removeElement($ilotEmployee)) {
-            // set the owning side to null (unless already changed)
-            if ($ilotEmployee->getEmployee() === $this) {
-                $ilotEmployee->setEmployee(null);
             }
         }
 

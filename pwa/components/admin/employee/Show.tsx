@@ -4,6 +4,7 @@ import {
     Show as ReactAdminShow,
     SimpleShowLayout,
     TextField,
+    ReferenceField
 } from 'react-admin'
 
 const Show = () => (
@@ -14,8 +15,7 @@ const Show = () => (
             <TextField source='registrationCode' />
             <TextField source='category' />
             <DateField source='recuruitmentAt' showTime={true} locales='en-EN' />
-            <TextField source='employeeAttendances' />
-            <TextField source='ilotEmployees' />
+            <ReferenceField reference='api/ilots' source='ilot' />
         </SimpleShowLayout>
     </ReactAdminShow>
 )

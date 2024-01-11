@@ -3,7 +3,8 @@ import React from 'react'
 import {
     Show as ReactAdminShow,
     SimpleShowLayout,
-    TextField
+    TextField,
+    ReferenceField
 } from 'react-admin'
 
 const Show = () => (
@@ -12,6 +13,7 @@ const Show = () => (
             <TextField source='name' />
             <TextField source='category' />
             <TextField source='brand' />
+            <ReferenceField reference='api/ilots' source='ilot' />
         </SimpleShowLayout>
     </ReactAdminShow>
 )

@@ -10,9 +10,17 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Ulid;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 
 #[ORM\Entity(repositoryClass: IlotRepository::class)]
 #[ApiResource]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'name' => 'iexact',
+    ]
+)]
 class Ilot
 {
     #[Groups(['user:read'])]
@@ -22,14 +30,17 @@ class Ilot
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
 	private ?Ulid $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $name = null;
+    
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'ilot', targetEntity: IlotMachine::class, orphanRemoval: true)]
-    private Collection $ilotMachines;
-
-    #[ORM\OneToMany(mappedBy: 'ilot', targetEntity: IlotEmployee::class, orphanRemoval: true)]
-    private Collection $ilotEmployees;
+    #[ORM\OneToMany(mappedBy: 'ilot', targetEntity: Machine::class)]
+    private Collection $machines;
+    
+    #[ORM\OneToMany(mappedBy: 'ilot', targetEntity: Employee::class)]
+    private Collection $employees;
 
     #[ORM\OneToMany(mappedBy: 'ilot', targetEntity: DailyProduction::class, orphanRemoval: true)]
     private Collection $dailyProductions;
@@ -39,8 +50,8 @@ class Ilot
 
     public function __construct()
     {
-        $this->ilotMachines = new ArrayCollection();
-        $this->ilotEmployees = new ArrayCollection();
+        $this->machines = new ArrayCollection();
+        $this->employees = new ArrayCollection();
         $this->dailyProductions = new ArrayCollection();
         $this->weeklySchedules = new ArrayCollection();
     }
@@ -61,61 +72,74 @@ class Ilot
 
         return $this;
     }
-
-    /**
-     * @return Collection<int, IlotMachine>
-     */
-    public function getIlotMachines(): Collection
+    
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->ilotMachines;
+        return $this->createdAt;
     }
 
-    public function addIlotMachine(IlotMachine $ilotMachine): self
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
-        if (!$this->ilotMachines->contains($ilotMachine)) {
-            $this->ilotMachines->add($ilotMachine);
-            $ilotMachine->setIlot($this);
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+    
+    
+    /**
+     * @return Collection<int, Machine>
+     */
+    public function getMachines(): Collection
+    {
+        return $this->machines;
+    }
+
+    public function addMachine(Machine $machine): self
+    {
+        if (!$this->machines->contains($machine)) {
+            $this->machines->add($machine);
+            $machine->setIlot($this);
         }
 
         return $this;
     }
 
-    public function removeIlotMachine(IlotMachine $ilotMachine): self
+    public function removeMachine(Machine $machine): self
     {
-        if ($this->ilotMachines->removeElement($ilotMachine)) {
+        if ($this->machines->removeElement($machine)) {
             // set the owning side to null (unless already changed)
-            if ($ilotMachine->getIlot() === $this) {
-                $ilotMachine->setIlot(null);
+            if ($machine->getIlot() === $this) {
+                $machine->setIlot(null);
             }
         }
 
         return $this;
     }
-
+    
     /**
-     * @return Collection<int, IlotEmployee>
+     * @return Collection<int, Employee>
      */
-    public function getIlotEmployees(): Collection
+    public function getEmployees(): Collection
     {
-        return $this->ilotEmployees;
+        return $this->employees;
     }
 
-    public function addIlotEmployee(IlotEmployee $ilotEmployee): self
+    public function addEmployee(Employee $employee): self
     {
-        if (!$this->ilotEmployees->contains($ilotEmployee)) {
-            $this->ilotEmployees->add($ilotEmployee);
-            $ilotEmployee->setIlot($this);
+        if (!$this->employees->contains($employee)) {
+            $this->employees->add($employee);
+            $employee->setIlot($this);
         }
 
         return $this;
     }
 
-    public function removeIlotEmployee(IlotEmployee $ilotEmployee): self
+    public function removeEmployee(Employee $employee): self
     {
-        if ($this->ilotEmployees->removeElement($ilotEmployee)) {
+        if ($this->employees->removeElement($employee)) {
             // set the owning side to null (unless already changed)
-            if ($ilotEmployee->getIlot() === $this) {
-                $ilotEmployee->setIlot(null);
+            if ($employee->getIlot() === $this) {
+                $employee->setIlot(null);
             }
         }
 

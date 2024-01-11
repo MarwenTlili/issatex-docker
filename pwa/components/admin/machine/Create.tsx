@@ -2,7 +2,8 @@ import React from 'react'
 import {
     Create as ReactAdminCreate,
     SimpleForm,
-    TextInput
+    TextInput,
+    ReferenceInput
 } from 'react-admin'
 
 const Create = () => (
@@ -11,6 +12,7 @@ const Create = () => (
             <TextInput source='name' />
             <TextInput source='category' />
             <TextInput source='brand' />
+            <ReferenceInput reference='api/ilots' source='ilot' />
         </SimpleForm>
     </ReactAdminCreate>
 )

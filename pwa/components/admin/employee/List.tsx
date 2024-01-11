@@ -2,7 +2,6 @@ import React from 'react'
 import {
     CreateButton,
     DatagridConfigurable,
-    DateField,
     DateInput,
     EditButton,
     ExportButton,
@@ -14,6 +13,7 @@ import {
     TextInput,
     TopToolbar,
     WrapperField,
+    ReferenceField,
 } from 'react-admin'
 
 const ListActions = () => (
@@ -43,8 +43,9 @@ const List = () => (
             <TextField source='firstName' />
             <TextField source='lastName' />
             <TextField source='registrationCode' />
-            <TextField source='category' />
-            <DateField source='recuruitmentAt' />
+            {/* <TextField source='category' /> */}
+            {/* <DateField source='recuruitmentAt' /> */}
+            <ReferenceField reference='api/ilots' source='ilot' />
             <WrapperField label='Actions'>
                 <ShowButton />
                 <EditButton />

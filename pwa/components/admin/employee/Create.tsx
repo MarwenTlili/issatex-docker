@@ -5,6 +5,7 @@ import {
     Create as ReactAdminCreate,
     SimpleForm,
     TextInput,
+    ReferenceInput
 } from 'react-admin'
 
 const Create = () => (
@@ -15,6 +16,7 @@ const Create = () => (
             <TextInput source='registrationCode' />
             <TextInput source='category' />
             <DateInput source='recuruitmentAt' />
+            <ReferenceInput reference='api/ilots' source='ilot' />
         </SimpleForm>
     </ReactAdminCreate>
 )
