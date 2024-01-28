@@ -11,7 +11,7 @@ import {
     TextInput,
 } from 'react-admin'
 
-export const ROLES = ['ROLE_COMPANY', 'ROLE_CLIENT', 'ROLE_USER', 'ROLE_ADMIN']
+export const ROLES = ['ROLE_CLIENT', 'ROLE_USER', 'ROLE_SECRETARY', 'ROLE_ADMIN']
 
 export const equalToPlainPassword = (
     value: string,
