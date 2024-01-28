@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     EditProps,
     Edit as ReactAdminEdit,
-    ReferenceArrayInput,
     SelectArrayInput,
     SimpleForm,
-    TextInput
+    TextInput,
+    useEditContext,
+    useGetList
 } from 'react-admin'
 import { employeeFullName } from './Create';
 
@@ -14,27 +15,88 @@ const Edit = (props: EditProps) => {
         <ReactAdminEdit {...props} title='Edit Ilot'>
             <SimpleForm >
                 <TextInput source='name' required />
-                <ReferenceArrayInput
-                    reference='api/machines'
+                <OneToManySelect
                     source='machines'
-                    sort={{ field: 'name', order: 'ASC' }}
-                    // filter={{
-                    //     'exists[ilot]': false,
-                    //     '@id': {ne: recordId}
-                    // }}
-                >
-                    <SelectArrayInput optionText='name' />
-                </ReferenceArrayInput>
-                <ReferenceArrayInput
-                    reference='api/employees'
+                    reference='api/machines'
+                    mappedBy='ilot'
+                    inversedBy='machines'
+                    optionText={(choice) => `${choice.name}`}
+                />
+                <OneToManySelect
                     source='employees'
-                    sort={{ field: 'firstName', order: 'ASC' }}
-                >
-                    <SelectArrayInput optionText={employeeFullName} />
-                </ReferenceArrayInput>
+                    reference='api/employees'
+                    mappedBy='ilot'
+                    inversedBy='employees'
+                    optionText={employeeFullName}
+                />
             </SimpleForm>
         </ReactAdminEdit>
     )
 }
 
 export default Edit
+
+/**
+ * select only unassigned references for OneToMany
+ * @param props - { source, reference, mappedBy, inversedBy, optionText }
+ * @returns SelectArrayInput
+ * @example
+ * <OneToManySelect
+ *      source='machines'
+ *      reference='api/machines'
+ *      mappedBy='ilot'
+ *      inversedBy='machines'
+ *      optionText={(choice) => `${choice.name}`}
+ * />
+ */
+const OneToManySelect = (props: OneToManySelectProps) => {
+    const { source, reference, mappedBy, inversedBy, optionText } = props
+    const { record, isLoading } = useEditContext()
+    const [filtred, setFiltred] = useState<any[]>([])
+    const {
+        data,
+        total,
+        isLoading: referenceIsLoading,
+        error
+    } = useGetList(reference, {
+        pagination: { page: 1, perPage: 1000 },
+        sort: { field: 'id', order: 'DESC' }
+    })
+
+    useEffect(() => {
+        if (record && data) {
+            /**
+             * filter employees where:
+             *  (not assigned to Ilot) OR (exists in ilot.employees)
+             */
+            const filtered = data.filter(ref =>
+                (ref[mappedBy] === undefined) || (record[inversedBy].some((x: any) => x === ref['@id']))
+            )
+            setFiltred(filtered)
+        }
+    }, [record, data])
+
+    if (error) {
+        return (
+            <p style={{ color: 'red' }}>Error fetching references!</p>
+        )
+    }
+
+    return (
+        <SelectArrayInput
+            source={source}
+            optionText={optionText}
+            choices={filtred}
+            isLoading={referenceIsLoading && isLoading}
+            translateChoice={false}
+        />
+    )
+}
+
+interface OneToManySelectProps {
+    source: string
+    reference: string
+    mappedBy: string
+    inversedBy: string
+    optionText?: (choice: any) => string
+}

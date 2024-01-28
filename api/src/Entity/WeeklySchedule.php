@@ -14,16 +14,15 @@ use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: WeeklyScheduleRepository::class)]
 #[ApiResource]
-class WeeklySchedule
-{
+class WeeklySchedule {
     #[Groups(['user:read'])]
-	#[ORM\Id]
+    #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
-	private ?Ulid $id = null;
+    private ?Ulid $id = null;
 
-    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: false)]
     private ?\DateTimeImmutable $startAt = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
@@ -32,7 +31,7 @@ class WeeklySchedule
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $observation = null;
 
-    #[ORM\ManyToOne(inversedBy: 'weeklySchedules')]
+    #[ORM\OneToOne(inversedBy: 'weeklySchedule', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?ManufacturingOrder $manufacturingOrder = null;
 
@@ -43,71 +42,59 @@ class WeeklySchedule
     #[ORM\OneToMany(mappedBy: 'weeklySchedule', targetEntity: DailyProduction::class, orphanRemoval: true)]
     private Collection $dailyProductions;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->dailyProductions = new ArrayCollection();
     }
 
-    public function getId(): ?Ulid
-    {
+    public function getId(): ?Ulid {
         return $this->id;
     }
 
-    public function getStartAt(): ?\DateTimeImmutable
-    {
+    public function getStartAt(): ?\DateTimeImmutable {
         return $this->startAt;
     }
 
-    public function setStartAt(\DateTimeImmutable $startAt): self
-    {
+    public function setStartAt(\DateTimeImmutable $startAt): self {
         $this->startAt = $startAt;
 
         return $this;
     }
 
-    public function getEndAt(): ?\DateTimeImmutable
-    {
+    public function getEndAt(): ?\DateTimeImmutable {
         return $this->endAt;
     }
 
-    public function setEndAt(\DateTimeImmutable $endAt): self
-    {
+    public function setEndAt(\DateTimeImmutable $endAt): self {
         $this->endAt = $endAt;
 
         return $this;
     }
 
-    public function getObservation(): ?string
-    {
+    public function getObservation(): ?string {
         return $this->observation;
     }
 
-    public function setObservation(?string $observation): self
-    {
+    public function setObservation(?string $observation): self {
         $this->observation = $observation;
 
         return $this;
     }
 
-    public function getManufacturingOrder(): ?ManufacturingOrder
-    {
+    public function getManufacturingOrder(): ?ManufacturingOrder {
         return $this->manufacturingOrder;
     }
 
-    public function setManufacturingOrder(?ManufacturingOrder $manufacturingOrder): self
-    {
+    public function setManufacturingOrder(ManufacturingOrder $manufacturingOrder): self {
         $this->manufacturingOrder = $manufacturingOrder;
 
         return $this;
     }
 
-    public function getIlot(): ?Ilot
-    {
+    public function getIlot(): ?Ilot {
         return $this->ilot;
     }
 
-    public function setIlot(?Ilot $ilot): self
-    {
+    public function setIlot(?Ilot $ilot): self {
         $this->ilot = $ilot;
 
         return $this;
@@ -116,13 +103,11 @@ class WeeklySchedule
     /**
      * @return Collection<int, DailyProduction>
      */
-    public function getDailyProductions(): Collection
-    {
+    public function getDailyProductions(): Collection {
         return $this->dailyProductions;
     }
 
-    public function addDailyProduction(DailyProduction $dailyProduction): self
-    {
+    public function addDailyProduction(DailyProduction $dailyProduction): self {
         if (!$this->dailyProductions->contains($dailyProduction)) {
             $this->dailyProductions->add($dailyProduction);
             $dailyProduction->setWeeklySchedule($this);
@@ -131,8 +116,7 @@ class WeeklySchedule
         return $this;
     }
 
-    public function removeDailyProduction(DailyProduction $dailyProduction): self
-    {
+    public function removeDailyProduction(DailyProduction $dailyProduction): self {
         if ($this->dailyProductions->removeElement($dailyProduction)) {
             // set the owning side to null (unless already changed)
             if ($dailyProduction->getWeeklySchedule() === $this) {

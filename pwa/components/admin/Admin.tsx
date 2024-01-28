@@ -41,6 +41,11 @@ import MachineEdit from './machine/Edit'
 import OrderList from './manufacturingOrder/List'
 import OrderShow from './manufacturingOrder/Show'
 
+import ScheduleList from './weeklySchedule/List'
+import ScheduleCreate from './weeklySchedule/Create'
+import ScheduleShow from './weeklySchedule/Show'
+import ScheduleEdit from './weeklySchedule/Edit'
+
 import ClientList from './client/List'
 import ClientCreate from './client/Create'
 import ClientShow from './client/Show'
@@ -65,6 +70,7 @@ import {
     PersonSearch
 } from '@mui/icons-material'
 import AddHomeWorkIcon from '@mui/icons-material/AddHomeWork'
+import ScheduleSendIcon from '@mui/icons-material/ScheduleSend'
 
 import customDataProvider from '../../utils/customDataProvider'
 
@@ -165,6 +171,15 @@ const AdminUI = () => {
                         show={OrderShow}
                         icon={Assignment}
                         options={{ label: 'Orders' }}
+                    />
+                    <Resource
+                        name='api/weekly_schedules'
+                        list={ScheduleList}
+                        show={ScheduleShow}
+                        create={ScheduleCreate}
+                        edit={ScheduleEdit}
+                        icon={ScheduleSendIcon}
+                        options={{ label: 'Schedule' }}
                     />
                     <Resource
                         name='api/clients'

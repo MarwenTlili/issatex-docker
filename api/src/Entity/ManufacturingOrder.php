@@ -19,6 +19,7 @@ use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
 
 #[ORM\Entity(repositoryClass: ManufacturingOrderRepository::class)]
 #[ApiResource(paginationClientItemsPerPage: true)]
@@ -52,6 +53,11 @@ use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
         'unitPrice', 'totalPrice', 'urgent', 'launched',
         'denied',
     ]
+)]
+// ?exists[weeklySchedule]=false
+#[ApiFilter(
+    ExistsFilter::class,
+    properties: ['weeklySchedule']
 )]
 class ManufacturingOrder {
     #[ORM\Id]
@@ -106,15 +112,14 @@ class ManufacturingOrder {
     #[ORM\ManyToOne(inversedBy: 'manufacturingOrders')]
     private ?Invoice $invoice = null;
 
-    #[ORM\OneToMany(mappedBy: 'manufacturingOrder', targetEntity: WeeklySchedule::class)]
-    private Collection $weeklySchedules;
+    #[ORM\OneToOne(mappedBy: 'manufacturingOrder', cascade: ['persist', 'remove'])]
+    private ?WeeklySchedule $weeklySchedule = null;
 
     #[ORM\OneToMany(mappedBy: 'manufacturingOrder', targetEntity: ManufacturingOrderSize::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $manufacturingOrderSize;
 
     public function __construct() {
         $this->palettes = new ArrayCollection();
-        $this->weeklySchedules = new ArrayCollection();
         $this->manufacturingOrderSize = new ArrayCollection();
     }
 
@@ -279,29 +284,17 @@ class ManufacturingOrder {
         return $this;
     }
 
-    /**
-     * @return Collection<int, WeeklySchedule>
-     */
-    public function getWeeklySchedules(): Collection {
-        return $this->weeklySchedules;
+    public function getWeeklySchedule(): ?WeeklySchedule {
+        return $this->weeklySchedule;
     }
 
-    public function addWeeklySchedule(WeeklySchedule $weeklySchedule): self {
-        if (!$this->weeklySchedules->contains($weeklySchedule)) {
-            $this->weeklySchedules->add($weeklySchedule);
+    public function setWeeklySchedule(WeeklySchedule $weeklySchedule): self {
+        // set the owning side of the relation if necessary
+        if ($weeklySchedule->getManufacturingOrder() !== $this) {
             $weeklySchedule->setManufacturingOrder($this);
         }
 
-        return $this;
-    }
-
-    public function removeWeeklySchedule(WeeklySchedule $weeklySchedule): self {
-        if ($this->weeklySchedules->removeElement($weeklySchedule)) {
-            // set the owning side to null (unless already changed)
-            if ($weeklySchedule->getManufacturingOrder() === $this) {
-                $weeklySchedule->setManufacturingOrder(null);
-            }
-        }
+        $this->weeklySchedule = $weeklySchedule;
 
         return $this;
     }

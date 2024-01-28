@@ -21,8 +21,9 @@ export class ManufacturingOrder implements Item {
         public palettes?: string[],
         public article?: string,
         public invoice?: string,
-        public weeklySchedules?: string[],
-        public manufacturingOrderSize?: string[]
+        public weeklySchedule?: string,
+        public manufacturingOrderSize?: string[],
+        public originId?: string
     ) {
         this["@id"] = _id
     }

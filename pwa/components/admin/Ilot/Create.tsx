@@ -49,7 +49,7 @@ const Create = () => {
                     reference='api/employees'
                     source='employees'
                     sort={{ field: 'firstName', order: 'ASC' }}
-                    filter={{ 'exists[ilot]': false }} // show only unassigned machines 
+                    filter={{ 'exists[ilot]': false }} // show only unassigned employees 
                 >
                     <SelectArrayInput optionText={employeeFullName} />
                 </ReferenceArrayInput>

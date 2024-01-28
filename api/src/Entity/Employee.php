@@ -15,6 +15,7 @@ use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
 
 #[ORM\Entity(repositoryClass: EmployeeRepository::class)]
 #[ApiResource(paginationClientItemsPerPage: true)]
@@ -32,6 +33,7 @@ use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
     properties: ['recuruitmentAt' => DateFilter::EXCLUDE_NULL]
 )]
 #[ApiFilter(OrderFilter::class)]
+#[ApiFilter(ExistsFilter::class, properties: ['ilot'])] // ?exists[ilot]=false
 class Employee {
     #[Groups(['user:read'])]
     #[ORM\Id]
@@ -54,7 +56,7 @@ class Employee {
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $recuruitmentAt = null;
-    
+
     #[ORM\ManyToOne(inversedBy: 'employees')]
     private ?Ilot $ilot = null;
 
@@ -118,14 +120,12 @@ class Employee {
 
         return $this;
     }
-    
-    public function getIlot(): ?Ilot
-    {
+
+    public function getIlot(): ?Ilot {
         return $this->ilot;
     }
 
-    public function setIlot(?Ilot $ilot): self
-    {
+    public function setIlot(?Ilot $ilot): self {
         $this->ilot = $ilot;
 
         return $this;
