@@ -17,20 +17,19 @@ interface ManufacturingOrderRecord extends RaRecord {
 
 const Document = () => {
     const record: ManufacturingOrderRecord = useRecordContext()
+    if (!record.technicalDocument) {
+        return <>
+            <TechnicalDocumentLabel />
+            <div style={{ color: 'orange' }}>No technical document to display</div>
+        </>
+    }
     const doc: TechnicalDocument = useGetOne(TECHNICAL_DOCUMENT_URL, { id: record.technicalDocument }).data
 
     if (!doc || !doc.contentUrl) return null
 
     return (
         <>
-            <Typography
-                variant='caption'
-                display='block'
-                gutterBottom
-                sx={{ color: 'gray' }}
-            >
-                Technical Document
-            </Typography>
+            <TechnicalDocumentLabel />
             <a
                 href={`${ENTRYPOINT}${doc.contentUrl}`}
                 title='technical document'
@@ -43,3 +42,14 @@ const Document = () => {
 }
 
 export default Document
+
+const TechnicalDocumentLabel = () => {
+    return <Typography
+        variant='caption'
+        display='block'
+        gutterBottom
+        sx={{ color: 'gray' }}
+    >
+        Technical Document
+    </Typography>
+}
