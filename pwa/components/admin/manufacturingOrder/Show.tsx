@@ -47,7 +47,9 @@ const Show = () => {
                 <BooleanField source='denied' />
                 <RichTextField source='observation' />
                 <Document />
-                <FieldGuesser source='weeklySchedules' />
+                <ReferenceField source='weeklySchedule' reference='api/weekly_schedules' >
+                    <TextField source='originId' />
+                </ReferenceField>
                 <FieldGuesser source='palettes' />
                 <FieldGuesser source='invoice' />
             </SimpleShowLayout>
