@@ -11,7 +11,7 @@ export class Employee implements Item {
         public lastName?: string,
         public registrationCode?: string,
         public category?: string,
-        public recuruitmentAt?: string,
+        public recruitmentAt?: string,
         public ilot?: string,
         public employeeAttendances?: string[],
     ) {

@@ -55,7 +55,7 @@ class Employee {
     private ?string $category = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $recuruitmentAt = null;
+    private ?\DateTimeImmutable $recruitmentAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'employees')]
     private ?Ilot $ilot = null;
@@ -111,12 +111,16 @@ class Employee {
         return $this;
     }
 
-    public function getRecuruitmentAt(): ?\DateTimeImmutable {
-        return $this->recuruitmentAt;
+    public function getRecruitmentAt(): ?\DateTimeImmutable {
+        return $this->recruitmentAt;
     }
 
-    public function setRecuruitmentAt(?\DateTimeImmutable $recuruitmentAt): self {
-        $this->recuruitmentAt = $recuruitmentAt;
+    public function setRecruitmentAt(?\DateTimeImmutable $recruitmentAt): self {
+        dump($recruitmentAt);
+        // $dateTime = new \DateTime($recruitmentAt, new \DateTimeZone('UTC'));
+        // dump($dateTime);
+        
+        $this->recruitmentAt = $recruitmentAt;
 
         return $this;
     }

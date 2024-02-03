@@ -15,18 +15,28 @@ export default withAuth({
 
             if (!token) return false;
 
-            if (req.nextUrl.pathname.startsWith("/articles")
-                || req.nextUrl.pathname.startsWith("/profile")
-                || req.nextUrl.pathname.startsWith("/manufacturing-orders")
-            ) {
-                let isAuthorized: boolean = false;
-                const articleAuthorizedRoles: Array<string> = ["ROLE_CLIENT"];
-                isAuthorized = articleAuthorizedRoles.every(role => {
-                    if (token.user) {
-                        return token.user.roles.includes(role);
-                    }
-                });
-                return isAuthorized;
+            const commonAuthorizedPaths = ["/profile"];
+
+            if (commonAuthorizedPaths.some((path) => req.nextUrl.pathname.startsWith(path))) {
+                const authorizedRoles: string[] = ["ROLE_CLIENT", "ROLE_SECRETARY"];
+                return authorizedRoles.some((role) =>
+                    token.user?.roles.includes(role)
+                );
+            }
+
+            const roleSpecificPaths: { [key: string]: string[] } = {
+                "/articles": ["ROLE_CLIENT"],
+                "/manufacturing-orders": ["ROLE_CLIENT"],
+                "/employees": ["ROLE_SECRETARY"],
+                "/weekly-schedules": ["ROLE_SECRETARY"],
+            };
+
+            const currentPath = req.nextUrl.pathname;
+            if (roleSpecificPaths[currentPath]) {
+                const authorizedRoles: string[] = roleSpecificPaths[currentPath];
+                return authorizedRoles.some((role) =>
+                    token.user?.roles.includes(role)
+                );
             }
 
             /** `/` only requires the user to be logged in */
