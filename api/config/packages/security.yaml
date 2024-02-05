@@ -58,6 +58,7 @@ security:
         # Allows /auth OR /token/refresh OR /token/invalidate
         - { path: ^/(auth|token/(refresh|invalidate)), roles: PUBLIC_ACCESS } 
         - { path: ^/api/users, methods: [POST], roles: PUBLIC_ACCESS } # Allow posting new user without JWT auth
+        - { path: ^/api/clients, methods: [POST], roles: PUBLIC_ACCESS } # Allow posting new client without JWT auth
         - { path: ^/contexts, roles: PUBLIC_ACCESS } # Allow /contexts/Entrypoint, /contexts/Article, ...
         - { path: ^/_profiler, roles: PUBLIC_ACCESS}
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
