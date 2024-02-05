@@ -104,7 +104,11 @@ export const Form: FunctionComponent<EditManufacturingOrderProps> = ({
         FetchResponse<ManufacturingOrder> | undefined,
         Error | FetchError,
         ManufacturingOrderSaveParams
-    >((saveParams) => saveManufacturingOrder(saveParams))
+    >((saveParams) => saveManufacturingOrder(saveParams), {
+        onSuccess: () => {
+            router.push("/manufacturing-orders")
+        }
+    })
 
     const deleteManufacturingOrderMutation = useMutation<
         FetchResponse<ManufacturingOrder> | undefined,
@@ -284,7 +288,6 @@ export const Form: FunctionComponent<EditManufacturingOrderProps> = ({
             }
 
         }
-
     }
 
     const handleSubmit = async (values: ManufacturingOrder, { setStatus, setSubmitting, setErrors }: FormikHelpers<ManufacturingOrder>) => {
