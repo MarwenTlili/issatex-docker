@@ -7,9 +7,14 @@ import { ErrorMessage, Formik, FormikHelpers } from "formik";
 import { useMutation } from "react-query";
 import Modal from "../components/Modal";
 import * as Yup from "yup";
+import { Client } from "../types/Client";
 
 interface SaveParams {
 	values: User;
+}
+
+interface ClientSaveParams {
+	client: Client;
 }
 
 interface CustomUser extends User {
@@ -24,7 +29,7 @@ function signup() {
 
 	const [agreeTerms, setAgreeTerms] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-	
+
 	const { push } = useRouter();
 
 	const UserSchema = Yup.object().shape({
@@ -37,35 +42,57 @@ function signup() {
 	/** save user using fetch (defined in utils/dataAccess)  */
 	const saveUser = async ({ values }: SaveParams) =>
 		await fetch<User>(!values["@id"] ? "/api/users" : values["@id"], {
-			method: !values["@id"] ? "POST" : "PUT",
+			method: "POST",
 			body: JSON.stringify(values),
 		});
+
+	const saveClient = async ({ client }: ClientSaveParams) =>
+		await fetch<Client>(!client["@id"] ? "/api/clients" : client["@id"], {
+			method: "POST",
+			body: JSON.stringify(client)
+		})
 
 	const saveMutation = useMutation<
 		FetchResponse<User> | undefined, Error | FetchError, SaveParams
 	>((saveParams) => saveUser(saveParams));
 
+	const clientSaveMutation = useMutation<
+		FetchResponse<Client> | undefined, Error | FetchError, ClientSaveParams
+	>((saveParams) => saveClient(saveParams));
+
 	const handleSubmit = (customValues: CustomUser, { setStatus, setSubmitting, setErrors }: FormikHelpers<CustomUser>) => {
 		const { confirmPassword: _, ...values } = customValues;
 		const now = new Date();
 
-		values.roles = ["ROLE_COMPANY"];
+		values.roles = ["ROLE_CLIENT"];
 		values.createdAt = now;
 		values.lastLoginAt = now;
 		values.isVerified = false;
 
-		console.log("values: ", values);
 		/**
 		 * submit user form whith changed vales
 		 */
 		saveMutation.mutate(
 			{ values },
 			{
-				onSuccess: () => {
+				onSuccess: (data) => {
 					setStatus({
 						isValid: true,
-						msg: `Profile Signed Up.`,
+						msg: `User Signed Up.`,
 					});
+					// post client
+					const client = new Client({ name: data?.data.username, account: data?.data["@id"] })
+					clientSaveMutation.mutate(
+						{ client },
+						{
+							onSuccess: (data) => {
+								setStatus({ isValid: true, msg: `Client saved` })
+							},
+							onError: (error) => {
+								setStatus({ isValid: false, msg: `${error.message}` })
+							}
+						}
+					)
 					push("/auth/signin");
 				},
 				onError: (error) => {
@@ -128,9 +155,8 @@ function signup() {
 										<input
 											type="text" name="username" id="user_username" placeholder="your name or company name"
 											value={values.username ?? ""}
-											className={`bg-gray-50 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600  block w-full p-2.5 dark:bg-gray-700  dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 ${
-												errors.username && touched.username ? "border border-red-500" : "border border-gray-300 focus:border-primary-600 dark:border-gray-600 dark:focus:border-blue-500"
-											}`}
+											className={`bg-gray-50 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600  block w-full p-2.5 dark:bg-gray-700  dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 ${errors.username && touched.username ? "border border-red-500" : "border border-gray-300 focus:border-primary-600 dark:border-gray-600 dark:focus:border-blue-500"
+												}`}
 											aria-invalid={
 												errors.username && touched.username ? "true" : undefined
 											}
@@ -151,9 +177,8 @@ function signup() {
 											type="email" name="email" id="user_email"
 											value={values.email ?? ""}
 											placeholder="name@company.com"
-											className={`bg-gray-50 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 ${
-												errors.email && touched.email ? "border border-red-500" : "border-gray-300 focus:border-primary-600 dark:border-gray-600 dark:focus:border-blue-500"
-											}`}
+											className={`bg-gray-50 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 ${errors.email && touched.email ? "border border-red-500" : "border-gray-300 focus:border-primary-600 dark:border-gray-600 dark:focus:border-blue-500"
+												}`}
 											aria-invalid={
 												errors.email && touched.email ? "true" : undefined
 											}
@@ -174,9 +199,8 @@ function signup() {
 											type="password" name="plainPassword" id="plainPassword" placeholder="••••••••"
 											value={values.plainPassword ?? ""}
 											required={true}
-											className={`bg-gray-50 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 ${
-												errors.email && touched.email ? "border border-red-500" : "border-gray-300 focus:border-primary-600 dark:border-gray-600 dark:focus:border-blue-500"
-											}`}
+											className={`bg-gray-50 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 ${errors.email && touched.email ? "border border-red-500" : "border-gray-300 focus:border-primary-600 dark:border-gray-600 dark:focus:border-blue-500"
+												}`}
 											aria-invalid={
 												errors.plainPassword && touched.plainPassword ? "true" : undefined
 											}
@@ -192,11 +216,10 @@ function signup() {
 
 									<div>
 										<label htmlFor="confirmPassword" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
-										<input type="confirmPassword" name="confirmPassword" id="confirmPassword" placeholder="••••••••"
+										<input type="password" name="confirmPassword" id="confirmPassword" placeholder="••••••••"
 											value={values.confirmPassword ?? ""}
-											className={`bg-gray-50 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 ${
-												errors.email && touched.email ? "border border-red-500" : "border-gray-300 focus:border-primary-600 dark:border-gray-600 dark:focus:border-blue-500"
-											}`}
+											className={`bg-gray-50 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 ${errors.email && touched.email ? "border border-red-500" : "border-gray-300 focus:border-primary-600 dark:border-gray-600 dark:focus:border-blue-500"
+												}`}
 											required={true}
 											aria-invalid={
 												errors.confirmPassword && touched.confirmPassword ? "true" : undefined
