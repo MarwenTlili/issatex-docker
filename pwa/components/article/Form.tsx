@@ -124,8 +124,6 @@ export const Form: FunctionComponent<FormProps> = ({ article, client }) => {
         values.client = client?.["@id"]
         values.composition = composition
 
-        console.log("image: ", image)
-
         if (image) {
             const formData = new FormData()
             formData.append("file", image)
@@ -141,8 +139,6 @@ export const Form: FunctionComponent<FormProps> = ({ article, client }) => {
             values.image = undefined
         }
 
-        console.log("values: ", values)
-
         saveMutation.mutate(
             { values },
             {
@@ -152,10 +148,9 @@ export const Form: FunctionComponent<FormProps> = ({ article, client }) => {
                         msg: `Article ${isCreation ? "created" : "updated"}.`,
                     })
                     handleSnackbarOpen(snackbarPosition, "success", `Article ${isCreation ? "created" : "updated"}.`)
-                    // router.push("/articles")
+                    router.push("/articles")
                 },
                 onError: (error) => {
-                    // console.log(error)
                     setStatus({
                         isValid: false,
                         msg: `${error.message}`,
