@@ -246,22 +246,20 @@ export const Show: FunctionComponent<Props> = ({ manufacturingOrder, article, te
                         </td>
                     </tr>
 
-                    <tr>
-                        <th scope="row">weeklySchedules</th>
+                    {/* <tr>
+                        <th scope="row">weeklySchedule</th>
                         <td>
-                            {manufacturingOrder["weeklySchedules"] && (
-                                <ReferenceLinks
-                                    items={manufacturingOrder["weeklySchedules"].map(
-                                        (ref: any) => ({
-                                            href: getItemPath(ref, "/weeklyschedules/[id]"),
-                                            name: ref,
-                                        })
-                                    )}
-                                />
-                            )}
+                            <Link
+                                href={getItemPath(
+                                    manufacturingOrder.weeklySchedule,
+                                    "/manufacturingorders/[id]/edit"
+                                )}
+                            >
+                                {manufacturingOrder.weeklySchedule}
+                            </Link>
                         </td>
-                    </tr>
-                    <tr>
+                    </tr> */}
+                    {/* <tr>
                         <th scope="row">palettes</th>
                         <td>
                             {manufacturingOrder["palettes"] && (
@@ -274,8 +272,8 @@ export const Show: FunctionComponent<Props> = ({ manufacturingOrder, article, te
                                 />
                             )}
                         </td>
-                    </tr>
-                    <tr>
+                    </tr> */}
+                    {/* <tr>
                         <th scope="row">invoice</th>
                         <td>
                             {manufacturingOrder["invoice"] && (
@@ -290,7 +288,7 @@ export const Show: FunctionComponent<Props> = ({ manufacturingOrder, article, te
                                 />
                             )}
                         </td>
-                    </tr>
+                    </tr> */}
                 </tbody>
             </table>
             {error && (
