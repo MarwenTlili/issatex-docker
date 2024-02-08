@@ -24,7 +24,7 @@ export const equalToPlainPassword = (
 
 const Create = () => {
     return (
-        <ReactAdminCreate title={'Create User'} redirect={false}>
+        <ReactAdminCreate title={'Create User'} redirect='list'>
             <SimpleForm>
                 <ImageInput source='avatar'
                     label='Avatar'
