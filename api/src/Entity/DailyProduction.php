@@ -11,14 +11,13 @@ use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: DailyProductionRepository::class)]
 #[ApiResource]
-class DailyProduction
-{
+class DailyProduction {
     #[Groups(['user:read'])]
-	#[ORM\Id]
+    #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
-	private ?Ulid $id = null;
+    private ?Ulid $id = null;
 
     #[ORM\Column]
     private ?int $firstChoiceQuantity = null;
@@ -38,66 +37,55 @@ class DailyProduction
     #[ORM\JoinColumn(nullable: false)]
     private ?ProductionDate $productionDate = null;
 
-    public function getId(): ?Ulid
-    {
+    public function getId(): ?Ulid {
         return $this->id;
     }
 
-    public function getFirstChoiceQuantity(): ?int
-    {
+    public function getFirstChoiceQuantity(): ?int {
         return $this->firstChoiceQuantity;
     }
 
-    public function setFirstChoiceQuantity(int $firstChoiceQuantity): self
-    {
+    public function setFirstChoiceQuantity(int $firstChoiceQuantity): self {
         $this->firstChoiceQuantity = $firstChoiceQuantity;
 
         return $this;
     }
 
-    public function getSecondChoiceQuantity(): ?int
-    {
+    public function getSecondChoiceQuantity(): ?int {
         return $this->secondChoiceQuantity;
     }
 
-    public function setSecondChoiceQuantity(int $secondChoiceQuantity): self
-    {
+    public function setSecondChoiceQuantity(int $secondChoiceQuantity): self {
         $this->secondChoiceQuantity = $secondChoiceQuantity;
 
         return $this;
     }
 
-    public function getIlot(): ?Ilot
-    {
+    public function getIlot(): ?Ilot {
         return $this->ilot;
     }
 
-    public function setIlot(?Ilot $ilot): self
-    {
+    public function setIlot(?Ilot $ilot): self {
         $this->ilot = $ilot;
 
         return $this;
     }
 
-    public function getWeeklySchedule(): ?WeeklySchedule
-    {
+    public function getWeeklySchedule(): ?WeeklySchedule {
         return $this->weeklySchedule;
     }
 
-    public function setWeeklySchedule(?WeeklySchedule $weeklySchedule): self
-    {
+    public function setWeeklySchedule(?WeeklySchedule $weeklySchedule): self {
         $this->weeklySchedule = $weeklySchedule;
 
         return $this;
     }
 
-    public function getProductionDate(): ?ProductionDate
-    {
+    public function getProductionDate(): ?ProductionDate {
         return $this->productionDate;
     }
 
-    public function setProductionDate(?ProductionDate $productionDate): self
-    {
+    public function setProductionDate(?ProductionDate $productionDate): self {
         $this->productionDate = $productionDate;
 
         return $this;
