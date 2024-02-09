@@ -1,3 +1,4 @@
+import { Article } from "./Article"
 import { Item } from "./item"
 
 export class ManufacturingOrder implements Item {
@@ -19,7 +20,7 @@ export class ManufacturingOrder implements Item {
         public denied?: boolean,
         public client?: string,
         public palettes?: string[],
-        public article?: string,
+        public article?: string | Article,
         public invoice?: string,
         public weeklySchedule?: string,
         public manufacturingOrderSize?: string[],

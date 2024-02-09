@@ -107,7 +107,7 @@ export const List: FunctionComponent<Props> = ({ manufacturingOrders, totalItems
                         <div className="p-5">
                             <h2 className="text-gray-500">{order.id}</h2>
 
-                            <ArticleElement id={order.article} />
+                            <ArticleElement id={order.article as string} />
 
                             <p>
                                 <strong>Created At:</strong>

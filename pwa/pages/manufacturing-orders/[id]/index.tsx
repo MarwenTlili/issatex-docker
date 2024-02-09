@@ -39,7 +39,7 @@ const Page: NextPage = () => {
         },
     } = useQuery<FetchResponse<Article> | undefined>(
         ["article", manufacturingOrder?.article],
-        () => getArticle(manufacturingOrder?.article)
+        () => getArticle(manufacturingOrder?.article as string)
     )
     
     if (!manufacturingOrder) {

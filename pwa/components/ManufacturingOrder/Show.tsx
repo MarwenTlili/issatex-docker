@@ -157,7 +157,7 @@ export const Show: FunctionComponent<Props> = ({ manufacturingOrder, article, te
                         <td>
                             {manufacturingOrder["article"] && (
                                 <Link
-                                    href={getItemPath(manufacturingOrder.article, "/articles/[id]")}
+                                    href={getItemPath(manufacturingOrder.article as string, "/articles/[id]")}
                                     target="_blank"
                                     className="font-bold"
                                 >
