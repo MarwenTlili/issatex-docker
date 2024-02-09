@@ -1,3 +1,5 @@
+import { Ilot } from "./Ilot";
+import { ManufacturingOrder } from "./ManufacturingOrder";
 import { Item } from "./item";
 
 export class WeeklySchedule implements Item{
@@ -10,8 +12,8 @@ export class WeeklySchedule implements Item{
         public startAt?: Date,
         public endAt?: Date,
         public observation?: string,
-        public manufacturingOrder?: string,
-        public ilot?: string,
+        public manufacturingOrder?: ManufacturingOrder | string,
+        public ilot?: Ilot,
         public dailyProductions?: string[]
     ) {
         this["@id"] = _id
