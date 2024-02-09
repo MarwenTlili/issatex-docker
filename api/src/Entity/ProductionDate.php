@@ -14,14 +14,13 @@ use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: ProductionDateRepository::class)]
 #[ApiResource]
-class ProductionDate
-{
+class ProductionDate {
     #[Groups(['user:read'])]
-	#[ORM\Id]
+    #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
-	private ?Ulid $id = null;
+    private ?Ulid $id = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $dayAt = null;
@@ -29,23 +28,19 @@ class ProductionDate
     #[ORM\OneToMany(mappedBy: 'productionDate', targetEntity: DailyProduction::class, orphanRemoval: true)]
     private Collection $dailyProductions;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->dailyProductions = new ArrayCollection();
     }
 
-    public function getId(): ?Ulid
-    {
+    public function getId(): ?Ulid {
         return $this->id;
     }
 
-    public function getDayAt(): ?\DateTimeImmutable
-    {
+    public function getDayAt(): ?\DateTimeImmutable {
         return $this->dayAt;
     }
 
-    public function setDayAt(\DateTimeImmutable $dayAt): self
-    {
+    public function setDayAt(\DateTimeImmutable $dayAt): self {
         $this->dayAt = $dayAt;
 
         return $this;
@@ -54,13 +49,11 @@ class ProductionDate
     /**
      * @return Collection<int, DailyProduction>
      */
-    public function getDailyProductions(): Collection
-    {
+    public function getDailyProductions(): Collection {
         return $this->dailyProductions;
     }
 
-    public function addDailyProduction(DailyProduction $dailyProduction): self
-    {
+    public function addDailyProduction(DailyProduction $dailyProduction): self {
         if (!$this->dailyProductions->contains($dailyProduction)) {
             $this->dailyProductions->add($dailyProduction);
             $dailyProduction->setProductionDate($this);
@@ -69,8 +62,7 @@ class ProductionDate
         return $this;
     }
 
-    public function removeDailyProduction(DailyProduction $dailyProduction): self
-    {
+    public function removeDailyProduction(DailyProduction $dailyProduction): self {
         if ($this->dailyProductions->removeElement($dailyProduction)) {
             // set the owning side to null (unless already changed)
             if ($dailyProduction->getProductionDate() === $this) {
