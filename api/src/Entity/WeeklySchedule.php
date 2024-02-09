@@ -13,28 +13,37 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: WeeklyScheduleRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['schedule']],
+    // denormalizationContext: ['groups' => ['write']],
+    paginationClientItemsPerPage: true
+)]
 class WeeklySchedule {
-    #[Groups(['user:read'])]
+    #[Groups(['schedule'])]
     #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
     private ?Ulid $id = null;
 
+    #[Groups(['schedule'])]
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: false)]
     private ?\DateTimeImmutable $startAt = null;
 
+    #[Groups(['schedule'])]
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $endAt = null;
 
+    #[Groups(['schedule'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $observation = null;
 
+    #[Groups(['schedule'])]
     #[ORM\OneToOne(inversedBy: 'weeklySchedule', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?ManufacturingOrder $manufacturingOrder = null;
 
+    #[Groups(['schedule'])]
     #[ORM\ManyToOne(inversedBy: 'weeklySchedules')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Ilot $ilot = null;
