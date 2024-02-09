@@ -23,13 +23,13 @@ use ApiPlatform\Metadata\ApiFilter;
 )]
 class Ilot
 {
-    #[Groups(['user:read'])]
 	#[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
 	private ?Ulid $id = null;
 
+    #[Groups(['schedule'])]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $name = null;
     

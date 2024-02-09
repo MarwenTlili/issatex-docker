@@ -60,6 +60,7 @@ use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
     properties: ['weeklySchedule']
 )]
 class ManufacturingOrder {
+    #[Groups(['schedule'])]
     #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -105,6 +106,7 @@ class ManufacturingOrder {
     #[ORM\OneToMany(mappedBy: 'manufacturingOrder', targetEntity: Palette::class)]
     private Collection $palettes;
 
+    #[Groups(['schedule'])]
     #[ORM\ManyToOne(inversedBy: 'manufacturingOrders')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Article $article = null;

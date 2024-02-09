@@ -16,6 +16,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 #[ApiResource(paginationClientItemsPerPage: true)]
@@ -47,9 +48,11 @@ class Article {
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
     private ?Ulid $id = null;
 
+    #[Groups(['schedule'])]
     #[ORM\Column(length: 255)]
     private ?string $designation = null;
 
+    #[Groups(['schedule'])]
     #[ORM\Column(length: 255)]
     private ?string $model = null;
 
