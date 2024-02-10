@@ -1,20 +1,14 @@
-import { Dispatch, FunctionComponent, SetStateAction, useEffect, useState } from "react"
+import { Dispatch, FunctionComponent, SetStateAction } from "react"
 
 import { WeeklySchedule } from "../../types/WeeklySchedule"
-import IlotName from "../ilot/IlotName"
-import { useSession } from "next-auth/react"
 import { Article } from "../../types/Article"
-import { fetch, getItemPath } from "../../utils/dataAccess"
+import { getItemPath } from "../../utils/dataAccess"
 import { ManufacturingOrder } from "../../types/ManufacturingOrder"
-import useSWR from "swr"
 import Link from "next/link"
-import { Ilot } from "../../types/Ilot"
 
 export const SCHEDULES_ITEMS_PER_PAGE = ["5", "10", "20", "30"]
 
 export const List: FunctionComponent<Props> = ({ weeklyschedules, totalItems, perPage, setPerPage }) => {
-    const { data: session, status } = useSession()
-
     return (
         <div className="container p-4">
             <div className="block sm:flex sm:justify-between sm:items-center">
@@ -102,13 +96,4 @@ interface Props {
     totalItems?: number | undefined
     perPage: string
     setPerPage: Dispatch<SetStateAction<string>>
-}
-
-// class WeeklyScheduleCustom extends WeeklySchedule {
-//     public manufacturingOrder?: ManufacturingOrder
-//     public ilot?: Ilot
-// }
-
-const isManufacturingOrder = () => {
-
 }
