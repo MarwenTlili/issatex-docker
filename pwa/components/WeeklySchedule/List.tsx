@@ -11,6 +11,9 @@ export const SCHEDULES_ITEMS_PER_PAGE = ["5", "10", "20", "30"]
 export const List: FunctionComponent<Props> = ({ weeklyschedules, totalItems, perPage, setPerPage }) => {
     return (
         <div className="container p-4">
+            <div className="flex justify-between items-center">
+                <h1 className="text-3xl mb-2">Weekly Schedules</h1>
+            </div>
             <div className="block sm:flex sm:justify-between sm:items-center">
                 <p className="pt-2">Weekly Schedules {weeklyschedules.length} / {totalItems}</p>
                 <p className="pt-2">
