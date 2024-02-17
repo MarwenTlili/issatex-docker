@@ -16,6 +16,7 @@ const navigations: NavigationLink[] = [
     { name: 'Manufacturing Orders', href: '/manufacturing-orders', isCurrent: false, roles: ['ROLE_CLIENT'] },
     { name: 'Employees', href: '/employees', isCurrent: false, roles: ['ROLE_SECRETARY'] },
     { name: 'Schedules', href: '/weekly-schedules', isCurrent: false, roles: ['ROLE_SECRETARY'] },
+    { name: 'Productions', href: '/daily-productions', isCurrent: false, roles: ['ROLE_SECRETARY'] },
 ];
 
 function classNames(...classes: any[]) {

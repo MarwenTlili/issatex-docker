@@ -19,7 +19,7 @@ use Symfony\Component\Uid\Ulid;
     paginationClientItemsPerPage: true
 )]
 class WeeklySchedule {
-    #[Groups(['schedule'])]
+    #[Groups(['schedule', 'DailyProduction_Collection', 'DailyProduction_Get'])]
     #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -48,6 +48,7 @@ class WeeklySchedule {
     #[ORM\JoinColumn(nullable: false)]
     private ?Ilot $ilot = null;
 
+    #[Groups(['schedule'])]
     #[ORM\OneToMany(mappedBy: 'weeklySchedule', targetEntity: DailyProduction::class, orphanRemoval: true)]
     private Collection $dailyProductions;
 

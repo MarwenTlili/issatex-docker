@@ -9,8 +9,8 @@ export class WeeklySchedule implements Item{
     
     constructor(
         _id?: string,
-        public startAt?: Date,
-        public endAt?: Date,
+        public startAt?: string,
+        public endAt?: string,
         public observation?: string,
         public manufacturingOrder?: ManufacturingOrder | string,
         public ilot?: Ilot,

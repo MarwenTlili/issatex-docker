@@ -29,7 +29,7 @@ class Ilot
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
 	private ?Ulid $id = null;
 
-    #[Groups(['schedule'])]
+    #[Groups(['schedule', 'DailyProduction_Collection', 'DailyProduction_Get'])]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $name = null;
     

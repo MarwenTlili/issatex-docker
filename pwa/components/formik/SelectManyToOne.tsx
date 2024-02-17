@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { fetch } from "../../utils/dataAccess";
 import useSWR from 'swr';
 import { FieldProps } from 'formik';
@@ -11,7 +11,7 @@ import { FieldProps } from 'formik';
  * @returns 
  * 
  * @example
- * <Field name="ilot" as={Select} reference="/api/ilots" optionValue="name" />
+ * <Field name="ilot" as={Select} reference="/api/ilots" optionText="name" />
  */
 const SelectManyToOne: string | React.ComponentType<FieldProps['field'] & SelectProps> = (props) => {
     const { reference, optionText, name, value, onChange, onBlur } = props;
@@ -47,7 +47,7 @@ const SelectManyToOne: string | React.ComponentType<FieldProps['field'] & Select
 export default SelectManyToOne;
 
 interface SelectProps {
-    reference: string;
+    reference: string
     optionText: string
 }
 
