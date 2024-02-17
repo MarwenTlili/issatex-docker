@@ -36,7 +36,7 @@ export const List: FunctionComponent<Props> = ({ weeklyschedules, totalItems, pe
                     weeklyschedules.length != 0 &&
                     weeklyschedules.map((weeklyschedule) => (
                         <li key={weeklyschedule.id}
-                            className="w-full border-b-2 my-4 rounded-md"
+                            className="w-full border-b-2 my-4 rounded-md odd:bg-white even:bg-gray-50"
                         >
                             <div className="grid font-sans">
                                 <div className="flex flex-col sm:flex-row">
