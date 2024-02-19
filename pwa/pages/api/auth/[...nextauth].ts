@@ -159,7 +159,7 @@ export const authOptions: NextAuthOptions = {
              * update({avatar : response.data.contentUrl});
              */
             if (trigger === "update" && session?.avatar) {
-                console.log("trigger: ", trigger);
+                // console.log("trigger: ", trigger);
                 if (token.user) token.user.avatarContentUrl = session.avatar;
             }
 
