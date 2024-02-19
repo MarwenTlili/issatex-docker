@@ -1,4 +1,4 @@
-import { NextComponentType, NextPageContext } from "next"
+import { GetServerSidePropsContext, NextComponentType, NextPageContext } from "next"
 import Head from "next/head"
 
 import { Form } from "../../components/dailyProduction/Form"
@@ -13,7 +13,7 @@ import { useMercure } from "../../utils/mercure"
 import { DailyProduction } from "../../types/DailyProduction"
 import { getDailyProductions, getDailyProductionsPath } from "../../components/dailyProduction/PageList"
 
-const Page: NextComponentType<NextPageContext> = () => {
+const Page: NextComponentType<NextPageContext> = ({ weeklySchedule }: { weeklySchedule?: string }) => {
     const {
         query: { page },
     } = useRouter()
@@ -39,10 +39,32 @@ const Page: NextComponentType<NextPageContext> = () => {
                 </Head>
             </div>
             <Template>
-                <Form weeklySchedules={weeklySchedules} dailyProductions={dailyProductions} />
+                <Form dailyProductions={dailyProductions}
+                    weeklySchedules={weeklySchedules}
+                    weeklySchedule={weeklySchedule}
+                />
             </Template>
         </div>
     )
 }
 
 export default Page
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    const data: DataProps = { props: {} }
+    const weeklySchedule = (context.query.weeklySchedule as string | undefined)
+
+    if (weeklySchedule) {
+        data.props.weeklySchedule = weeklySchedule
+    }
+
+    return data
+}
+
+interface DataProps {
+    props: CreateDailyProductionProps
+}
+
+interface CreateDailyProductionProps {
+    weeklySchedule?: string
+}

@@ -37,12 +37,12 @@ export const List: FunctionComponent<Props> = ({ dailyproductions, totalItems, p
         <div className="p-4">
             <div className="flex justify-between items-center">
                 <h1 className="text-3xl mb-2">Daily Productions</h1>
-                <Link
+                {/* <Link
                     href="/daily-productions/create"
                     className="bg-cyan-500 hover:bg-cyan-700 text-white text-sm font-bold py-2 px-4 rounded"
                 >
                     Create
-                </Link>
+                </Link> */}
             </div>
 
             <div className="block sm:flex sm:justify-between sm:items-center">

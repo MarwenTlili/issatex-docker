@@ -38,53 +38,67 @@ export const List: FunctionComponent<Props> = ({ weeklyschedules, totalItems, pe
                         <li key={weeklyschedule.id}
                             className="w-full border-b-2 my-4 rounded-md odd:bg-white even:bg-gray-50"
                         >
-                            <div className="grid font-sans">
-                                <div className="flex flex-col sm:flex-row">
-                                    <div className="flex-shrink-0 mr-2 font-sans md:flex-shrink">Schedule </div>
-                                    <Link
-                                        href={getItemPath(weeklyschedule["@id"], "/weekly-schedules/[id]")}
-                                        className="font-mono text-lg text-cyan-600/100 hover:text-indigo-800"
-                                    >
-                                        {weeklyschedule.id}
-                                    </Link>
-                                </div>
+                            <div className="my-2 sm:flex sm:flex-row sm:justify-between">
+                                <div className="">
+                                    <div className="flex flex-col sm:flex-row">
+                                        <div className="flex-shrink-0 mr-2 font-sans md:flex-shrink">Schedule </div>
+                                        <Link
+                                            href={getItemPath(weeklyschedule["@id"], "/weekly-schedules/[id]")}
+                                            className="font-mono text-lg text-cyan-600/100 hover:text-indigo-800"
+                                        >
+                                            {weeklyschedule.id}
+                                        </Link>
+                                    </div>
 
-                                <div className="flex flex-col sm:flex-row">
+                                    <div className="flex flex-col sm:flex-row">
+                                        <div className="font-sans">
+                                            From: <span className="prose">{new Date(weeklyschedule.startAt || '').toLocaleDateString()}</span>
+                                        </div>
+                                        <div className="font-sans sm:ml-4">
+                                            To: <span className="prose">{new Date(weeklyschedule.endAt || '').toLocaleDateString()}</span>
+                                        </div>
+                                    </div>
+
                                     <div className="font-sans">
-                                        From: <span className="prose">{new Date(weeklyschedule.startAt || '').toLocaleDateString()}</span>
+                                        Ilot:
+                                        <span className="ml-2 font-sans prose">
+                                            {weeklyschedule.ilot?.name}
+                                        </span>
                                     </div>
-                                    <div className="font-sans sm:ml-4">
-                                        To: <span className="prose">{new Date(weeklyschedule.endAt || '').toLocaleDateString()}</span>
+                                    <div className="font-sans">
+                                        Order:
+                                        <span className="ml-2 font-sans prose">
+                                            {weeklyschedule.manufacturingOrder && (
+                                                (weeklyschedule.manufacturingOrder as ManufacturingOrder).id
+                                            )}
+                                        </span>
+                                    </div>
+                                    <div className="font-sans">
+                                        Article:
+                                        <span className="ml-2 font-sans prose">
+                                            {weeklyschedule.manufacturingOrder && (
+                                                ((weeklyschedule.manufacturingOrder as ManufacturingOrder).article as Article).designation
+                                            )}
+                                        </span>
+                                    </div>
+                                    <div className="font-sans">
+                                        Observation:
+                                        <p className='max-w-full line-clamp-1 font-sans prose'
+                                            dangerouslySetInnerHTML={{ __html: weeklyschedule.observation ?? "" }}
+                                        />
                                     </div>
                                 </div>
 
-                                <div className="font-sans">
-                                    Ilot:
-                                    <span className="ml-2 font-sans prose">
-                                        {weeklyschedule.ilot?.name}
-                                    </span>
-                                </div>
-                                <div className="font-sans">
-                                    Order:
-                                    <span className="ml-2 font-sans prose">
-                                        {weeklyschedule.manufacturingOrder && (
-                                           (weeklyschedule.manufacturingOrder as ManufacturingOrder).id
-                                        )}
-                                    </span>
-                                </div>
-                                <div className="font-sans">
-                                    Article: 
-                                    <span className="ml-2 font-sans prose">
-                                        {weeklyschedule.manufacturingOrder && (
-                                            ((weeklyschedule.manufacturingOrder as ManufacturingOrder).article as Article).designation
-                                        )}
-                                    </span>
-                                </div>
-                                <div className="font-sans">
-                                    Observation:
-                                    <p className='max-w-full line-clamp-1 font-sans prose'
-                                        dangerouslySetInnerHTML={{ __html: weeklyschedule.observation ?? "" }}
-                                    />
+                                <div className=" my-2 py-1">
+                                    <Link
+                                        href={{
+                                            pathname: "/daily-productions/create",
+                                            query: { weeklySchedule: weeklyschedule["@id"]}
+                                        }}
+                                        className="bg-cyan-500 hover:bg-cyan-700 text-white text-sm font-bold py-2 px-4 rounded whitespace-nowrap"
+                                    >
+                                        Add production
+                                    </Link>
                                 </div>
                             </div>
                         </li>

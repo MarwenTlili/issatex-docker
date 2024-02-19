@@ -1,7 +1,7 @@
 import { ChangeEvent, FunctionComponent, useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { ErrorMessage, Field, Formik, FormikHelpers, FormikState } from "formik"
+import { ErrorMessage, Field, Formik, FormikHelpers } from "formik"
 import { useMutation } from "react-query"
 
 import { fetch, FetchError, FetchResponse } from "../../utils/dataAccess"
@@ -13,6 +13,7 @@ interface Props {
     dailyProduction?: DailyProduction
     weeklySchedules?: WeeklySchedule[] | undefined
     dailyProductions?: DailyProduction[] | undefined
+    weeklySchedule?: string
 }
 
 interface SaveParams {
@@ -35,16 +36,26 @@ const saveDailyProduction = async ({ values }: SaveParams) =>
 const deleteDailyProduction = async (id: string) =>
     await fetch<DailyProduction>(id, { method: "DELETE" })
 
-export const Form: FunctionComponent<Props> = ({ dailyProduction, weeklySchedules, dailyProductions }) => {
+export const Form: FunctionComponent<Props> = ({
+    dailyProduction,
+    weeklySchedules,
+    dailyProductions,
+    weeklySchedule
+}) => {
     const [, setError] = useState<string | null>(null)
     const router = useRouter()
     const [selectedDay, setSelectedDay] = useState<string>(dailyProduction?.day?.split('T')[0] || "")
-    const [selectedSchedule, setSelectedSchedule] = useState<string | undefined>(dailyProduction?.weeklySchedule)
+    /**
+     * weeklySchedule from weeklySchedule/List
+     * dailyProduction?.weeklySchedule from Edit 
+     */
+    const [selectedSchedule, setSelectedSchedule] = useState<string | undefined>(
+        dailyProduction?.weeklySchedule || weeklySchedule
+    )
     const [scheduleRange, setScheduleRange] = useState<{
         startAt: string | undefined, endAt: string | undefined
     } | undefined>()
     const [selectedIlot, setSelectedIlot] = useState<string | undefined>(dailyProduction?.ilot)
-    // const [initialValues, setInitialValues] = useState<DailyProduction | undefined>(dailyProduction)
 
     const saveMutation = useMutation<
         FetchResponse<DailyProduction> | undefined,
@@ -72,7 +83,7 @@ export const Form: FunctionComponent<Props> = ({ dailyProduction, weeklySchedule
         deleteMutation.mutate({ id: dailyProduction["@id"] })
     }
 
-    const handleSubmit = async (values: DailyProduction, { setStatus, setSubmitting, resetForm, setErrors }: FormikHelpers<DailyProduction>) => {
+    const handleSubmit = async (values: DailyProduction, { setStatus, setSubmitting, setErrors }: FormikHelpers<DailyProduction>) => {
         if (selectedSchedule) values.weeklySchedule = selectedSchedule
         if (selectedIlot) values.ilot = selectedIlot
 
