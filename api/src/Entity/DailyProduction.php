@@ -16,8 +16,6 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Validator\Constraints\DateInRangeOfEntityAttributes;
 use App\Validator\Constraints\UniqueDate;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\Unique;
 
 #[ORM\Entity(repositoryClass: DailyProductionRepository::class)]
 #[ApiResource(paginationClientItemsPerPage: true)]
@@ -36,12 +34,10 @@ class DailyProduction {
 
     #[Groups(['DailyProduction_Collection', 'DailyProduction_Get'])]
     #[ORM\Column]
-    // #[Assert\PositiveOrZero]
     private ?int $firstChoiceQuantity = null;
 
     #[Groups(['DailyProduction_Collection', 'DailyProduction_Get'])]
     #[ORM\Column]
-    // #[Assert\PositiveOrZero]
     private ?int $secondChoiceQuantity = null;
     
     #[Groups(['DailyProduction_Collection', 'DailyProduction_Get'])]
