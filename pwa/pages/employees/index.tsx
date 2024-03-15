@@ -18,11 +18,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     if (!session) return data
 
-    if (session.user) {
-        console.log(session.user);
-        
-    }
-
     return data
 }
 
