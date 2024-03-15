@@ -11,44 +11,50 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Ulid;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 
 #[ORM\Entity(repositoryClass: WeeklyScheduleRepository::class)]
-#[ApiResource(
-    normalizationContext: ['groups' => ['schedule']],
-    // denormalizationContext: ['groups' => ['write']],
-    paginationClientItemsPerPage: true
-)]
+#[ApiResource(paginationClientItemsPerPage: true, order: ['startAt' => 'DESC'])]
+#[GetCollection(normalizationContext: ['groups' => ['Schedule_Collection']])]
+#[Get(normalizationContext: ['groups' => ['Schedule_Get']])]
+#[Post()]
+#[Put()]
+#[Delete()]
 class WeeklySchedule {
-    #[Groups(['schedule', 'DailyProduction_Collection', 'DailyProduction_Get'])]
+    #[Groups(['Schedule_Collection', 'Schedule_Get', 'DailyProduction_Collection', 'DailyProduction_Get'])]
     #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
     private ?Ulid $id = null;
 
-    #[Groups(['schedule'])]
+    #[Groups(['Schedule_Collection', 'Schedule_Get'])]
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: false)]
     private ?\DateTimeImmutable $startAt = null;
 
-    #[Groups(['schedule'])]
+    #[Groups(['Schedule_Collection', 'Schedule_Get'])]
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $endAt = null;
 
-    #[Groups(['schedule'])]
+    #[Groups(['Schedule_Collection', 'Schedule_Get'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $observation = null;
 
-    #[Groups(['schedule'])]
+    #[Groups(['Schedule_Collection', 'Schedule_Get'])]
     #[ORM\OneToOne(inversedBy: 'weeklySchedule', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?ManufacturingOrder $manufacturingOrder = null;
 
-    #[Groups(['schedule'])]
+    #[Groups(['Schedule_Collection', 'Schedule_Get', 'DailyProduction_Collection', 'DailyProduction_Get'])]
     #[ORM\ManyToOne(inversedBy: 'weeklySchedules')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Ilot $ilot = null;
 
-    #[Groups(['schedule'])]
+    #[Groups(['Schedule_Collection', 'Schedule_Get'])]
     #[ORM\OneToMany(mappedBy: 'weeklySchedule', targetEntity: DailyProduction::class, orphanRemoval: true)]
     private Collection $dailyProductions;
 

@@ -37,12 +37,12 @@ export const List: FunctionComponent<Props> = ({ dailyproductions, totalItems, p
         <div className="p-4">
             <div className="flex justify-between items-center">
                 <h1 className="text-3xl mb-2">Daily Productions</h1>
-                {/* <Link
+                <Link
                     href="/daily-productions/create"
                     className="bg-cyan-500 hover:bg-cyan-700 text-white text-sm font-bold py-2 px-4 rounded"
                 >
                     Create
-                </Link> */}
+                </Link>
             </div>
 
             <div className="block sm:flex sm:justify-between sm:items-center">
@@ -86,7 +86,7 @@ export const List: FunctionComponent<Props> = ({ dailyproductions, totalItems, p
                                     <div className="flex flex-row items-center font-sans">
                                         <div className="mr-2 font-sans">Ilot:</div>
                                         <span className="font-sans prose">
-                                            {(dailyproduction.ilot as Ilot).name}
+                                            {((dailyproduction.weeklySchedule as WeeklySchedule).ilot as Ilot).name}
                                         </span>
                                     </div>
                                 </div>
@@ -98,12 +98,12 @@ export const List: FunctionComponent<Props> = ({ dailyproductions, totalItems, p
                                             {new Date(dailyproduction.day || "").toLocaleDateString()}
                                         </span>
                                     </div>
-                                    <div className="flex flex-row items-center font-sans">
+                                    {/* <div className="flex flex-row items-center font-sans">
                                         <div className="mr-2 font-sans">Quantities:</div>
                                         <span className="font-sans prose">
                                             {`first: ${dailyproduction.firstChoiceQuantity}, seconde: ${dailyproduction.secondChoiceQuantity}`}
                                         </span>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="flex justify-end md:flex-col md:justify-start">
                                     <Link

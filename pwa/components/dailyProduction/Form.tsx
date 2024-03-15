@@ -8,54 +8,50 @@ import { fetch, FetchError, FetchResponse } from "../../utils/dataAccess"
 import SelectManyToOne from "../formik/SelectManyToOne"
 import { DailyProduction } from "../../types/DailyProduction"
 import { WeeklySchedule } from "../../types/WeeklySchedule"
-
-interface Props {
-    dailyProduction?: DailyProduction
-    weeklySchedules?: WeeklySchedule[] | undefined
-    dailyProductions?: DailyProduction[] | undefined
-    weeklySchedule?: string
-}
-
-interface SaveParams {
-    values: DailyProduction
-}
-
-interface DeleteParams {
-    id: string
-}
-
-const saveDailyProduction = async ({ values }: SaveParams) =>
-    await fetch<DailyProduction>(
-        !values["@id"] ? "/api/daily_productions" : values["@id"],
-        {
-            method: !values["@id"] ? "POST" : "PUT",
-            body: JSON.stringify(values),
-        }
-    )
-
-const deleteDailyProduction = async (id: string) =>
-    await fetch<DailyProduction>(id, { method: "DELETE" })
+import { Size } from "../../types/Size"
+import { Choice } from "../../types/Choice"
+import { DailyProductionQuantity } from "../../types/DailyProductionQuantity"
+import { ManufacturingOrder } from "../../types/ManufacturingOrder"
+import { ManufacturingOrderSize } from "../../types/ManufacturingOrderSize"
 
 export const Form: FunctionComponent<Props> = ({
     dailyProduction,
     weeklySchedules,
     dailyProductions,
-    weeklySchedule
+    weeklySchedule,
+    sizes,
+    choices
 }) => {
     const [, setError] = useState<string | null>(null)
     const router = useRouter()
     const [selectedDay, setSelectedDay] = useState<string>(dailyProduction?.day?.split('T')[0] || "")
-    /**
-     * weeklySchedule from weeklySchedule/List
-     * dailyProduction?.weeklySchedule from Edit 
-     */
     const [selectedSchedule, setSelectedSchedule] = useState<string | undefined>(
-        dailyProduction?.weeklySchedule || weeklySchedule
+        (dailyProduction?.weeklySchedule as string) || weeklySchedule
     )
     const [scheduleRange, setScheduleRange] = useState<{
         startAt: string | undefined, endAt: string | undefined
     } | undefined>()
-    const [selectedIlot, setSelectedIlot] = useState<string | undefined>(dailyProduction?.ilot)
+
+    const [dailyProductionQuantities, setDailyProductionQuantities] = useState<DailyProductionQuantity[]>(
+        (dailyProduction?.dailyProductionQuantities as DailyProductionQuantity[])
+            ? dailyProduction?.dailyProductionQuantities as DailyProductionQuantity[]
+            : []
+    )
+    const isCreation = !dailyProduction
+    const [order, setOrder] = useState<ManufacturingOrder>()
+
+    useState(() => {
+        // initialize all quantities to 0 if form is in creation mode
+        if (isCreation) {
+            const initialQuantities: DailyProductionQuantity[] = [];
+            sizes?.forEach(size => {
+                choices?.forEach(choice => {
+                    initialQuantities.push(new DailyProductionQuantity(undefined, 0, size["@id"], choice["@id"]));
+                });
+            });
+            setDailyProductionQuantities(initialQuantities);
+        }
+    });
 
     const saveMutation = useMutation<
         FetchResponse<DailyProduction> | undefined,
@@ -83,54 +79,89 @@ export const Form: FunctionComponent<Props> = ({
         deleteMutation.mutate({ id: dailyProduction["@id"] })
     }
 
+    const saveMutaionDailyProductionQuantity = useMutation<
+        FetchResponse<DailyProductionQuantity> | undefined,
+        Error | FetchError,
+        DailyProductionQuantityParams
+    >((saveParams) => saveDailyProductionQuantity(saveParams))
+
+    const handleQuantityChange = (index: number, value: number) => {
+        const newQuantities: DailyProductionQuantity[] = [...dailyProductionQuantities];
+        if (newQuantities[index]) newQuantities[index].quantity = value;
+        setDailyProductionQuantities(newQuantities);
+    };
+
+    const saveDailyProductionQuantities = async (dailyProductionQuantities: DailyProductionQuantity[]) => {
+        const savedIds = []; // Array to store saved IDs
+
+        // Iterate through each daily production quantity and initiate save operation
+        for (const dailyProductionQuantity of dailyProductionQuantities) {
+            try {
+                // Call the save mutation
+                const response = await saveMutaionDailyProductionQuantity.mutateAsync(
+                    { dailyProductionQuantity: dailyProductionQuantity }
+                );
+                if (response?.data["@id"]) {
+                    savedIds.push(response?.data["@id"]); // Push saved ID to the array
+                }
+            } catch (error) {
+                // Handle errors if needed
+                console.error("Error saving daily production quantity:", error);
+                throw error; // Rethrow the error if needed
+            }
+        }
+
+        return savedIds; // Return array of saved IDs (only in creation mode)
+    };
+
     const handleSubmit = async (values: DailyProduction, { setStatus, setSubmitting, setErrors }: FormikHelpers<DailyProduction>) => {
         if (selectedSchedule) values.weeklySchedule = selectedSchedule
-        if (selectedIlot) values.ilot = selectedIlot
 
-        // prevent sending empty string "" when one of quantities is not set
-        if (!values.firstChoiceQuantity) values.firstChoiceQuantity = 0
-        if (!values.secondChoiceQuantity) values.secondChoiceQuantity = 0
+        const dailyProductionQuantitiesFormatted = dailyProductionQuantities.map(q => {
+            if (typeof q.choice === 'object') q.choice = (q.choice as Choice)["@id"]
+            if (typeof q.size === 'object') q.size = (q.size as Size)["@id"]
+            return q
+        })
+        values.dailyProductionQuantities = dailyProductionQuantitiesFormatted
 
         const isCreation = !values["@id"]
-        saveMutation.mutate(
-            { values },
-            {
-                onSuccess: (dailyProduction) => {
-                    setStatus({ isValid: true, msg: `Element ${isCreation ? "created" : "updated"}.` })
-                    setSubmitting(false)
-                    router.push("/daily-productions")
-                },
-                onError: (error: FetchError | Error) => {
-                    // setStatus({ isValid: false, msg: `${(error as FetchError).status}` })
-                    if ("fields" in error) {
-                        setErrors(error.fields)
-                    }
-                },
-                onSettled: () => { setSubmitting(false) },
-            }
-        )
+        saveDailyProductionQuantities(dailyProductionQuantities).then(savedQuantities => {
+            values.dailyProductionQuantities = savedQuantities
+            saveMutation.mutate(
+                { values },
+                {
+                    onSuccess: (dailyProduction) => {
+                        setStatus({ isValid: true, msg: `Production ${isCreation ? "created" : "updated"}.` })
+                        setSubmitting(false)
+                        router.push("/daily-productions")
+                    },
+                    onError: (error: FetchError | Error) => {
+                        if ("fields" in error) {
+                            setErrors(error.fields)
+                        }
+                    },
+                    onSettled: () => { setSubmitting(false) },
+                }
+            )
+        })
+
     }
 
     useEffect(() => {
+        // set range to display in form (day field)
         if (selectedSchedule) {
-            // set range to display in form (day)
-            if (weeklySchedules && weeklySchedules.length > 0) {
-                const schedule = weeklySchedules
-                    .find((schedule) => schedule["@id"] === selectedSchedule)
-
-                if (schedule) {
-                    setScheduleRange(prevState => ({
-                        startAt: schedule.startAt,
-                        endAt: schedule.endAt
-                    }))
-                    setSelectedIlot(schedule.ilot?.["@id"])
-                }
+            const schedule = weeklySchedules?.find((schedule) => schedule["@id"] === selectedSchedule)
+            if (schedule) {
+                setScheduleRange(prevState => ({
+                    startAt: schedule.startAt,
+                    endAt: schedule.endAt
+                }))
             }
+            setOrder(schedule?.manufacturingOrder as ManufacturingOrder)
         } else {
             setScheduleRange(undefined)
-            setSelectedIlot(undefined)
         }
-    }, [selectedSchedule])
+    }, [selectedSchedule, weeklySchedules])
 
     return (
         <div className="container mx-auto px-4 max-w-2xl mt-4">
@@ -140,9 +171,9 @@ export const Form: FunctionComponent<Props> = ({
             >
                 {`< Back to list`}
             </Link>
-            <h1 className="sm:text-2xl my-2">
+            <h1 className="sm:text-1xl font-sans my-2">
                 {dailyProduction
-                    ? `Edit Daily Production ${dailyProduction.id}`
+                    ? `Edit Daily Production: ${dailyProduction.id}`
                     : `Create Daily Production`}
             </h1>
             <Formik
@@ -158,9 +189,7 @@ export const Form: FunctionComponent<Props> = ({
                     if (!selectedSchedule) {
                         errors.weeklySchedule = 'Weekly Schedule is required.'
                     }
-                    if (!selectedIlot) {
-                        errors.ilot = 'Ilot is required.'
-                    }
+
                     if (!values?.day) {
                         errors.day = 'Day is required'
                     }
@@ -187,10 +216,6 @@ export const Form: FunctionComponent<Props> = ({
                         errors.day = 'date already allocated'
                     }
 
-                    if (!values.firstChoiceQuantity && !values.secondChoiceQuantity) {
-                        // @ts-ignore
-                        errors.firstChoiceQuantity = 'You must provide one of quantities [firstChoiceQuantity, secondChoiceQuantity]'
-                    }
                     return errors
                 }}
                 onSubmit={handleSubmit}
@@ -205,10 +230,10 @@ export const Form: FunctionComponent<Props> = ({
                     handleSubmit,
                     isSubmitting,
                 }) => (
-                    <form className="shadow-md p-4" onSubmit={handleSubmit} >
-                        <div className="mb-2">
+                    <form className="mb-4 sm:shadow-md sm:p-4 flex flex-col space-y-4" onSubmit={handleSubmit} >
+                        <div>
                             <label
-                                className="text-gray-700 block text-sm font-bold"
+                                className="text-1xl font-sans font-bold mr-2"
                                 htmlFor="dailyproduction_weeklySchedule"
                             >
                                 Weekly Schedule
@@ -227,47 +252,26 @@ export const Form: FunctionComponent<Props> = ({
                                 component="div"
                             />
                         </div>
-                        <div className="mb-2">
+                        <div>
                             <label
-                                className="text-gray-700 block text-sm font-bold"
-                                htmlFor="dailyproduction_ilot"
-                            >
-                                Ilot
-                            </label>
-                            <Field name="ilot"
-                                as={SelectManyToOne}
-                                reference="/api/ilots"
-                                optionText="name"
-                                value={selectedIlot ?? ""}
-                                onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                                    setSelectedIlot(e.target.value)
-                                }}
-                            />
-                            <ErrorMessage name="ilot"
-                                className="text-xs text-red-500 pt-1"
-                                component="div"
-                            />
-                        </div>
-                        <div className="mb-2">
-                            <label
-                                className="text-gray-700 block text-sm"
+                                className="text-1xl font-sans font-bold mr-2"
                                 htmlFor="dailyproduction_day"
                             >
-                                <span className="font-bold">Day: </span>{
-                                    scheduleRange
-                                        ? <span className="font-mono text-sm text-gray-500">
-                                            {`start: ${new Date(scheduleRange.startAt || "").toLocaleDateString()}, end: ${new Date(scheduleRange.endAt || "").toLocaleDateString()}`}
-                                        </span>
-                                        : <></>
-                                }
+                                Day:
                             </label>
+                            {scheduleRange
+                                ? <span className="font-mono text-sm text-gray-500">
+                                    {`start: ${new Date(scheduleRange.startAt || "").toLocaleDateString()}, end: ${new Date(scheduleRange.endAt || "").toLocaleDateString()}`}
+                                </span>
+                                : <></>
+                            }
                             <Field
                                 name="day"
                                 id="dailyproduction_day"
                                 value={selectedDay || ""}
                                 type="date"
                                 placeholder=""
-                                className={`mt-1 block w-full ${errors.day && touched.day
+                                className={`mt-1 block w-48 ${errors.day && touched.day
                                     ? "border-red-500"
                                     : ""
                                     }`}
@@ -288,67 +292,88 @@ export const Form: FunctionComponent<Props> = ({
                                 name="day"
                             />
                         </div>
-                        <div className="mb-2">
+                        {order?.manufacturingOrderSizes && (
+                            <div >
+                                <label htmlFor="dailyproduction_weeklySchedule_Order"
+                                    className="text-1xl font-sans font-bold mr-2" >
+                                    Manufacturing Order
+                                </label>
+                                <ul>
+                                    {(order.manufacturingOrderSizes as ManufacturingOrderSize[]).map((orderSize, index) =>
+                                        <li key={index} className="font-mono text-sm text-gray-500 ml-4">
+                                            {(orderSize.size as Size).name}: {orderSize.quantity}
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
+                        )
+                        }
+                        <div>
                             <label
-                                className="text-gray-700 block text-sm font-bold"
-                                htmlFor="dailyproduction_firstChoiceQuantity"
+                                className="text-1xl font-sans font-bold mr-2"
+                                htmlFor="dailyproduction_dailyProductionQuantity"
                             >
-                                First Choice Quantity
+                                Quantities
                             </label>
-                            <Field
-                                name="firstChoiceQuantity"
-                                id="dailyproduction_firstChoiceQuantity"
-                                value={values.firstChoiceQuantity ?? ""}
-                                type="number"
-                                placeholder=""
-                                className={`mt-1 block w-full ${errors.firstChoiceQuantity && touched.firstChoiceQuantity
-                                    ? "border-red-500"
-                                    : ""
-                                    }`}
-                                aria-invalid={
-                                    errors.firstChoiceQuantity && touched.firstChoiceQuantity
-                                        ? "true"
-                                        : undefined
-                                }
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                            />
-                            <ErrorMessage
-                                className="text-xs text-red-500 pt-1"
-                                component="div"
-                                name="firstChoiceQuantity"
-                            />
+                            <table className="table border-separate border border-slate-400 w-full">
+                                <thead>
+                                    <tr className="">
+                                        <th className="text-sm font-sans border border-slate-300 w-24 px-4 py-2">Size\Choice</th>
+                                        {choices?.map(choice =>
+                                            <th key={choice["@id"]} className="text-sm font-sans border border-slate-300 bg-gray-300 sm:px-4 sm:py-2">{choice.name}</th>
+                                        )}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {sizes?.map((size, sizeIndex) => (
+                                        <tr key={sizeIndex} className="h-12">
+                                            <td className="text-sm font-sans font-bold border border-slate-300 bg-gray-300 px-2 py-2">{size.name}</td>
+                                            {choices?.map((choice, choiceIndex) => {
+                                                const q = dailyProductionQuantities?.find(qty => {
+                                                    const DailyProductionQuantityObject = qty as DailyProductionQuantity
+                                                    return (DailyProductionQuantityObject.size as Size)["@id"] === size['@id']
+                                                        && (DailyProductionQuantityObject.choice as Choice)["@id"] === choice['@id']
+                                                });
+                                                const index = isCreation
+                                                    ? (sizeIndex * choices.length + choiceIndex)
+                                                    : dailyProductionQuantities.indexOf(q as DailyProductionQuantity)
+                                                return (
+                                                    <td key={`${sizeIndex}-${choiceIndex}`} className="font-sans border">
+                                                        <Field
+                                                            className="w-full"
+                                                            name={`dailyProductionQuantities.${q ? index + '.quantity' : ''}`}
+                                                            type="number"
+                                                            min="0"
+                                                            value={dailyProductionQuantities[index] ? dailyProductionQuantities[index].quantity : ""}
+                                                            onChange={(e: { target: { value: string } }) => handleQuantityChange(index, parseInt(e.target.value))}
+                                                        />
+                                                    </td>
+                                                );
+                                            })}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
-                        <div className="mb-2">
-                            <label
-                                className="text-gray-700 block text-sm font-bold"
-                                htmlFor="dailyproduction_secondChoiceQuantity"
+                        <div className="flex flex-row justify-between items-center">
+                            <button
+                                type="submit"
+                                className="inline-block bg-cyan-500 hover:bg-cyan-700 text-sm text-white font-bold rounded w-20 h-10"
+                                disabled={isSubmitting}
                             >
-                                Second Choice Quantity
-                            </label>
-                            <Field
-                                name="secondChoiceQuantity"
-                                id="dailyproduction_secondChoiceQuantity"
-                                value={values.secondChoiceQuantity ?? ""}
-                                type="number"
-                                placeholder=""
-                                className={`mt-1 block w-full ${errors.secondChoiceQuantity && touched.secondChoiceQuantity
-                                    ? "border-red-500"
-                                    : ""
-                                    }`}
-                                aria-invalid={
-                                    errors.secondChoiceQuantity && touched.secondChoiceQuantity
-                                        ? "true"
-                                        : undefined
-                                }
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                            />
-                            <ErrorMessage
-                                className="text-xs text-red-500 pt-1"
-                                component="div"
-                                name="secondChoiceQuantity"
-                            />
+                                Submit
+                            </button>
+
+                            <div className="">
+                                {dailyProduction && (
+                                    <button
+                                        className="inline-block text-sm text-red-400 font-sans font-bold border-2 border-red-400 rounded w-20 h-10 hover:border-red-700 hover:text-red-700"
+                                        onClick={handleDelete}
+                                    >
+                                        Delete
+                                    </button>
+                                )}
+                            </div>
                         </div>
 
                         {status && status.msg && (
@@ -362,26 +387,54 @@ export const Form: FunctionComponent<Props> = ({
                                 {status.msg}
                             </div>
                         )}
-                        <button
-                            type="submit"
-                            className="inline-block mt-2 bg-cyan-500 hover:bg-cyan-700 text-sm text-white font-bold py-2 px-4 rounded"
-                            disabled={isSubmitting}
-                        >
-                            Submit
-                        </button>
                     </form>
                 )}
             </Formik>
-            <div className="flex space-x-2 mt-4 justify-end">
-                {dailyProduction && (
-                    <button
-                        className="inline-block mt-2 border-2 border-red-400 hover:border-red-700 hover:text-red-700 text-sm text-red-400 font-bold py-2 px-4 rounded"
-                        onClick={handleDelete}
-                    >
-                        Delete
-                    </button>
-                )}
-            </div>
         </div>
     )
+}
+
+const saveDailyProduction = async ({ values }: SaveParams) =>
+    await fetch<DailyProduction>(
+        !values["@id"] ? "/api/daily_productions" : values["@id"],
+        {
+            method: !values["@id"] ? "POST" : "PUT",
+            body: JSON.stringify(values),
+        }
+    )
+
+const deleteDailyProduction = async (id: string) =>
+    await fetch<DailyProduction>(id, { method: "DELETE" })
+
+const saveDailyProductionQuantity = async ({ dailyProductionQuantity }: DailyProductionQuantityParams) =>
+    await fetch<DailyProductionQuantity>(
+        !dailyProductionQuantity["@id"] ? "/api/daily_production_quantities" : dailyProductionQuantity["@id"],
+        {
+            method: !dailyProductionQuantity["@id"] ? "POST" : "PUT",
+            body: JSON.stringify(dailyProductionQuantity),
+        }
+    )
+
+const deleteDailyProductionQuantity = async (id: string) =>
+    await fetch<DailyProductionQuantity>(id, { method: "DELETE" })
+
+interface Props {
+    dailyProduction?: DailyProduction
+    weeklySchedules?: WeeklySchedule[] | undefined
+    dailyProductions?: DailyProduction[] | undefined
+    weeklySchedule?: string
+    sizes?: Size[]
+    choices?: Choice[]
+}
+
+interface SaveParams {
+    values: DailyProduction
+}
+
+interface DeleteParams {
+    id: string
+}
+
+interface DailyProductionQuantityParams {
+    dailyProductionQuantity: DailyProductionQuantity
 }

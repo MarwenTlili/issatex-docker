@@ -17,13 +17,15 @@ import { useMercure } from "../../../utils/mercure"
 import { getDailyProductions, getDailyProductionsPath } from "../../../components/dailyProduction/PageList"
 import { getServerSession, Session } from "next-auth"
 import { authOptions } from "../../api/auth/[...nextauth]"
+import { Size } from "../../../types/Size"
+import { Choice } from "../../../types/Choice"
 
 const getDailyProduction = async (id: string | string[] | undefined, session: Session) =>
     id
-        ? await fetch<DailyProduction>(`/api/daily_productions/${id}`, { headers: { Preload: `/ilot` } }, session)
+        ? await fetch<DailyProduction>(`/api/daily_productions/${id}`, {}, session)
         : Promise.resolve(undefined)
 
-const Page: NextComponentType<EditDailyProductionProps> = ({ dailyProduction }: EditDailyProductionProps) => {
+const Page: NextComponentType<EditDailyProductionProps> = ({ dailyProduction, sizes, choices }: EditDailyProductionProps) => {
     const {
         query: { page },
     } = useRouter()
@@ -55,12 +57,17 @@ const Page: NextComponentType<EditDailyProductionProps> = ({ dailyProduction }: 
                 <Head>
                     <title>
                         {dailyProduction &&
-                            `Create DailyProduction ${dailyProduction["@id"]}`}
+                            `Edit DailyProduction ${dailyProduction.id}`}
                     </title>
                 </Head>
             </div>
             <Template>
-                <Form dailyProduction={dailyProduction} weeklySchedules={weeklySchedules} dailyProductions={dailyProductions} />
+                <Form dailyProduction={dailyProduction}
+                    weeklySchedules={weeklySchedules}
+                    dailyProductions={dailyProductions}
+                    sizes={sizes}
+                    choices={choices}
+                />
             </Template>
 
         </div>
@@ -68,6 +75,12 @@ const Page: NextComponentType<EditDailyProductionProps> = ({ dailyProduction }: 
 }
 
 export default Page
+
+const getSizes = async (session: Session) =>
+    await fetch<PagedCollection<Size>>('/api/sizes', {}, session)
+
+const getChoices = async (session: Session) =>
+    await fetch<PagedCollection<Choice>>('/api/choices', {}, session)
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const session = await getServerSession(context.req, context.res, authOptions)
@@ -80,14 +93,23 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const dailyProductionResponse = await getDailyProduction(id, session)
     if (dailyProductionResponse) {
-        data.props.dailyProduction = dailyProductionResponse.data
+        const production = dailyProductionResponse.data
+        data.props.dailyProduction = production;
+
         // transform data
-        if (dailyProductionResponse?.data && dailyProductionResponse.data.ilot && typeof dailyProductionResponse.data.ilot !== 'string') {
-            dailyProductionResponse.data.ilot = dailyProductionResponse.data.ilot["@id"]
-        }
         if (dailyProductionResponse?.data && dailyProductionResponse.data.weeklySchedule && typeof dailyProductionResponse.data.weeklySchedule !== 'string') {
             dailyProductionResponse.data.weeklySchedule = dailyProductionResponse.data.weeklySchedule["@id"]
         }
+    }
+
+    const sizesResponse = await getSizes(session)
+    if (sizesResponse) {
+        data.props.sizes = sizesResponse.data["hydra:member"]
+    }
+
+    const choicesResponse = await getChoices(session)
+    if (choicesResponse) {
+        data.props.choices = choicesResponse.data["hydra:member"]
     }
 
     return data
@@ -99,4 +121,6 @@ interface DataProps {
 
 interface EditDailyProductionProps {
     dailyProduction?: DailyProduction
+    sizes?: Size[]
+    choices?: Choice[]
 }

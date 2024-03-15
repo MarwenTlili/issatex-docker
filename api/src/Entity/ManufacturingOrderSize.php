@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ManufacturingOrderSizeRepository::class)]
 #[ApiResource]
@@ -34,6 +35,7 @@ class ManufacturingOrderSize {
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
     private ?Ulid $id = null;
 
+    #[Groups(['Schedule_Collection'])]
     #[ORM\Column]
     private ?int $quantity = null;
 
@@ -41,6 +43,7 @@ class ManufacturingOrderSize {
     #[ORM\JoinColumn(nullable: false)]
     private ?ManufacturingOrder $manufacturingOrder = null;
 
+    #[Groups(['Schedule_Collection'])]
     #[ORM\ManyToOne(inversedBy: 'manufacturingOrderSizes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Size $size = null;

@@ -1,7 +1,7 @@
-import { Item } from "./item"
 import { DailyProductionQuantity } from "./DailyProductionQuantity"
+import { Item } from "./item"
 
-export class Size implements Item {
+export class Choice implements Item {
     public "@id"?: string
     public "@type"?: string
     public id?: string
@@ -9,7 +9,6 @@ export class Size implements Item {
     constructor(
         _id?: string,
         public name?: string,
-        public manufacturingOrderSizes?: string[],
         public dailyProductionQuantities?: DailyProductionQuantity[] | string[]
     ) {
         this["@id"] = _id

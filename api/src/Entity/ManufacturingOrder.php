@@ -60,7 +60,7 @@ use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
     properties: ['weeklySchedule']
 )]
 class ManufacturingOrder {
-    #[Groups(['schedule'])]
+    #[Groups(['Schedule_Collection', 'Schedule_Get'])]
     #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -70,6 +70,7 @@ class ManufacturingOrder {
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[Groups(['Schedule_Collection', 'Schedule_Get'])]
     #[ORM\Column]
     private ?int $totalQuantity = null;
 
@@ -106,7 +107,7 @@ class ManufacturingOrder {
     #[ORM\OneToMany(mappedBy: 'manufacturingOrder', targetEntity: Palette::class)]
     private Collection $palettes;
 
-    #[Groups(['schedule'])]
+    #[Groups(['Schedule_Collection', 'Schedule_Get'])]
     #[ORM\ManyToOne(inversedBy: 'manufacturingOrders')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Article $article = null;
@@ -117,12 +118,13 @@ class ManufacturingOrder {
     #[ORM\OneToOne(mappedBy: 'manufacturingOrder', cascade: ['persist', 'remove'])]
     private ?WeeklySchedule $weeklySchedule = null;
 
+    #[Groups(['Schedule_Collection', 'Schedule_Get'])]
     #[ORM\OneToMany(mappedBy: 'manufacturingOrder', targetEntity: ManufacturingOrderSize::class, cascade: ['persist'], orphanRemoval: true)]
-    private Collection $manufacturingOrderSize;
+    private Collection $manufacturingOrderSizes;
 
     public function __construct() {
         $this->palettes = new ArrayCollection();
-        $this->manufacturingOrderSize = new ArrayCollection();
+        $this->manufacturingOrderSizes = new ArrayCollection();
     }
 
     public function getId(): ?Ulid {
@@ -305,12 +307,12 @@ class ManufacturingOrder {
      * @return Collection<int, ManufacturingOrderSize>
      */
     public function getManufacturingOrderSize(): Collection {
-        return $this->manufacturingOrderSize;
+        return $this->manufacturingOrderSizes;
     }
 
     public function addManufacturingOrderSize(ManufacturingOrderSize $manufacturingOrderSize): self {
-        if (!$this->manufacturingOrderSize->contains($manufacturingOrderSize)) {
-            $this->manufacturingOrderSize->add($manufacturingOrderSize);
+        if (!$this->manufacturingOrderSizes->contains($manufacturingOrderSize)) {
+            $this->manufacturingOrderSizes->add($manufacturingOrderSize);
             $manufacturingOrderSize->setManufacturingOrder($this);
         }
 
@@ -318,7 +320,7 @@ class ManufacturingOrder {
     }
 
     public function removeManufacturingOrderSize(ManufacturingOrderSize $manufacturingOrderSize): self {
-        if ($this->manufacturingOrderSize->removeElement($manufacturingOrderSize)) {
+        if ($this->manufacturingOrderSizes->removeElement($manufacturingOrderSize)) {
             // set the owning side to null (unless already changed)
             if ($manufacturingOrderSize->getManufacturingOrder() === $this) {
                 $manufacturingOrderSize->setManufacturingOrder(null);

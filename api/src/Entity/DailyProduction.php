@@ -16,6 +16,8 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Validator\Constraints\DateInRangeOfEntityAttributes;
 use App\Validator\Constraints\UniqueDate;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: DailyProductionRepository::class)]
 #[ApiResource(paginationClientItemsPerPage: true)]
@@ -33,64 +35,26 @@ class DailyProduction {
     private ?Ulid $id = null;
 
     #[Groups(['DailyProduction_Collection', 'DailyProduction_Get'])]
-    #[ORM\Column]
-    private ?int $firstChoiceQuantity = null;
-
-    #[Groups(['DailyProduction_Collection', 'DailyProduction_Get'])]
-    #[ORM\Column]
-    private ?int $secondChoiceQuantity = null;
-    
-    #[Groups(['DailyProduction_Collection', 'DailyProduction_Get'])]
-    #[ORM\ManyToOne(inversedBy: 'dailyProductions')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Ilot $ilot = null;
-    
-    #[Groups(['DailyProduction_Collection', 'DailyProduction_Get'])]
     #[ORM\ManyToOne(inversedBy: 'dailyProductions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?WeeklySchedule $weeklySchedule = null;
-    
+
     #[Groups(['DailyProduction_Collection', 'DailyProduction_Get'])]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[UniqueDate(field: 'weeklySchedule')]
     #[DateInRangeOfEntityAttributes(targetEntity: 'weeklySchedule', startAtField: 'startAt', endAtField: 'endAt')]
     private ?\DateTimeInterface $day = null;
 
+    #[Groups(['DailyProduction_Collection', 'DailyProduction_Get'])]
+    #[ORM\OneToMany(mappedBy: 'dailyProduction', targetEntity: DailyProductionQuantity::class, orphanRemoval: true)]
+    private Collection $dailyProductionQuantities;
+
     public function __construct() {
+        $this->dailyProductionQuantities = new ArrayCollection();
     }
 
     public function getId(): ?Ulid {
         return $this->id;
-    }
-
-    public function getFirstChoiceQuantity(): ?int {
-        return $this->firstChoiceQuantity;
-    }
-
-    public function setFirstChoiceQuantity(int $firstChoiceQuantity): self {
-        $this->firstChoiceQuantity = $firstChoiceQuantity;
-
-        return $this;
-    }
-
-    public function getSecondChoiceQuantity(): ?int {
-        return $this->secondChoiceQuantity;
-    }
-
-    public function setSecondChoiceQuantity(int $secondChoiceQuantity): self {
-        $this->secondChoiceQuantity = $secondChoiceQuantity;
-
-        return $this;
-    }
-
-    public function getIlot(): ?Ilot {
-        return $this->ilot;
-    }
-
-    public function setIlot(?Ilot $ilot): self {
-        $this->ilot = $ilot;
-
-        return $this;
     }
 
     public function getWeeklySchedule(): ?WeeklySchedule {
@@ -109,6 +73,33 @@ class DailyProduction {
 
     public function setDay(\DateTimeInterface $day): self {
         $this->day = $day;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DailyProductionQuantity>
+     */
+    public function getDailyProductionQuantities(): Collection {
+        return $this->dailyProductionQuantities;
+    }
+
+    public function addDailyProductionQuantity(DailyProductionQuantity $dailyProductionQuantity): self {
+        if (!$this->dailyProductionQuantities->contains($dailyProductionQuantity)) {
+            $this->dailyProductionQuantities->add($dailyProductionQuantity);
+            $dailyProductionQuantity->setDailyProduction($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDailyProductionQuantity(DailyProductionQuantity $dailyProductionQuantity): self {
+        if ($this->dailyProductionQuantities->removeElement($dailyProductionQuantity)) {
+            // set the owning side to null (unless already changed)
+            if ($dailyProductionQuantity->getDailyProduction() === $this) {
+                $dailyProductionQuantity->setDailyProduction(null);
+            }
+        }
 
         return $this;
     }

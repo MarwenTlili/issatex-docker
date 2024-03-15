@@ -48,11 +48,11 @@ class Article {
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
     private ?Ulid $id = null;
 
-    #[Groups(['schedule'])]
+    #[Groups(['Schedule_Collection', 'Schedule_Get'])]
     #[ORM\Column(length: 255)]
     private ?string $designation = null;
 
-    #[Groups(['schedule'])]
+    #[Groups(['Schedule_Collection', 'Schedule_Get'])]
     #[ORM\Column(length: 255)]
     private ?string $model = null;
 
