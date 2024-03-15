@@ -77,7 +77,7 @@ export const List: FunctionComponent<Props> = ({ weeklyschedules, totalItems, pe
                                         Article:
                                         <span className="ml-2 font-sans prose">
                                             {weeklyschedule.manufacturingOrder && (
-                                                ((weeklyschedule.manufacturingOrder as ManufacturingOrder).article as Article).designation
+                                                ((weeklyschedule.manufacturingOrder as ManufacturingOrder).article as Article)?.designation
                                             )}
                                         </span>
                                     </div>

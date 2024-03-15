@@ -66,11 +66,11 @@ export const Show: FunctionComponent<Props> = ({ weeklyschedule, text }) => {
                     </div>
                     <div className="font-sans">
                         Article:
-                        <span className="ml-2 font-sans prose">
-                            {weeklyschedule.manufacturingOrder && (
-                                ((weeklyschedule.manufacturingOrder as ManufacturingOrder).article as Article).designation
-                            )}
-                        </span>
+                            <span className="ml-2 font-sans prose">
+                                {((weeklyschedule.manufacturingOrder as ManufacturingOrder).article as Article) && (
+                                    ((weeklyschedule.manufacturingOrder as ManufacturingOrder).article as Article).designation
+                                )}
+                            </span>
                     </div>
                     <div className="font-sans">
                         Observation:
