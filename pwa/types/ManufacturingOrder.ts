@@ -1,4 +1,5 @@
 import { Article } from "./Article"
+import { ManufacturingOrderSize } from "./ManufacturingOrderSize"
 import { Item } from "./item"
 
 export class ManufacturingOrder implements Item {
@@ -23,7 +24,7 @@ export class ManufacturingOrder implements Item {
         public article?: string | Article,
         public invoice?: string,
         public weeklySchedule?: string,
-        public manufacturingOrderSize?: string[],
+        public manufacturingOrderSizes?: ManufacturingOrderSize[] | string[],
         public originId?: string
     ) {
         this["@id"] = _id

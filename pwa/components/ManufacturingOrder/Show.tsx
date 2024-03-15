@@ -238,9 +238,9 @@ export const Show: FunctionComponent<Props> = ({ manufacturingOrder, article, te
                     <tr>
                         <th scope="row">Sizes</th>
                         <td>
-                            {manufacturingOrder.manufacturingOrderSize && (
-                                manufacturingOrder.manufacturingOrderSize.map(orderSize => {
-                                    return <ManufacturingOrderSizeElement id={orderSize} key={orderSize} />
+                            {manufacturingOrder.manufacturingOrderSizes && (
+                                manufacturingOrder.manufacturingOrderSizes.map(orderSize => {
+                                    return <ManufacturingOrderSizeElement id={orderSize as string} key={orderSize as string} />
                                 })
                             )}
                         </td>

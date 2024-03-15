@@ -213,10 +213,10 @@ export const Form: FunctionComponent<EditManufacturingOrderProps> = ({
             )
         } else {
             if (selectedSizes) {
-                values.manufacturingOrderSize = selectedSizes
+                values.manufacturingOrderSizes = selectedSizes
                     .filter(orderSize => {
-                        if (orderSize.quantity === 0 && orderSize["@id"] && values.manufacturingOrderSize?.includes(orderSize["@id"])) {
-                            const element: string | undefined = values.manufacturingOrderSize.find(id => id === orderSize["@id"])
+                        if (orderSize.quantity === 0 && orderSize["@id"] && values.manufacturingOrderSizes?.includes(orderSize["@id"])) {
+                            const element: string | undefined = values.manufacturingOrderSizes.find(id => id === orderSize["@id"]) as string
                             if (element) {
                                 let removed: boolean = false
                                 deleteManufacturingOrderSizeMutation.mutate(
