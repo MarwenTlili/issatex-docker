@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import React from 'react';
 import { fetch } from "../../utils/dataAccess";
 import useSWR from 'swr';
 import { FieldProps } from 'formik';
@@ -30,6 +30,7 @@ const SelectManyToOne: string | React.ComponentType<FieldProps['field'] & Select
                 value={value}
                 onChange={onChange}
                 onBlur={onBlur}
+                className="text-xs sm:text-sm"
             >
                 <option value={undefined} label="Select an option" />
                 {options &&
