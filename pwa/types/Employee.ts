@@ -13,7 +13,7 @@ export class Employee implements Item {
         public category?: string,
         public recruitmentAt?: string,
         public ilot?: string,
-        public employeeAttendances?: string[],
+        // public employeeAttendances?: string[],
     ) {
         this["@id"] = _id
     }

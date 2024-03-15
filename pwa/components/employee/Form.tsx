@@ -7,9 +7,7 @@ import { useMutation } from "react-query";
 import { fetch, FetchError, FetchResponse } from "../../utils/dataAccess";
 import { Employee } from "../../types/Employee";
 import SelectManyToOne from "../formik/SelectManyToOne";
-import { formatDateForInput, hasSpaces, isDateTimeString, isUppercase, } from "../../utils/tools";
-import { TIMEZONE } from "../../config/entrypoint";
-import { useForm } from "react-hook-form";
+import { hasSpaces, isUppercase, } from "../../utils/tools";
 
 interface Props {
     employee?: Employee;
@@ -35,8 +33,7 @@ const deleteEmployee = async (id: string) =>
 export const Form: FunctionComponent<Props> = ({ employee }) => {
     const [, setError] = useState<string | null>(null);
     const router = useRouter();
-    const [recruitmentAt, setRecruitmentAt] = useState<string | undefined>(formatDateForInput(employee?.recruitmentAt))
-    const { register, handleSubmit } = useForm();
+    const [recruitmentAt, setRecruitmentAt] = useState<string>(employee?.recruitmentAt?.split('T')[0] || "")
 
     const saveMutation = useMutation<
         FetchResponse<Employee> | undefined,
@@ -111,9 +108,6 @@ export const Form: FunctionComponent<Props> = ({ employee }) => {
                     if (hasSpaces(values.registrationCode)) {
                         errors.registrationCode = 'registration code should not have spaces !';
                     }
-                    if (!isDateTimeString(values.recruitmentAt)) {
-                        errors.recruitmentAt = 'recruitmentAt should be a Date and Time !';
-                    }
                     if (!values.category) {
                         errors.category = 'category is required !';
                     }
@@ -127,58 +121,32 @@ export const Form: FunctionComponent<Props> = ({ employee }) => {
                     if (values.ilot === "") {
                         values.ilot = undefined
                     }
-                    if (values.recruitmentAt) {
-                        // const formattedDateTime = new Date(values.recruitmentAt).toISOString(); // timezone issue
-                        const options: Intl.DateTimeFormatOptions = {
-                            timeZone: TIMEZONE,
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit',
-                            timeZoneName: 'short'
-                        };
 
-                        const formattedDateTime = new Intl.DateTimeFormat('en-US', options)
-                            .format(new Date(values.recruitmentAt));
-                        console.log('formattedDateTime: ', formattedDateTime);
-
-                        const utcDateTime = new Date(formattedDateTime);
-                        console.log('utcDateTime: ', utcDateTime);
-
-                        const utcISOString = utcDateTime.toISOString();
-                        console.log('utcISOString: ', utcISOString);
-
-                        // values.recruitmentAt = formattedDateTime
-                    }
-                    setSubmitting(false);
-
-                    // const isCreation = !values["@id"];
-                    // saveMutation.mutate(
-                    //     { values },
-                    //     {
-                    //         onSuccess: () => {
-                    //             setStatus({
-                    //                 isValid: true,
-                    //                 msg: `Element ${isCreation ? "created" : "updated"}.`,
-                    //             });
-                    //             router.push("/employees");
-                    //         },
-                    //         onError: (error) => {
-                    //             setStatus({
-                    //                 isValid: false,
-                    //                 msg: `${error.message}`,
-                    //             });
-                    //             if ("fields" in error) {
-                    //                 setErrors(error.fields);
-                    //             }
-                    //         },
-                    //         onSettled: () => {
-                    //             setSubmitting(false);
-                    //         },
-                    //     }
-                    // );
+                    const isCreation = !values["@id"];
+                    saveMutation.mutate(
+                        { values },
+                        {
+                            onSuccess: () => {
+                                setStatus({
+                                    isValid: true,
+                                    msg: `Element ${isCreation ? "created" : "updated"}.`,
+                                });
+                                router.push("/employees");
+                            },
+                            onError: (error) => {
+                                setStatus({
+                                    isValid: false,
+                                    msg: `${error.message}`,
+                                });
+                                if ("fields" in error) {
+                                    setErrors(error.fields);
+                                }
+                            },
+                            onSettled: () => {
+                                setSubmitting(false);
+                            },
+                        }
+                    );
                 }}
             >
                 {({
@@ -318,7 +286,7 @@ export const Form: FunctionComponent<Props> = ({ employee }) => {
                                 name="recruitmentAt"
                                 id="employee_recruitmentAt"
                                 value={recruitmentAt}
-                                type="datetime-local"
+                                type="date"
                                 placeholder=""
                                 className={`mt-1 block w-full ${errors.recruitmentAt && touched.recruitmentAt
                                     ? "border-red-500"
