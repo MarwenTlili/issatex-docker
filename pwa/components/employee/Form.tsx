@@ -51,7 +51,6 @@ export const Form: FunctionComponent<Props> = ({ employee }) => {
         },
         onError: (error) => {
             setError(`Error when deleting the resource: ${error}`);
-            console.error(error);
         },
     });
 
@@ -60,16 +59,6 @@ export const Form: FunctionComponent<Props> = ({ employee }) => {
         if (!window.confirm("Are you sure you want to delete this item?")) return;
         deleteMutation.mutate({ id: employee["@id"] });
     };
-
-    useEffect(() => {
-        let ignore = false
-        if (!ignore) {
-            console.log('recruitmentAt: ', recruitmentAt);
-        }
-        return () => {
-            ignore = true;
-        };
-    }, [recruitmentAt])
 
     return (
         <div className="container mx-auto px-4 max-w-2xl mt-4">
@@ -298,7 +287,6 @@ export const Form: FunctionComponent<Props> = ({ employee }) => {
                                         : undefined
                                 }
                                 onChange={(event) => {
-                                    // console.log('e.target.value: ', event.target.value);
                                     setRecruitmentAt(event.target.value);
                                     handleChange(event);
                                 }}
