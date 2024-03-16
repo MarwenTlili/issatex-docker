@@ -68,7 +68,7 @@ export const Form: FunctionComponent<Props> = ({ employee }) => {
             >
                 {`< Back to list`}
             </Link>
-            <h1 className="text-3xl my-2">
+            <h1 className="text-1xl my-2">
                 {employee ? `Edit Employee ${employee.id}` : `Create Employee`}
             </h1>
             <Formik

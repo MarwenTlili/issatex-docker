@@ -1,11 +1,9 @@
 import { FunctionComponent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Head from "next/head";
 
 import { fetch, getItemPath } from "../../utils/dataAccess";
 import { Employee } from "../../types/Employee";
-import Template from "../Template";
 import IlotName from "../ilot/IlotName";
 import { Session } from "next-auth";
 
@@ -33,19 +31,19 @@ export const Show: FunctionComponent<Props> = ({ employee, text, session }) => {
     };
 
     return (
-        <div className="p-4">
+        <div className="container mx-auto px-4 max-w-2xl mt-4 mb-4">
             <Link
                 href="/employees"
                 className="text-sm text-cyan-500 font-bold hover:text-cyan-700"
             >
                 {"< Back to list"}
             </Link>
-            <h1 className="text-3xl mb-2">{`Show Employee ${employee["id"]}`}</h1>
+            <h1 className="text-1xl mb-2">{`Show Employee ${employee["id"]}`}</h1>
             <table
                 cellPadding={10}
-                className="shadow-md table border-collapse min-w-full leading-normal table-auto text-left my-3"
+                className="w-full shadow-md table border-collapse leading-normal table-auto text-left my-3"
             >
-                <thead className="w-full text-xs uppercase font-light text-gray-700 bg-gray-200 py-2 px-4">
+                <thead className="text-xs uppercase font-light text-gray-700 bg-gray-200 py-2 px-4">
                     <tr>
                         <th>Field</th>
                         <th>Value</th>
@@ -76,28 +74,6 @@ export const Show: FunctionComponent<Props> = ({ employee, text, session }) => {
                         <th scope="row">recruitmentAt</th>
                         <td>{new Date(employee.recruitmentAt || '').toLocaleDateString()}</td>
                     </tr>
-                    {/* <tr>
-                            <th scope="row">ilot</th>
-                            <td>
-                                <ReferenceLinks
-                                    items={{
-                                        href: getItemPath(employee["ilot"], "/ilots/[id]"),
-                                        name: employee["ilot"],
-                                    }}
-                                />
-                            </td>
-                        </tr> */}
-                    {/* <tr>
-                            <th scope="row">employeeAttendances</th>
-                            <td>
-                                <ReferenceLinks
-                                    items={employee["employeeAttendances"].map((ref: any) => ({
-                                        href: getItemPath(ref, "/employeeattendances/[id]"),
-                                        name: ref,
-                                    }))}
-                                />
-                            </td>
-                        </tr> */}
                 </tbody>
             </table>
             {error && (
@@ -108,7 +84,7 @@ export const Show: FunctionComponent<Props> = ({ employee, text, session }) => {
                     {error}
                 </div>
             )}
-            <div className="flex space-x-2 mt-4 items-center justify-end">
+            <div className="flex flex-row justify-between">
                 <Link
                     href={getItemPath(employee["@id"], "/employees/[id]/edit")}
                     className="inline-block mt-2 border-2 border-cyan-500 bg-cyan-500 hover:border-cyan-700 hover:bg-cyan-700 text-xs text-white font-bold py-2 px-4 rounded"
