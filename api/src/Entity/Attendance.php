@@ -14,14 +14,13 @@ use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: AttendanceRepository::class)]
 #[ApiResource]
-class Attendance
-{
+class Attendance {
     #[Groups(['user:read'])]
-	#[ORM\Id]
+    #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
-	private ?Ulid $id = null;
+    private ?Ulid $id = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $dateAt = null;
@@ -29,23 +28,19 @@ class Attendance
     #[ORM\OneToMany(mappedBy: 'attendance', targetEntity: EmployeeAttendance::class, orphanRemoval: true)]
     private Collection $employeeAttendances;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->employeeAttendances = new ArrayCollection();
     }
 
-    public function getId(): ?Ulid
-    {
+    public function getId(): ?Ulid {
         return $this->id;
     }
 
-    public function getDateAt(): ?\DateTimeImmutable
-    {
+    public function getDateAt(): ?\DateTimeImmutable {
         return $this->dateAt;
     }
 
-    public function setDateAt(\DateTimeImmutable $dateAt): self
-    {
+    public function setDateAt(\DateTimeImmutable $dateAt): self {
         $this->dateAt = $dateAt;
 
         return $this;
@@ -54,13 +49,11 @@ class Attendance
     /**
      * @return Collection<int, EmployeeAttendance>
      */
-    public function getEmployeeAttendances(): Collection
-    {
+    public function getEmployeeAttendances(): Collection {
         return $this->employeeAttendances;
     }
 
-    public function addEmployeeAttendance(EmployeeAttendance $employeeAttendance): self
-    {
+    public function addEmployeeAttendance(EmployeeAttendance $employeeAttendance): self {
         if (!$this->employeeAttendances->contains($employeeAttendance)) {
             $this->employeeAttendances->add($employeeAttendance);
             $employeeAttendance->setAttendance($this);
@@ -69,8 +62,7 @@ class Attendance
         return $this;
     }
 
-    public function removeEmployeeAttendance(EmployeeAttendance $employeeAttendance): self
-    {
+    public function removeEmployeeAttendance(EmployeeAttendance $employeeAttendance): self {
         if ($this->employeeAttendances->removeElement($employeeAttendance)) {
             // set the owning side to null (unless already changed)
             if ($employeeAttendance->getAttendance() === $this) {

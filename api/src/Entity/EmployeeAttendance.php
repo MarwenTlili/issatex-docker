@@ -12,14 +12,13 @@ use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: EmployeeAttendanceRepository::class)]
 #[ApiResource]
-class EmployeeAttendance
-{
+class EmployeeAttendance {
     #[Groups(['user:read'])]
-	#[ORM\Id]
+    #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
-	private ?Ulid $id = null;
+    private ?Ulid $id = null;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
     private ?\DateTimeImmutable $startAt = null;
@@ -35,54 +34,45 @@ class EmployeeAttendance
     #[ORM\JoinColumn(nullable: false)]
     private ?Attendance $attendance = null;
 
-    public function getId(): ?Ulid
-    {
+    public function getId(): ?Ulid {
         return $this->id;
     }
 
-    public function getStartAt(): ?\DateTimeImmutable
-    {
+    public function getStartAt(): ?\DateTimeImmutable {
         return $this->startAt;
     }
 
-    public function setStartAt(\DateTimeImmutable $startAt): self
-    {
+    public function setStartAt(\DateTimeImmutable $startAt): self {
         $this->startAt = $startAt;
 
         return $this;
     }
 
-    public function getEndAt(): ?\DateTimeImmutable
-    {
+    public function getEndAt(): ?\DateTimeImmutable {
         return $this->endAt;
     }
 
-    public function setEndAt(\DateTimeImmutable $endAt): self
-    {
+    public function setEndAt(\DateTimeImmutable $endAt): self {
         $this->endAt = $endAt;
 
         return $this;
     }
 
-    public function getEmployee(): ?Employee
-    {
+    public function getEmployee(): ?Employee {
         return $this->employee;
     }
 
-    public function setEmployee(?Employee $employee): self
-    {
+    public function setEmployee(?Employee $employee): self {
         $this->employee = $employee;
 
         return $this;
     }
 
-    public function getAttendance(): ?Attendance
-    {
+    public function getAttendance(): ?Attendance {
         return $this->attendance;
     }
 
-    public function setAttendance(?Attendance $attendance): self
-    {
+    public function setAttendance(?Attendance $attendance): self {
         $this->attendance = $attendance;
 
         return $this;
