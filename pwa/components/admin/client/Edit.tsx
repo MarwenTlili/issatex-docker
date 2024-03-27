@@ -24,7 +24,6 @@ const Edit = () => {
                 </div>
                 <TextInput source='name' />
                 <TextInput source='phone' />
-                <BooleanInput source='isValid' />
                 <BooleanInput source='isPrivileged' />
             </SimpleForm>
         </ReactAdminEdit>

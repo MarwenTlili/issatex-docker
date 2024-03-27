@@ -86,7 +86,6 @@ const Create = () => (
         <SimpleForm>
             <TextInput source='name' required={true} />
             <TextInput source='phone' />
-            <BooleanInput source='isValid' />
             <BooleanInput source='isPrivileged' />
             <UserInput source='account' reference='api/users' />
         </SimpleForm>

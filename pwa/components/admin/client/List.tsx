@@ -41,7 +41,6 @@ const List = () => (
         <DatagridConfigurable>
             <TextField source='name' />
             <TextField source='phone' />
-            <SwitchToggle resource='api/clients' source='isValid' />
             <SwitchToggle resource='api/clients' source='isPrivileged' />
             <ReferenceField
                 source='account'

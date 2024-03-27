@@ -16,7 +16,6 @@ const Show = () => {
             <SimpleShowLayout>
                 <TextField source='name' />
                 <TextField source='phone' />
-                <BooleanField source='isValid' />
                 <BooleanField source='isPrivileged' />
                 <ReferenceField
                     source='account'
