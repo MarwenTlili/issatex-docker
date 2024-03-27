@@ -39,7 +39,7 @@ class ManufacturingOrderSize {
     #[ORM\Column]
     private ?int $quantity = null;
 
-    #[ORM\ManyToOne(inversedBy: 'manufacturingOrderSize')]
+    #[ORM\ManyToOne(inversedBy: 'manufacturingOrderSizes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?ManufacturingOrder $manufacturingOrder = null;
 

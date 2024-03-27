@@ -306,11 +306,11 @@ class ManufacturingOrder {
     /**
      * @return Collection<int, ManufacturingOrderSize>
      */
-    public function getManufacturingOrderSize(): Collection {
+    public function getManufacturingOrderSizes(): Collection {
         return $this->manufacturingOrderSizes;
     }
 
-    public function addManufacturingOrderSize(ManufacturingOrderSize $manufacturingOrderSize): self {
+    public function addManufacturingOrderSizes(ManufacturingOrderSize $manufacturingOrderSize): self {
         if (!$this->manufacturingOrderSizes->contains($manufacturingOrderSize)) {
             $this->manufacturingOrderSizes->add($manufacturingOrderSize);
             $manufacturingOrderSize->setManufacturingOrder($this);
@@ -319,7 +319,7 @@ class ManufacturingOrder {
         return $this;
     }
 
-    public function removeManufacturingOrderSize(ManufacturingOrderSize $manufacturingOrderSize): self {
+    public function removeManufacturingOrderSizes(ManufacturingOrderSize $manufacturingOrderSize): self {
         if ($this->manufacturingOrderSizes->removeElement($manufacturingOrderSize)) {
             // set the owning side to null (unless already changed)
             if ($manufacturingOrderSize->getManufacturingOrder() === $this) {
