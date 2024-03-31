@@ -8,7 +8,6 @@ import {
     useEditContext,
     useGetList
 } from 'react-admin'
-import { employeeFullName } from './Create';
 
 const Edit = (props: EditProps) => {
     return (
@@ -21,13 +20,6 @@ const Edit = (props: EditProps) => {
                     mappedBy='ilot'
                     inversedBy='machines'
                     optionText={(choice) => `${choice.name}`}
-                />
-                <OneToManySelect
-                    source='employees'
-                    reference='api/employees'
-                    mappedBy='ilot'
-                    inversedBy='employees'
-                    optionText={employeeFullName}
                 />
             </SimpleForm>
         </ReactAdminEdit>

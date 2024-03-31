@@ -20,7 +20,7 @@ const Create = () => {
     const redirect = useRedirect();
 
     const handleSubmit = (data: Ilot) => {
-        const ilot: Ilot = new Ilot(undefined, data.name, new Date(), data.machines, data.employees)
+        const ilot: Ilot = new Ilot(undefined, data.name, new Date(), data.machines)
 
         create('api/ilots', { data: ilot }, {
             onError: (error) => {
@@ -48,14 +48,6 @@ const Create = () => {
                     filter={{ 'exists[ilot]': false }} // show only unassigned machines 
                 >
                     <SelectArrayInput />
-                </ReferenceArrayInput>
-                <ReferenceArrayInput
-                    reference='api/employees'
-                    source='employees'
-                    sort={{ field: 'firstName', order: 'ASC' }}
-                    filter={{ 'exists[ilot]': false }} // show only unassigned employees 
-                >
-                    <SelectArrayInput optionText={employeeFullName} />
                 </ReferenceArrayInput>
             </SimpleForm>
         </ReactAdminCreate>

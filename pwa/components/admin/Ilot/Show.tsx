@@ -18,10 +18,6 @@ const Show = () => {
                     reference='api/machines'
                     source='machines'
                 />
-                <ReferenceArrayField
-                    reference='api/employees'
-                    source='employees'
-                />
             </SimpleShowLayout>
         </ReactAdminShow>
     )

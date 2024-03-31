@@ -2,7 +2,6 @@ import React from 'react'
 import {
     CreateButton,
     DatagridConfigurable,
-    // DateField,
     EditButton,
     ExportButton,
     FilterButton,
@@ -37,14 +36,9 @@ const List = () => {
         >
             <DatagridConfigurable>
                 <TextField source='name' />
-                {/* <DateField source='createdAt' /> */}
                 <ReferenceArrayField
                     reference='api/machines'
                     source='machines'
-                />
-                <ReferenceArrayField
-                    reference='api/employees'
-                    source='employees'
                 />
                 <WrapperField label='Actions'>
                     <ShowButton />
