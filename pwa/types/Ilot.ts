@@ -10,7 +10,6 @@ export class Ilot implements Item {
         public name?: string,
         public createdAt?: Date,
         public machines?: string[],
-        public employees?: string[],
         public dailyProductions?: string[],
         public weeklySchedules?: string[]
     ) {
