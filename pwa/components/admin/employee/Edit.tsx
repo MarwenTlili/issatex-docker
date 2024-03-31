@@ -14,8 +14,8 @@ const Edit = () => (
             <TextInput source='lastName' />
             <TextInput source='registrationCode' />
             <TextInput source='category' />
-            <ReferenceInput reference='api/ilots' source='ilot' />
-            {/* <DateTimeInput source='recuruitmentAt' /> */}
+            {/* <ReferenceInput reference='api/ilots' source='ilot' /> */}
+            {/* <DateTimeInput source='recruitmentAt' /> */}
         </SimpleForm>
     </ReactAdminEdit>
 )

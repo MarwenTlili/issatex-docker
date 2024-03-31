@@ -15,8 +15,8 @@ const Create = () => (
             <TextInput source='lastName' />
             <TextInput source='registrationCode' />
             <TextInput source='category' />
-            <DateInput source='recuruitmentAt' />
-            <ReferenceInput reference='api/ilots' source='ilot' />
+            <DateInput source='recruitmentAt' />
+            {/* <ReferenceInput reference='api/ilots' source='ilot' /> */}
         </SimpleForm>
     </ReactAdminCreate>
 )
