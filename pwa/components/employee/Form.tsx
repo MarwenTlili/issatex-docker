@@ -1,12 +1,11 @@
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ErrorMessage, Field, Formik } from "formik";
+import { ErrorMessage, Formik } from "formik";
 import { useMutation } from "react-query";
 
 import { fetch, FetchError, FetchResponse } from "../../utils/dataAccess";
 import { Employee } from "../../types/Employee";
-import SelectManyToOne from "../formik/SelectManyToOne";
 import { hasSpaces, isUppercase, } from "../../utils/tools";
 
 interface Props {
@@ -103,14 +102,6 @@ export const Form: FunctionComponent<Props> = ({ employee }) => {
                     return errors;
                 }}
                 onSubmit={(values, { setSubmitting, setStatus, setErrors }) => {
-                    /**
-                     * if ilot is not selected, then set it to undefined 
-                     * to prevent submitting emty string of ilot
-                     */
-                    if (values.ilot === "") {
-                        values.ilot = undefined
-                    }
-
                     const isCreation = !values["@id"];
                     saveMutation.mutate(
                         { values },
@@ -299,58 +290,6 @@ export const Form: FunctionComponent<Props> = ({ employee }) => {
                                 name="recuruitmentAt"
                             />
                         </div>
-                        <div className="mb-2">
-                            <label
-                                className="text-gray-700 block text-sm font-bold"
-                                htmlFor="employee_ilot"
-                            >
-                                Ilot
-                            </label>
-                            {/* formik select field */}
-                            <Field name="ilot" as={SelectManyToOne} reference="/api/ilots" optionText="name" />
-                        </div>
-
-                        {/* <div className="mb-2">
-                            <div className="text-gray-700 block text-sm font-bold">
-                                employeeAttendances
-                            </div>
-                            <FieldArray
-                                name="employeeAttendances"
-                                render={(arrayHelpers) => (
-                                    <div className="mb-2" id="employee_employeeAttendances">
-                                        {values.employeeAttendances &&
-                                            values.employeeAttendances.length > 0 ? (
-                                            values.employeeAttendances.map(
-                                                (item: any, index: number) => (
-                                                    <div key={index}>
-                                                        <Field name={`employeeAttendances.${index}`} />
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => arrayHelpers.remove(index)}
-                                                        >
-                                                            -
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => arrayHelpers.insert(index, "")}
-                                                        >
-                                                            +
-                                                        </button>
-                                                    </div>
-                                                )
-                                            )
-                                        ) : (
-                                            <button
-                                                type="button"
-                                                onClick={() => arrayHelpers.push("")}
-                                            >
-                                                Add
-                                            </button>
-                                        )}
-                                    </div>
-                                )}
-                            />
-                        </div> */}
                         {status && status.msg && (
                             <div
                                 className={`border px-4 py-3 my-4 rounded ${status.isValid

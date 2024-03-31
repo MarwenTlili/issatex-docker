@@ -10,7 +10,6 @@ import { fetch, getItemPath } from "../../utils/dataAccess";
 import { Employee } from "../../types/Employee";
 import { useRouter } from "next/router";
 import { Session } from "next-auth";
-import IlotName from "../ilot/IlotName";
 
 export const EMPLOYEES_ITEMS_PER_PAGE = ["5", "10", "20", "30"]
 
@@ -92,12 +91,6 @@ export const List: FunctionComponent<Props> = ({ employees, totalItems, perPage,
                                     <span>Category: </span>
                                     <span className="text-gray-500 dark:text-gray-400">
                                         {employee.category}
-                                    </span>
-                                </p>
-                                <p>
-                                    <span>ilot: </span>
-                                    <span className="text-gray-500 dark:text-gray-400">
-                                        <IlotName ilotId={employee.ilot} session={session} />
                                     </span>
                                 </p>
                                 <p>

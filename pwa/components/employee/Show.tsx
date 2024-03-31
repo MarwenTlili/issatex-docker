@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 
 import { fetch, getItemPath } from "../../utils/dataAccess";
 import { Employee } from "../../types/Employee";
-import IlotName from "../ilot/IlotName";
 import { Session } from "next-auth";
 
 interface Props {
@@ -65,10 +64,6 @@ export const Show: FunctionComponent<Props> = ({ employee, text, session }) => {
                     <tr>
                         <th scope="row">category</th>
                         <td>{employee.category}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Ilot</th>
-                        <td><IlotName ilotId={employee.ilot} session={session} /></td>
                     </tr>
                     <tr>
                         <th scope="row">recruitmentAt</th>
