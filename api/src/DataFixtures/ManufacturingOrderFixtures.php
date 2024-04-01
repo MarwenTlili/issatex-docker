@@ -3,104 +3,100 @@
 namespace App\DataFixtures;
 
 use App\Entity\ManufacturingOrder;
+use App\Entity\ManufacturingOrderSize;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class ManufacturingOrderFixtures extends Fixture implements DependentFixtureInterface
-{
-	private $faker;
+class ManufacturingOrderFixtures extends Fixture implements DependentFixtureInterface {
+	protected $faker;
 
-    public function load(ObjectManager $manager): void
-    {
+	public function load(ObjectManager $manager): void {
 		$this->faker = Factory::create();
-		$manufacturingOrders = [];
 
-		$tech_docs = array_slice(scandir(getcwd() . '/public/uploads/tech_docs'), 2);
-		
 		///////////////////////////////////////////////////////////////////////
-		// client who create manufacturingOrder1 
-		/** @var \App\Entity\Client $client */
-		$client = $this->getReference(ClientFixtures::CLIENT1);
-		$article = $this->getReference(ArticleFixtures::ARTICLE1);
-		
-		// ManufacturingOrder creation date should be between Client's Account creation date and 'now'
-		// $manufacturingOrder_createdAt = $this->faker->dateTimeBetween('-1 years', 'now');
-		$now = new \DateTimeImmutable("now", null);
-		$manufacturingOrder_createdAt = $this->randomDateBetween(
-			$client->getAccount()->getCreatedAt(), 
-			$now
-		);
-		
-		$totalQuantity = $this->faker->randomNumber(3, false);
-		$unitPrice = $this->faker->randomFloat(3, 10, 20);
+		$unitPrice = $this->faker->randomNumber(2, true);
 		$manufacturingOrder1 = new ManufacturingOrder();
-		// $manufacturingOrder1->setCreatedAt(\DateTimeImmutable::createFromMutable($datetime))
-		$manufacturingOrder1->setCreatedAt($manufacturingOrder_createdAt)
+
+		// set order sizes
+		$orderSize1M = new ManufacturingOrderSize();
+		$orderSize1M->setSize($this->getReference(SizeFixtures::MEDIUM))
+			->setQuantity($this->faker->numberBetween(100, 1000))
+			->setManufacturingOrder($manufacturingOrder1);
+		$manager->persist($orderSize1M);
+		$orderSize1L = new ManufacturingOrderSize();
+		$orderSize1L->setSize($this->getReference(SizeFixtures::LARGE))
+			->setQuantity($this->faker->numberBetween(100, 1000))
+			->setManufacturingOrder($manufacturingOrder1);
+		$manager->persist($orderSize1L);
+		$orderSize1XL = new ManufacturingOrderSize();
+		$orderSize1XL->setSize($this->getReference(SizeFixtures::EXTRA_LARGE))
+			->setQuantity($this->faker->numberBetween(100, 1000))
+			->setManufacturingOrder($manufacturingOrder1);
+		$manager->persist($orderSize1XL);
+
+		// total quantity of sizes
+		$totalQuantity = $orderSize1M->getQuantity() + $orderSize1L->getQuantity() + $orderSize1XL->getQuantity();
+
+		$manufacturingOrder1->setCreatedAt(new \DateTimeImmutable("now", null))
 			->setTotalQuantity($totalQuantity)
-			->setTechnicalDocument($tech_docs[array_rand($tech_docs)])
 			->setUnitTime($this->faker->randomNumber(3, true))
-			->setUnitPrice($unitPrice)
-			->setTotalPrice($totalQuantity*$unitPrice)
+			->setUnitPrice($this->faker->randomNumber(2, true))
+			->setTotalPrice($totalQuantity * $unitPrice)
 			->setObservation($this->faker->text())
 			->setUrgent($this->faker->boolean())
 			->setLaunched(false)
 			->setDenied($this->faker->boolean())
-			->setClient($client)
-			->setArticle($article);
-		array_push($manufacturingOrders, $manufacturingOrder1);
+			->setClient($this->getReference(ClientFixtures::CLIENT1))
+			->setArticle($this->getReference(ArticleFixtures::ARTICLE1));
+		$manager->persist($manufacturingOrder1);
 		///////////////////////////////////////////////////////////////////////
-		// client who create manufacturingOrder1 
-		/** @var \App\Entity\Client $client */
-		$client = $this->getReference(ClientFixtures::CLIENT2);
-		$article = $this->getReference(ArticleFixtures::ARTICLE2);
-		
-		// ManufacturingOrder creation date should be between Client's Account creation date and 'now'
-		$now = new \DateTimeImmutable("now", null);
-		$manufacturingOrder_createdAt = $this->randomDateBetween(
-			$client->getAccount()->getCreatedAt(), 
-			$now
-		);
-		
-		$totalQuantity = $this->faker->randomNumber(3, false);
-		$unitPrice = $this->faker->randomFloat(3, 10, 20);
+		$unitPrice = $this->faker->randomNumber(2, true);
 		$manufacturingOrder2 = new ManufacturingOrder();
-		// $manufacturingOrder1->setCreatedAt(\DateTimeImmutable::createFromMutable($datetime))
-		$manufacturingOrder2->setCreatedAt($manufacturingOrder_createdAt)
+
+		// set order sizes
+		$orderSize2M = new ManufacturingOrderSize();
+		$orderSize2M->setSize($this->getReference(SizeFixtures::MEDIUM))
+			->setQuantity($this->faker->numberBetween(100, 1000))
+			->setManufacturingOrder($manufacturingOrder2);
+		$manager->persist($orderSize2M);
+		$orderSize2L = new ManufacturingOrderSize();
+		$orderSize2L->setSize($this->getReference(SizeFixtures::LARGE))
+			->setQuantity($this->faker->numberBetween(100, 1000))
+			->setManufacturingOrder($manufacturingOrder2);
+		$manager->persist($orderSize2L);
+		$orderSize2XL = new ManufacturingOrderSize();
+		$orderSize2XL->setSize($this->getReference(SizeFixtures::EXTRA_LARGE))
+			->setQuantity($this->faker->numberBetween(100, 1000))
+			->setManufacturingOrder($manufacturingOrder2);
+		$manager->persist($orderSize2XL);
+
+		// total quantity of sizes
+		$totalQuantity = $orderSize2M->getQuantity() + $orderSize2L->getQuantity() + $orderSize2XL->getQuantity();
+
+		$manufacturingOrder2->setCreatedAt(new \DateTimeImmutable("now", null))
 			->setTotalQuantity($totalQuantity)
-			->setTechnicalDocument($tech_docs[array_rand($tech_docs)])
 			->setUnitTime($this->faker->randomNumber(3, true))
 			->setUnitPrice($unitPrice)
-			->setTotalPrice($totalQuantity*$unitPrice)
+			->setTotalPrice($totalQuantity * $unitPrice)
 			->setObservation($this->faker->text())
 			->setUrgent($this->faker->boolean())
 			->setLaunched(false)
 			->setDenied($this->faker->boolean())
-			->setClient($client)
-			->setArticle($article);
-		array_push($manufacturingOrders, $manufacturingOrder2);
+			->setClient($this->getReference(ClientFixtures::CLIENT2))
+			->setArticle($this->getReference(ArticleFixtures::ARTICLE2));
+		$manager->persist($manufacturingOrder2);
 		///////////////////////////////////////////////////////////////////////
 
-		foreach($manufacturingOrders as $manufacturingOrder){
-			$manager->persist($manufacturingOrder);
-		}
-        $manager->flush();
-    }
-
-	private function randomDateBetween(\DateTimeImmutable $start, \DateTimeImmutable $end) {
-		$randomTimestamp = mt_rand($start->getTimestamp(), $end->getTimestamp());
-
-		$date = new \DateTimeImmutable();
-		$randomDate = $date->setTimestamp($randomTimestamp);
-		
-		return $randomDate;
+		$manager->flush();
 	}
 
-	public function getDependencies(){
-		return  [
+	public function getDependencies() {
+		return [
 			ClientFixtures::class,
-			ArticleFixtures::class
+			ArticleFixtures::class,
+			SizeFixtures::class
 		];
 	}
 }

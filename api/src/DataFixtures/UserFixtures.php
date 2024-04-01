@@ -8,25 +8,20 @@ use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Faker\Factory;
 
-class UserFixtures extends Fixture
-{
+class UserFixtures extends Fixture {
 	private $passwordHasher;
-    protected $faker;
-	
+	protected $faker;
+
 	public const ADMIN = "ADMIN";
-	public const USER1_COMPANY = "USER1_COMPANY";
-    public const USER2_CLIENT = "USER2_CLIENT";
-    public const USER3_CLIENT = "USER3_CLIENT";
-	public const USER4_CLIENT = "USER4_CLIENT";
-	public const USER5_CLIENT = "USER5_CLIENT";
-	
-	public function __construct(UserPasswordHasherInterface $passwordHasher) 
-	{
+	public const USER1 = "USER1";
+	public const USER2 = "USER2";
+	public const SECRETARY = "SECRETARY";
+
+	public function __construct(UserPasswordHasherInterface $passwordHasher) {
 		$this->passwordHasher = $passwordHasher;
 	}
-	
-    public function load(ObjectManager $manager): void 
-	{
+
+	public function load(ObjectManager $manager): void {
 		$this->faker = Factory::create();
 		$users = [];
 
@@ -34,90 +29,51 @@ class UserFixtures extends Fixture
 		/**
 		 * Admin prefix
 		 */
-		$datetime = $this->faker->dateTimeBetween('-1 years', 'now');
-        $admin = new User();
+		$admin = new User();
 		$admin->setEmail('admin@example.com')
 			->setUsername('admin')
 			->setRoles(['ROLE_ADMIN'])
-			->setAvatar($this->faker->imageUrl(640, 480, null, false, 'admin', false))
 			->setPassword($this->passwordHasher->hashPassword($admin, 'admin'))
-			->setCreatedAt(\DateTimeImmutable::createFromMutable($datetime))
-			->setLastLoginAt(\DateTimeImmutable::createFromMutable($datetime))
-			->isIsVerified(true);
+			->setCreatedAt(new \DateTimeImmutable('now'))
+			->setLastLoginAt(new \DateTimeImmutable('now'))
+			->setIsVerified(true);
 		array_push($users, $admin);
-		///////////////////////////////////////////////////////////////////////
-		/**
-		 * Companies
-		 */
-		$username = $this->faker->userName();
-		$datetime = $this->faker->dateTimeBetween('-1 years', 'now');
-		$user1_company = new User();
-		$user1_company->setUsername($username)
-			->setEmail($this->faker->email())
-			->setRoles(['ROLE_COMPANY'])
-			->setAvatar($this->faker->imageUrl(640, 480, null, false, $username, false))
-				->setPassword($this->passwordHasher->hashPassword($user1_company, $username))
-				->setCreatedAt(\DateTimeImmutable::createFromMutable($datetime))
-				->setLastLoginAt(\DateTimeImmutable::createFromMutable($datetime))
-				->isIsVerified(true);
-		array_push($users, $user1_company);
 		///////////////////////////////////////////////////////////////////////
 		/**
 		 * Clients
 		 */
-		$username = $this->faker->userName();
-		$datetime = $this->faker->dateTimeBetween('-1 years', 'now');
-		$user2_client = new User();
-		$user2_client->setUsername($username)
-			->setEmail($this->faker->email())
+		$user1 = new User();
+		$user1->setUsername('client1')
+			->setEmail('client1@example.com')
 			->setRoles(['ROLE_CLIENT'])
-			->setAvatar($this->faker->imageUrl(640, 480, null, false, $username, false))
-				->setPassword($this->passwordHasher->hashPassword($user2_client, $username))
-				->setCreatedAt(\DateTimeImmutable::createFromMutable($datetime))
-				->setLastLoginAt(\DateTimeImmutable::createFromMutable($datetime))
-				->isIsVerified(true);
-		array_push($users, $user2_client);
+			->setPassword($this->passwordHasher->hashPassword($user1, 'client1'))
+			->setCreatedAt(new \DateTimeImmutable('now'))
+			->setLastLoginAt(new \DateTimeImmutable('now'))
+			->setIsVerified(true);
+		array_push($users, $user1);
 		///////////////////////////////////////////////////////////////////////
-		$username = $this->faker->userName();
-		$datetime = $this->faker->dateTimeBetween('-1 years', 'now');
-		$user3_client = new User();
-		$user3_client->setUsername($username)
-			->setEmail($this->faker->email())
+		$user2 = new User();
+		$user2->setUsername('client2')
+			->setEmail('client2@example.com')
 			->setRoles(['ROLE_CLIENT'])
-			->setAvatar($this->faker->imageUrl(640, 480, null, false, $username, false))
-				->setPassword($this->passwordHasher->hashPassword($user3_client, $username))
-				->setCreatedAt(\DateTimeImmutable::createFromMutable($datetime))
-				->setLastLoginAt(\DateTimeImmutable::createFromMutable($datetime))
-				->isIsVerified(true);
-		array_push($users, $user3_client);
+			->setPassword($this->passwordHasher->hashPassword($user2, 'client2'))
+			->setCreatedAt(new \DateTimeImmutable('now'))
+			->setLastLoginAt(new \DateTimeImmutable('now'))
+			->setIsVerified(true);
+		array_push($users, $user2);
 		///////////////////////////////////////////////////////////////////////
-		$username = $this->faker->userName();
-		$datetime = $this->faker->dateTimeBetween('-1 years', 'now');
-		$user4_client = new User();
-		$user4_client->setUsername($username)
-			->setEmail($this->faker->email())
-			->setRoles(['ROLE_CLIENT'])
-			->setAvatar($this->faker->imageUrl(640, 480, null, false, $username, false))
-				->setPassword($this->passwordHasher->hashPassword($user4_client, $username))
-				->setCreatedAt(\DateTimeImmutable::createFromMutable($datetime))
-				->setLastLoginAt(\DateTimeImmutable::createFromMutable($datetime))
-				->isIsVerified(true);
-		array_push($users, $user4_client);
 		///////////////////////////////////////////////////////////////////////
-		$username = $this->faker->userName();
-		$datetime = $this->faker->dateTimeBetween('-1 years', 'now');
-		$user5_client = new User();
-		$user5_client->setUsername($username)
-			->setEmail($this->faker->email())
-			->setRoles(['ROLE_CLIENT'])
-			->setAvatar($this->faker->imageUrl(640, 480, null, false, $username, false))
-				->setPassword($this->passwordHasher->hashPassword($user5_client, $username))
-				->setCreatedAt(\DateTimeImmutable::createFromMutable($datetime))
-				->setLastLoginAt(\DateTimeImmutable::createFromMutable($datetime))
-				->isIsVerified(true);
-		array_push($users, $user5_client);
+		$secretary = new User();
+		$secretary->setUsername('secretary')
+			->setEmail('secretary@example.com')
+			->setRoles(['ROLE_SECRETARY'])
+			->setPassword($this->passwordHasher->hashPassword($secretary, 'secretary'))
+			->setCreatedAt(new \DateTimeImmutable('now'))
+			->setLastLoginAt(new \DateTimeImmutable('now'))
+			->setIsVerified(true);
+		array_push($users, $secretary);
 		///////////////////////////////////////////////////////////////////////
-		
+
 		/**
 		 * persist User objects
 		 */
@@ -125,19 +81,15 @@ class UserFixtures extends Fixture
 			$manager->persist($user);
 		}
 		// persist data
-        $manager->flush();
+		$manager->flush();
 		///////////////////////////////////////////////////////////////////////
 		/**
 		 * Set the reference entry identified by PUBLIC CONST and referenced to managed USER
 		 */
 		$this->addReference(self::ADMIN, $admin);
-
-		$this->addReference(self::USER1_COMPANY, $user1_company);
-
-		$this->addReference(self::USER2_CLIENT, $user2_client);
-		$this->addReference(self::USER3_CLIENT, $user3_client);
-		$this->addReference(self::USER4_CLIENT, $user4_client);
-		$this->addReference(self::USER5_CLIENT, $user5_client);
+		$this->addReference(self::USER1, $user1);
+		$this->addReference(self::USER2, $user2);
+		$this->addReference(self::SECRETARY, $secretary);
 		///////////////////////////////////////////////////////////////////////
-    }
+	}
 }
