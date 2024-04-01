@@ -8,11 +8,12 @@ import {
     ReferenceField,
     RichTextField,
     SimpleShowLayout,
-    TextField
+    TextField,
+    ReferenceArrayField,
+    Datagrid,
 } from 'react-admin'
 
 import { FieldGuesser } from '@api-platform/admin'
-import OrderSizes from '../manufacturingOrderSizes/OrderSizes'
 import Document from '../technicalDocument/Document'
 
 const Show = () => {
@@ -37,11 +38,20 @@ const Show = () => {
                 <ReferenceField source='client' reference='clients' link='show'>
                     <TextField source='name' />
                 </ReferenceField>
-                <OrderSizes
-                    reference='api/sizes'
-                    through='api/manufacturing_order_sizes'
-                    using='quantity'
-                />
+                <ReferenceArrayField
+                    reference='api/manufacturing_order_size'
+                    source='manufacturingOrderSizes'
+                >
+                    <Datagrid bulkActionButtons={false}>
+                        <ReferenceField
+                            reference='api/sizes'
+                            source='size'
+                        >
+                            <TextField source='name' />
+                        </ReferenceField>
+                        <TextField source='quantity' />
+                    </Datagrid>
+                </ReferenceArrayField>
                 <BooleanField source='urgent' />
                 <BooleanField source='launched' />
                 <BooleanField source='denied' />
