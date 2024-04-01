@@ -43,9 +43,6 @@ class Client {
     private ?string $phone = null;
 
     #[ORM\Column]
-    private ?bool $isValid = null;
-
-    #[ORM\Column]
     private ?bool $isPrivileged = null;
 
     #[ApiFilter(CustomClientAccountFilter::class)]
@@ -88,16 +85,6 @@ class Client {
 
     public function setPhone(string $phone): self {
         $this->phone = $phone;
-
-        return $this;
-    }
-
-    public function isIsValid(): ?bool {
-        return $this->isValid;
-    }
-
-    public function setIsValid(bool $isValid): self {
-        $this->isValid = $isValid;
 
         return $this;
     }
