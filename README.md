@@ -66,6 +66,20 @@ chmod -R 777 api/public/uploads/
 docker compose up -d
 ```
 
+## Initialization
+> ORM
+```
+docker exec -it issatex-php sh
+php bin/console make:migration
+php bin/console doctrine:migrations:migrate
+```
+
+> Fixtures (for testing)
+```
+docker exec -it issatex-php sh
+php bin/console doctrine:fixtures:load
+```
+
 ## How to use
 >links  
 
@@ -115,6 +129,7 @@ curl --insecure \
 	-H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NzgzMzU0NjcsImV4cCI6MTY3ODQyMTg2Nywicm9sZXMiOlsiUk9MRV9BRE1JTiJdLCJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIn0.TLxcLANB7z9Cfu2xsk6G6PxcsimzTgDipzc4e3_ytlxPILbRu3fkzUV955QsPWEMJaNxYrfqHM1TSwUFx5n27KJDiGam_uCk1PAqhJ5RC9S9l-JY5IO2ygcOHYE23nEIAznhlU-iHBN9nk9AqxjfN1tkUnPpABy-hNnmuwFvDg-mlfhcEOmjAbkJp05uoMOO3PK_N3MQiYYG5s5XifTXye7WrGNQGq6P7dexsJfpwErocAt4shzkaZHYw_c2Hyu934V4EGcVuWOSUoMAl3r75z5nJqsbI0VHAlVStBBFYG-PX1aRP07l1wNyQ8TcY2KsY700btnMmrwiZ-dAPhUTJg" \
     | json_pp
 ```
+
 **pnpm add package with bearer**
 >from container
 ```
