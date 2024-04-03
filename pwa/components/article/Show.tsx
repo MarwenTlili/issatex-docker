@@ -46,16 +46,16 @@ export const Show: FunctionComponent<Props> = ({ article, text }) => {
                     </div>
 
                     <div className="w-full md:w-4/5 p-4">
+                        <Link
+                            href={getItemPath(article["@id"], "/articles/[id]/edit")}
+                            className="font-mono text-lg text-cyan-600/100 hover:text-indigo-800"
+                        >
+                            Edit
+                        </Link>
 
                         <div className="flex flex-row justify-end">
                             {article && article.manufacturingOrders?.length === 0 && (
                                 <>
-                                    <Link
-                                        href={getItemPath(article["@id"], "/articles/[id]/edit")}
-                                        className="font-mono text-lg text-cyan-600/100 hover:text-indigo-800"
-                                    >
-                                        Edit
-                                    </Link>
                                     <button
                                         onClick={handleDelete}
                                         className="font-mono text-lg text-red-500 hover:text-indigo-800 ml-2"

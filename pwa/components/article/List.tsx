@@ -69,14 +69,12 @@ export const List: FunctionComponent<Props> = ({ articles, totalItems, perPage, 
                                     >
                                         Show
                                     </Link>
-                                    {article && article.manufacturingOrders?.length === 0 && (
-                                        <Link
-                                            href={getItemPath(article["@id"], "/articles/[id]/edit")}
-                                            className="font-mono text-lg text-orange-800/100 hover:text-indigo-800 ml-2"
-                                        >
-                                            Edit
-                                        </Link>
-                                    )}
+                                    <Link
+                                        href={getItemPath(article["@id"], "/articles/[id]/edit")}
+                                        className="font-mono text-lg text-orange-800/100 hover:text-indigo-800 ml-2"
+                                    >
+                                        Edit
+                                    </Link>
                                 </div>
                             </div>
                         )
