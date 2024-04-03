@@ -12,10 +12,10 @@ const ImageElement = ({ id }: { id: string | undefined }) => {
     const { data: image } = useSWR(id, articleImageFetcher)
     if (!image?.["@id"] || !image.contentUrl) {
         return (
-            <div className='border rounded-t-lg flex justify-center items-center'
-                style={{ width: 500, height: 200, backgroundColor: '#F6F6F6' }}
+            <div className='border rounded-t-lg flex justify-center items-center w-full'
+                style={{backgroundColor: '#F6F6F6' }}
             >
-                <Image src={BACKEND_URL + IMAGE_404}
+                <Image src={IMAGE_404}
                     alt='no image'
                     width={230}
                     height={230}
