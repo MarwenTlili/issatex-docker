@@ -14,6 +14,7 @@ class ManufacturingOrderFixtures extends Fixture implements DependentFixtureInte
 
 	public function load(ObjectManager $manager): void {
 		$this->faker = Factory::create();
+		$now = new \DateTimeImmutable('now');
 
 		///////////////////////////////////////////////////////////////////////
 		$unitPrice = $this->faker->randomNumber(2, true);
@@ -39,7 +40,11 @@ class ManufacturingOrderFixtures extends Fixture implements DependentFixtureInte
 		// total quantity of sizes
 		$totalQuantity = $orderSize1M->getQuantity() + $orderSize1L->getQuantity() + $orderSize1XL->getQuantity();
 
-		$manufacturingOrder1->setCreatedAt(new \DateTimeImmutable("now", null))
+		$lastWeek = date('Y-m-d', strtotime('-1 week', strtotime($now->format('Y-m-d'))));
+		// monday of last week
+		$createdAt = date('Y-m-d', strtotime('last monday', strtotime($lastWeek)));
+
+		$manufacturingOrder1->setCreatedAt(new \DateTimeImmutable($createdAt))
 			->setTotalQuantity($totalQuantity)
 			->setUnitTime($this->faker->randomNumber(3, true))
 			->setUnitPrice($this->faker->randomNumber(2, true))
@@ -75,7 +80,7 @@ class ManufacturingOrderFixtures extends Fixture implements DependentFixtureInte
 		// total quantity of sizes
 		$totalQuantity = $orderSize2M->getQuantity() + $orderSize2L->getQuantity() + $orderSize2XL->getQuantity();
 
-		$manufacturingOrder2->setCreatedAt(new \DateTimeImmutable("now", null))
+		$manufacturingOrder2->setCreatedAt(new \DateTimeImmutable('now'))
 			->setTotalQuantity($totalQuantity)
 			->setUnitTime($this->faker->randomNumber(3, true))
 			->setUnitPrice($unitPrice)
