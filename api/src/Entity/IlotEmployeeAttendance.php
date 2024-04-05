@@ -3,34 +3,29 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Repository\EmployeeAttendanceRepository;
-use Doctrine\DBAL\Types\Types;
+use App\Repository\IlotEmployeeAttendanceRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UlidType;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Ulid;
 
-#[ORM\Entity(repositoryClass: EmployeeAttendanceRepository::class)]
+#[ORM\Entity(repositoryClass: IlotEmployeeAttendanceRepository::class)]
 #[ApiResource]
-class EmployeeAttendance {
-    #[Groups(['user:read'])]
+class IlotEmployeeAttendance {
     #[ORM\Id]
-    #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
     private ?Ulid $id = null;
 
-    #[ORM\Column(type: Types::TIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $startAt = null;
+    #[ORM\ManyToOne(inversedBy: 'ilotEmployeeAttendances')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Ilot $ilot = null;
 
-    #[ORM\Column(type: Types::TIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $endAt = null;
-
-    #[ORM\ManyToOne(inversedBy: 'employeeAttendances')]
+    #[ORM\ManyToOne(inversedBy: 'ilotEmployeeAttendances')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Employee $employee = null;
 
-    #[ORM\ManyToOne(inversedBy: 'employeeAttendances')]
+    #[ORM\ManyToOne(inversedBy: 'ilotEmployeeAttendances')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Attendance $attendance = null;
 
@@ -38,22 +33,12 @@ class EmployeeAttendance {
         return $this->id;
     }
 
-    public function getStartAt(): ?\DateTimeImmutable {
-        return $this->startAt;
+    public function getIlot(): ?Ilot {
+        return $this->ilot;
     }
 
-    public function setStartAt(\DateTimeImmutable $startAt): self {
-        $this->startAt = $startAt;
-
-        return $this;
-    }
-
-    public function getEndAt(): ?\DateTimeImmutable {
-        return $this->endAt;
-    }
-
-    public function setEndAt(\DateTimeImmutable $endAt): self {
-        $this->endAt = $endAt;
+    public function setIlot(?Ilot $ilot): self {
+        $this->ilot = $ilot;
 
         return $this;
     }

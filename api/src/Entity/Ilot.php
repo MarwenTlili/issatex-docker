@@ -38,15 +38,15 @@ class Ilot {
     #[ORM\OneToMany(mappedBy: 'ilot', targetEntity: Machine::class)]
     private Collection $machines;
 
-    #[ORM\OneToMany(mappedBy: 'ilot', targetEntity: Employee::class)]
-    private Collection $employees;
+    #[ORM\OneToMany(mappedBy: 'ilot', targetEntity: IlotEmployeeAttendance::class, orphanRemoval: true)]
+    private Collection $ilotEmployeeAttendances;
 
     #[ORM\OneToMany(mappedBy: 'ilot', targetEntity: WeeklySchedule::class, orphanRemoval: true)]
     private Collection $weeklySchedules;
 
     public function __construct() {
         $this->machines = new ArrayCollection();
-        $this->employees = new ArrayCollection();
+        $this->ilotEmployeeAttendances = new ArrayCollection();
         $this->weeklySchedules = new ArrayCollection();
     }
 
@@ -103,26 +103,26 @@ class Ilot {
     }
 
     /**
-     * @return Collection<int, Employee>
+     * @return Collection<int, IlotEmployeeAttendance>
      */
-    public function getEmployees(): Collection {
-        return $this->employees;
+    public function getIlotEmployeeAttendances(): Collection {
+        return $this->ilotEmployeeAttendances;
     }
 
-    public function addEmployee(Employee $employee): self {
-        if (!$this->employees->contains($employee)) {
-            $this->employees->add($employee);
-            $employee->setIlot($this);
+    public function addIlotEmployeeAttendance(IlotEmployeeAttendance $ilotEmployeeAttendance): self {
+        if (!$this->ilotEmployeeAttendances->contains($ilotEmployeeAttendance)) {
+            $this->ilotEmployeeAttendances->add($ilotEmployeeAttendance);
+            $ilotEmployeeAttendance->setIlot($this);
         }
 
         return $this;
     }
 
-    public function removeEmployee(Employee $employee): self {
-        if ($this->employees->removeElement($employee)) {
+    public function removeIlotEmployeeAttendance(IlotEmployeeAttendance $ilotEmployeeAttendance): self {
+        if ($this->ilotEmployeeAttendances->removeElement($ilotEmployeeAttendance)) {
             // set the owning side to null (unless already changed)
-            if ($employee->getIlot() === $this) {
-                $employee->setIlot(null);
+            if ($ilotEmployeeAttendance->getIlot() === $this) {
+                $ilotEmployeeAttendance->setIlot(null);
             }
         }
 

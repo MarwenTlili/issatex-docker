@@ -57,14 +57,11 @@ class Employee {
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $recruitmentAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'employees')]
-    private ?Ilot $ilot = null;
-
-    #[ORM\OneToMany(mappedBy: 'employee', targetEntity: EmployeeAttendance::class, orphanRemoval: true)]
-    private Collection $employeeAttendances;
+    #[ORM\OneToMany(mappedBy: 'employee', targetEntity: IlotEmployeeAttendance::class, orphanRemoval: true)]
+    private Collection $ilotEmployeeAttendances;
 
     public function __construct() {
-        $this->employeeAttendances = new ArrayCollection();
+        $this->ilotEmployeeAttendances = new ArrayCollection();
     }
 
     public function getId(): ?Ulid {
@@ -116,46 +113,32 @@ class Employee {
     }
 
     public function setRecruitmentAt(?\DateTimeImmutable $recruitmentAt): self {
-        dump($recruitmentAt);
-        // $dateTime = new \DateTime($recruitmentAt, new \DateTimeZone('UTC'));
-        // dump($dateTime);
-        
         $this->recruitmentAt = $recruitmentAt;
 
         return $this;
     }
 
-    public function getIlot(): ?Ilot {
-        return $this->ilot;
-    }
-
-    public function setIlot(?Ilot $ilot): self {
-        $this->ilot = $ilot;
-
-        return $this;
-    }
-
     /**
-     * @return Collection<int, EmployeeAttendance>
+     * @return Collection<int, IlotEmployeeAttendance>
      */
-    public function getEmployeeAttendances(): Collection {
-        return $this->employeeAttendances;
+    public function getIlotEmployeeAttendances(): Collection {
+        return $this->ilotEmployeeAttendances;
     }
 
-    public function addEmployeeAttendance(EmployeeAttendance $employeeAttendance): self {
-        if (!$this->employeeAttendances->contains($employeeAttendance)) {
-            $this->employeeAttendances->add($employeeAttendance);
-            $employeeAttendance->setEmployee($this);
+    public function addIlotEmployeeAttendance(IlotEmployeeAttendance $ilotEmployeeAttendance): self {
+        if (!$this->ilotEmployeeAttendances->contains($ilotEmployeeAttendance)) {
+            $this->ilotEmployeeAttendances->add($ilotEmployeeAttendance);
+            $ilotEmployeeAttendance->setEmployee($this);
         }
 
         return $this;
     }
 
-    public function removeEmployeeAttendance(EmployeeAttendance $employeeAttendance): self {
-        if ($this->employeeAttendances->removeElement($employeeAttendance)) {
+    public function removeIlotEmployeeAttendance(IlotEmployeeAttendance $ilotEmployeeAttendance): self {
+        if ($this->ilotEmployeeAttendances->removeElement($ilotEmployeeAttendance)) {
             // set the owning side to null (unless already changed)
-            if ($employeeAttendance->getEmployee() === $this) {
-                $employeeAttendance->setEmployee(null);
+            if ($ilotEmployeeAttendance->getEmployee() === $this) {
+                $ilotEmployeeAttendance->setEmployee(null);
             }
         }
 
