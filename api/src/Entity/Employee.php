@@ -33,7 +33,7 @@ use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
     properties: ['recuruitmentAt' => DateFilter::EXCLUDE_NULL]
 )]
 #[ApiFilter(OrderFilter::class)]
-#[ApiFilter(ExistsFilter::class, properties: ['ilot'])] // ?exists[ilot]=false
+#[ApiFilter(ExistsFilter::class, properties: ['islet'])] // ?exists[islet]=false
 class Employee {
     #[Groups(['user:read'])]
     #[ORM\Id]
@@ -57,11 +57,11 @@ class Employee {
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $recruitmentAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'employee', targetEntity: IlotEmployeeAttendance::class, orphanRemoval: true)]
-    private Collection $ilotEmployeeAttendances;
+    #[ORM\OneToMany(mappedBy: 'employee', targetEntity: IsletEmployeeAttendance::class, orphanRemoval: true)]
+    private Collection $isletEmployeeAttendances;
 
     public function __construct() {
-        $this->ilotEmployeeAttendances = new ArrayCollection();
+        $this->isletEmployeeAttendances = new ArrayCollection();
     }
 
     public function getId(): ?Ulid {
@@ -119,26 +119,26 @@ class Employee {
     }
 
     /**
-     * @return Collection<int, IlotEmployeeAttendance>
+     * @return Collection<int, IsletEmployeeAttendance>
      */
-    public function getIlotEmployeeAttendances(): Collection {
-        return $this->ilotEmployeeAttendances;
+    public function getIsletEmployeeAttendances(): Collection {
+        return $this->isletEmployeeAttendances;
     }
 
-    public function addIlotEmployeeAttendance(IlotEmployeeAttendance $ilotEmployeeAttendance): self {
-        if (!$this->ilotEmployeeAttendances->contains($ilotEmployeeAttendance)) {
-            $this->ilotEmployeeAttendances->add($ilotEmployeeAttendance);
-            $ilotEmployeeAttendance->setEmployee($this);
+    public function addIsletEmployeeAttendance(IsletEmployeeAttendance $isletEmployeeAttendance): self {
+        if (!$this->isletEmployeeAttendances->contains($isletEmployeeAttendance)) {
+            $this->isletEmployeeAttendances->add($isletEmployeeAttendance);
+            $isletEmployeeAttendance->setEmployee($this);
         }
 
         return $this;
     }
 
-    public function removeIlotEmployeeAttendance(IlotEmployeeAttendance $ilotEmployeeAttendance): self {
-        if ($this->ilotEmployeeAttendances->removeElement($ilotEmployeeAttendance)) {
+    public function removeIsletEmployeeAttendance(IsletEmployeeAttendance $isletEmployeeAttendance): self {
+        if ($this->isletEmployeeAttendances->removeElement($isletEmployeeAttendance)) {
             // set the owning side to null (unless already changed)
-            if ($ilotEmployeeAttendance->getEmployee() === $this) {
-                $ilotEmployeeAttendance->setEmployee(null);
+            if ($isletEmployeeAttendance->getEmployee() === $this) {
+                $isletEmployeeAttendance->setEmployee(null);
             }
         }
 

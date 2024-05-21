@@ -1,4 +1,4 @@
-import { Ilot } from "./Ilot";
+import { Islet } from "./Islet";
 import { ManufacturingOrder } from "./ManufacturingOrder";
 import { Item } from "./item";
 import { DailyProduction } from "./DailyProduction";
@@ -14,7 +14,7 @@ export class WeeklySchedule implements Item {
         public endAt?: string,
         public observation?: string,
         public manufacturingOrder?: ManufacturingOrder,
-        public ilot?: Ilot,
+        public islet?: Islet,
         public dailyProductions?: DailyProduction[]
     ) {
         this["@id"] = _id

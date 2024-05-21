@@ -4,7 +4,7 @@ import { useRouter } from "next/router"
 
 import { fetch, getItemPath } from "../../utils/dataAccess"
 import { DailyProduction } from "../../types/DailyProduction"
-import { Ilot } from "../../types/Ilot"
+import { Islet } from "../../types/Islet"
 import { WeeklySchedule } from "../../types/WeeklySchedule"
 import { Size } from "../../types/Size"
 import { Choice } from "../../types/Choice"
@@ -53,9 +53,9 @@ export const Show: FunctionComponent<Props> = ({ dailyproduction, text, sizes, c
                     </span>
                 </div>
                 <div className="flex">
-                    <p className="text-1xl font-sans font-bold mr-2">Ilot:</p>
+                    <p className="text-1xl font-sans font-bold mr-2">Islet:</p>
                     <span className="text-1xl font-sans text-gray-700">
-                        {((dailyproduction.weeklySchedule as WeeklySchedule).ilot as Ilot).name}
+                        {((dailyproduction.weeklySchedule as WeeklySchedule).islet as Islet).name}
                     </span>
                 </div>
 

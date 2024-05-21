@@ -4,7 +4,7 @@ import Link from "next/link";
 import { fetch, getItemPath } from "../../utils/dataAccess";
 import { DailyProduction } from "../../types/DailyProduction";
 import { WeeklySchedule } from "../../types/WeeklySchedule";
-import { Ilot } from "../../types/Ilot";
+import { Islet } from "../../types/Islet";
 import { useRouter } from "next/router";
 
 export const DAILYPRODUCTION_ITEMS_PER_PAGE = ["5", "10", "20", "30"]
@@ -84,9 +84,9 @@ export const List: FunctionComponent<Props> = ({ dailyproductions, totalItems, p
                                         </span>
                                     </div>
                                     <div className="flex flex-row items-center font-sans">
-                                        <div className="mr-2 font-sans">Ilot:</div>
+                                        <div className="mr-2 font-sans">Islet:</div>
                                         <span className="font-sans prose">
-                                            {((dailyproduction.weeklySchedule as WeeklySchedule).ilot as Ilot).name}
+                                            {((dailyproduction.weeklySchedule as WeeklySchedule).islet as Islet).name}
                                         </span>
                                     </div>
                                 </div>

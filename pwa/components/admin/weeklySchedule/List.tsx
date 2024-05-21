@@ -55,8 +55,8 @@ const List = () => {
                     <TextField source='originId' />
                 </ReferenceField>
                 <ReferenceField
-                    reference='api/ilots'
-                    source='ilot'
+                    reference='api/islets'
+                    source='islet'
                     sortable={false}
                 />
                 <WrapperField label='Actions'>

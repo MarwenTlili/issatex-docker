@@ -56,10 +56,10 @@ import UserCreate from './user/Create'
 import UserShow from './user/Show'
 import UserEdit from './user/Edit'
 
-import IlotList from './Ilot/List'
-import IlotCreate from './Ilot/Create'
-import IlotShow from './Ilot/Show'
-import IlotEdit from './Ilot/Edit'
+import IsletList from './Islet/List'
+import IsletCreate from './Islet/Create'
+import IsletShow from './Islet/Show'
+import IsletEdit from './Islet/Edit'
 
 import {
     Assignment,
@@ -156,14 +156,14 @@ const AdminUI = () => {
                         options={{ label: 'Machines' }}
                     />
                     <Resource
-                        name='api/ilots'
-                        list={IlotList}
-                        show={IlotShow}
-                        edit={IlotEdit}
-                        create={IlotCreate}
+                        name='api/islets'
+                        list={IsletList}
+                        show={IsletShow}
+                        edit={IsletEdit}
+                        create={IsletCreate}
                         icon={AddHomeWorkIcon}
                         recordRepresentation='name'
-                        options={{ label: 'Ilot' }}
+                        options={{ label: 'Islet' }}
                     />
                     <Resource
                         name='api/manufacturing_orders'

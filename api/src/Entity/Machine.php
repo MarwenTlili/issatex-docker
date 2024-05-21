@@ -24,7 +24,7 @@ use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
     ]
 )]
 #[ApiFilter(OrderFilter::class)]
-#[ApiFilter(ExistsFilter::class, properties: ['ilot'])] // ?exists[ilot]=false
+#[ApiFilter(ExistsFilter::class, properties: ['islet'])] // ?exists[islet]=false
 class Machine {
     #[Groups(['user:read'])]
     #[ORM\Id]
@@ -43,7 +43,7 @@ class Machine {
     private ?string $brand = null;
 
     #[ORM\ManyToOne(inversedBy: 'machines')]
-    private ?Ilot $ilot = null;
+    private ?Islet $islet = null;
 
     public function __construct() {}
 
@@ -81,14 +81,14 @@ class Machine {
         return $this;
     }
 
-    public function getIlot(): ?Ilot
+    public function getIslet(): ?Islet
     {
-        return $this->ilot;
+        return $this->islet;
     }
 
-    public function setIlot(?Ilot $ilot): self
+    public function setIslet(?Islet $islet): self
     {
-        $this->ilot = $ilot;
+        $this->islet = $islet;
 
         return $this;
     }

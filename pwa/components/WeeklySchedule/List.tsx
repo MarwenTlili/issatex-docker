@@ -60,9 +60,9 @@ export const List: FunctionComponent<Props> = ({ weeklyschedules, totalItems, pe
                                     </div>
 
                                     <div className="font-sans">
-                                        Ilot:
+                                        Islet:
                                         <span className="ml-2 font-sans prose">
-                                            {weeklyschedule.ilot?.name}
+                                            {weeklyschedule.islet?.name}
                                         </span>
                                     </div>
                                     <div className="font-sans">

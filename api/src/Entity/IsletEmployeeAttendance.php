@@ -3,29 +3,29 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Repository\IlotEmployeeAttendanceRepository;
+use App\Repository\IsletEmployeeAttendanceRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 
-#[ORM\Entity(repositoryClass: IlotEmployeeAttendanceRepository::class)]
+#[ORM\Entity(repositoryClass: IsletEmployeeAttendanceRepository::class)]
 #[ApiResource]
-class IlotEmployeeAttendance {
+class IsletEmployeeAttendance {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
     private ?Ulid $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ilotEmployeeAttendances')]
+    #[ORM\ManyToOne(inversedBy: 'isletEmployeeAttendances')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Ilot $ilot = null;
+    private ?Islet $islet = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ilotEmployeeAttendances')]
+    #[ORM\ManyToOne(inversedBy: 'isletEmployeeAttendances')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Employee $employee = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ilotEmployeeAttendances')]
+    #[ORM\ManyToOne(inversedBy: 'isletEmployeeAttendances')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Attendance $attendance = null;
 
@@ -33,12 +33,12 @@ class IlotEmployeeAttendance {
         return $this->id;
     }
 
-    public function getIlot(): ?Ilot {
-        return $this->ilot;
+    public function getIslet(): ?Islet {
+        return $this->islet;
     }
 
-    public function setIlot(?Ilot $ilot): self {
-        $this->ilot = $ilot;
+    public function setIslet(?Islet $islet): self {
+        $this->islet = $islet;
 
         return $this;
     }

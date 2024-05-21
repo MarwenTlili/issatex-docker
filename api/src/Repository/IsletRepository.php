@@ -2,24 +2,24 @@
 
 namespace App\Repository;
 
-use App\Entity\IlotEmployeeAttendance;
+use App\Entity\Islet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<IlotEmployeeAttendance>
+ * @extends ServiceEntityRepository<Islet>
  *
- * @method IlotEmployeeAttendance|null find($id, $lockMode = null, $lockVersion = null)
- * @method IlotEmployeeAttendance|null findOneBy(array $criteria, array $orderBy = null)
- * @method IlotEmployeeAttendance[]    findAll()
- * @method IlotEmployeeAttendance[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Islet|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Islet|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Islet[]    findAll()
+ * @method Islet[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class IlotEmployeeAttendanceRepository extends ServiceEntityRepository {
+class IsletRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry) {
-        parent::__construct($registry, IlotEmployeeAttendance::class);
+        parent::__construct($registry, Islet::class);
     }
 
-    public function save(IlotEmployeeAttendance $entity, bool $flush = false): void {
+    public function save(Islet $entity, bool $flush = false): void {
         $this->getEntityManager()->persist($entity);
 
         if ($flush) {
@@ -27,7 +27,7 @@ class IlotEmployeeAttendanceRepository extends ServiceEntityRepository {
         }
     }
 
-    public function remove(IlotEmployeeAttendance $entity, bool $flush = false): void {
+    public function remove(Islet $entity, bool $flush = false): void {
         $this->getEntityManager()->remove($entity);
 
         if ($flush) {
@@ -36,7 +36,7 @@ class IlotEmployeeAttendanceRepository extends ServiceEntityRepository {
     }
 
     //    /**
-    //     * @return IlotEmployeeAttendance[] Returns an array of IlotEmployeeAttendance objects
+    //     * @return Islet[] Returns an array of Islet objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -50,7 +50,7 @@ class IlotEmployeeAttendanceRepository extends ServiceEntityRepository {
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?IlotEmployeeAttendance
+    //    public function findOneBySomeField($value): ?Islet
     //    {
     //        return $this->createQueryBuilder('i')
     //            ->andWhere('i.exampleField = :val')

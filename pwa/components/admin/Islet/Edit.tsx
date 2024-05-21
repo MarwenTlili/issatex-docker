@@ -11,13 +11,13 @@ import {
 
 const Edit = (props: EditProps) => {
     return (
-        <ReactAdminEdit {...props} title='Edit Ilot'>
+        <ReactAdminEdit {...props} title='Edit Islet'>
             <SimpleForm >
                 <TextInput source='name' required />
                 <OneToManySelect
                     source='machines'
                     reference='api/machines'
-                    mappedBy='ilot'
+                    mappedBy='islet'
                     inversedBy='machines'
                     optionText={(choice) => `${choice.name}`}
                 />
@@ -36,7 +36,7 @@ export default Edit
  * <OneToManySelect
  *      source='machines'
  *      reference='api/machines'
- *      mappedBy='ilot'
+ *      mappedBy='islet'
  *      inversedBy='machines'
  *      optionText={(choice) => `${choice.name}`}
  * />
@@ -59,7 +59,7 @@ const OneToManySelect = (props: OneToManySelectProps) => {
         if (record && data) {
             /**
              * filter employees where:
-             *  (not assigned to Ilot) OR (exists in ilot.employees)
+             *  (not assigned to Islet) OR (exists in islet.employees)
              */
             const filtered = data.filter(ref =>
                 (ref[mappedBy] === undefined) || (record[inversedBy].some((x: any) => x === ref['@id']))

@@ -56,9 +56,9 @@ export const Show: FunctionComponent<Props> = ({ weeklyschedule, text, sizes, ch
                     </div>
 
                     <div className="font-sans">
-                        Ilot:
+                        Islet:
                         <span className="ml-2 font-sans prose">
-                            {weeklyschedule.ilot?.name}
+                            {weeklyschedule.islet?.name}
                         </span>
                     </div>
                     {/* <div className="font-sans">

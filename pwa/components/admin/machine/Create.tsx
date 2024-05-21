@@ -12,7 +12,7 @@ const Create = () => (
             <TextInput source='name' />
             <TextInput source='category' />
             <TextInput source='brand' />
-            <ReferenceInput reference='api/ilots' source='ilot' />
+            <ReferenceInput reference='api/islets' source='islet' />
         </SimpleForm>
     </ReactAdminCreate>
 )

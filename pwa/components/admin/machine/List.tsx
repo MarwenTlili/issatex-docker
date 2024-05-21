@@ -39,7 +39,7 @@ const List = () => (
             <TextField source='name' />
             <TextField source='category' />
             <TextField source='brand' />
-            <ReferenceField reference='api/ilots' source='ilot' />
+            <ReferenceField reference='api/islets' source='islet' />
             <WrapperField label='Actions'>
                 <ShowButton />
                 <EditButton />

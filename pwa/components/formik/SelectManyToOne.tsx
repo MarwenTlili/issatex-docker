@@ -11,7 +11,7 @@ import { FieldProps } from 'formik';
  * @returns 
  * 
  * @example
- * <Field name="ilot" as={Select} reference="/api/ilots" optionText="name" />
+ * <Field name="islet" as={Select} reference="/api/islets" optionText="name" />
  */
 const SelectManyToOne: string | React.ComponentType<FieldProps['field'] & SelectProps> = (props) => {
     const { reference, optionText, name, value, onChange, onBlur } = props;

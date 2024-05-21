@@ -1,6 +1,6 @@
-import { Item } from "../types/item"
+import { Item } from "./item"
 
-export class Ilot implements Item {
+export class Islet implements Item {
     public "@id"?: string
     public "@type"?: string
     public id?: string

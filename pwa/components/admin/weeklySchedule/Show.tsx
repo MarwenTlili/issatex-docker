@@ -28,8 +28,8 @@ const Show = () => {
                     <TextField source='originId' />
                 </ReferenceField>
                 <ReferenceField
-                    reference='api/ilots'
-                    source='ilot'
+                    reference='api/islets'
+                    source='islet'
                     sortable={false}
                 />
                 <RichTextField source='observation' />

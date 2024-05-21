@@ -10,7 +10,7 @@ import {
 const Show = () => {
 
     return (
-        <ReactAdminShow title='Show Ilot' >
+        <ReactAdminShow title='Show Islet' >
             <SimpleShowLayout>
                 <TextField source='name' />
                 <DateField source='createdAt' />

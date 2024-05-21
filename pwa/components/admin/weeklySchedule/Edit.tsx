@@ -23,8 +23,8 @@ const Edit = () => {
                 <StartToEndDateInput />
                 <ManufacturingOrdersSelect />
                 <ReferenceInput
-                    reference='api/ilots'
-                    source='ilot'
+                    reference='api/islets'
+                    source='islet'
                 >
                     <SelectInput validate={required()} />
                 </ReferenceInput>

@@ -45,7 +45,7 @@ const List = () => (
             <TextField source='registrationCode' />
             {/* <TextField source='category' /> */}
             {/* <DateField source='recruitmentAt' /> */}
-            {/* <ReferenceField reference='api/ilots' source='ilot' /> */}
+            {/* <ReferenceField reference='api/islet' source='islet' /> */}
             <WrapperField label='Actions'>
                 <ShowButton />
                 <EditButton />

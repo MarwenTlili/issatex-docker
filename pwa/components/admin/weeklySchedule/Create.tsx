@@ -14,7 +14,7 @@ import {
 
 import { WeeklySchedule } from '../../../types/WeeklySchedule'
 import { RichTextInput } from 'ra-input-rich-text'
-import { useController, useForm } from 'react-hook-form'
+import { useController } from 'react-hook-form'
 import { addWeek } from '../../../utils/tools'
 
 const Create = () => {
@@ -25,10 +25,10 @@ const Create = () => {
     const validateScheduleCreation = (values: WeeklySchedule) => {
         const errors: Partial<WeeklySchedule> = {}
         if (!values.manufacturingOrder) {
-            errors.manufacturingOrder = 'Order is required!'
+            (errors.manufacturingOrder as string) = 'Order is required!'
         }
-        if (!values.ilot) {
-            errors.ilot = 'Ilot is required!'
+        if (!values.islet) {
+            (errors.islet as string) = 'Islet is required!'
         }
         if (!values.startAt) {
             // @ts-ignore
@@ -40,7 +40,7 @@ const Create = () => {
     const onSubmit = (weeklySchedule: WeeklySchedule) => {
         // automatically set endsAt if it's not specified
         if (weeklySchedule.startAt && !weeklySchedule.endAt) {
-            weeklySchedule.endAt = addWeek(weeklySchedule.startAt)
+            weeklySchedule.endAt = addWeek(new Date(weeklySchedule.startAt)).toLocaleString()
         }
 
         create('api/weekly_schedules', {
@@ -88,8 +88,8 @@ const Create = () => {
                     />
                 </ReferenceInput>
                 <ReferenceInput
-                    reference='api/ilots'
-                    source='ilot'
+                    reference='api/islets'
+                    source='islet'
                 >
                     <SelectInput
                         optionText='name'

@@ -9,30 +9,30 @@ import {
     useNotify,
     useRedirect,
 } from 'react-admin'
-import { Ilot } from '../../../types/Ilot'
+import { Islet } from '../../../types/Islet'
 import { Employee } from '../../../types/Employee'
 
 export const employeeFullName = (record: Employee) => `${record.firstName} ${record.lastName}`
 
 const Create = () => {
-    const [create] = useCreate<Ilot, Error>()
+    const [create] = useCreate<Islet, Error>()
     const notify = useNotify()
     const redirect = useRedirect();
 
-    const handleSubmit = (data: Ilot) => {
-        const ilot: Ilot = new Ilot(undefined, data.name, new Date(), data.machines)
+    const handleSubmit = (data: Islet) => {
+        const islet: Islet = new Islet(undefined, data.name, new Date(), data.machines)
 
-        create('api/ilots', { data: ilot }, {
+        create('api/islets', { data: islet }, {
             onError: (error) => {
-                notify('Error creating Ilot!', { type: 'error', messageArgs: { _: 'Error creating Ilot!' } })
+                notify('Error creating Islet!', { type: 'error', messageArgs: { _: 'Error creating Islet!' } })
             },
-            onSettled: (newIlot: Ilot | undefined, error) => {
+            onSettled: (newIslet: Islet | undefined, error) => {
                 if (error) {
                     console.log('error: ', error);
                     return
                 }
-                notify('new Ilot created', { type: 'success', messageArgs: { _: 'new Ilot created' } })
-                redirect('/api/ilots')
+                notify('new Islet created', { type: 'success', messageArgs: { _: 'new Islet created' } })
+                redirect('/api/islets')
             }
         })
     }
@@ -45,7 +45,7 @@ const Create = () => {
                     reference='api/machines'
                     source='machines'
                     sort={{ field: 'name', order: 'ASC' }}
-                    filter={{ 'exists[ilot]': false }} // show only unassigned machines 
+                    filter={{ 'exists[islet]': false }} // show only unassigned machines 
                 >
                     <SelectArrayInput />
                 </ReferenceArrayInput>

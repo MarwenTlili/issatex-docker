@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Repository\IlotRepository;
+use App\Repository\IsletRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,7 +13,7 @@ use Symfony\Component\Uid\Ulid;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 
-#[ORM\Entity(repositoryClass: IlotRepository::class)]
+#[ORM\Entity(repositoryClass: IsletRepository::class)]
 #[ApiResource]
 #[ApiFilter(
     SearchFilter::class,
@@ -21,7 +21,7 @@ use ApiPlatform\Metadata\ApiFilter;
         'name' => 'iexact',
     ]
 )]
-class Ilot {
+class Islet {
     #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -35,18 +35,18 @@ class Ilot {
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'ilot', targetEntity: Machine::class)]
+    #[ORM\OneToMany(mappedBy: 'islet', targetEntity: Machine::class)]
     private Collection $machines;
 
-    #[ORM\OneToMany(mappedBy: 'ilot', targetEntity: IlotEmployeeAttendance::class, orphanRemoval: true)]
-    private Collection $ilotEmployeeAttendances;
+    #[ORM\OneToMany(mappedBy: 'islet', targetEntity: IsletEmployeeAttendance::class, orphanRemoval: true)]
+    private Collection $isletEmployeeAttendances;
 
-    #[ORM\OneToMany(mappedBy: 'ilot', targetEntity: WeeklySchedule::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'islet', targetEntity: WeeklySchedule::class, orphanRemoval: true)]
     private Collection $weeklySchedules;
 
     public function __construct() {
         $this->machines = new ArrayCollection();
-        $this->ilotEmployeeAttendances = new ArrayCollection();
+        $this->isletEmployeeAttendances = new ArrayCollection();
         $this->weeklySchedules = new ArrayCollection();
     }
 
@@ -85,7 +85,7 @@ class Ilot {
     public function addMachine(Machine $machine): self {
         if (!$this->machines->contains($machine)) {
             $this->machines->add($machine);
-            $machine->setIlot($this);
+            $machine->setIslet($this);
         }
 
         return $this;
@@ -94,8 +94,8 @@ class Ilot {
     public function removeMachine(Machine $machine): self {
         if ($this->machines->removeElement($machine)) {
             // set the owning side to null (unless already changed)
-            if ($machine->getIlot() === $this) {
-                $machine->setIlot(null);
+            if ($machine->getIslet() === $this) {
+                $machine->setIslet(null);
             }
         }
 
@@ -103,26 +103,26 @@ class Ilot {
     }
 
     /**
-     * @return Collection<int, IlotEmployeeAttendance>
+     * @return Collection<int, IsletEmployeeAttendance>
      */
-    public function getIlotEmployeeAttendances(): Collection {
-        return $this->ilotEmployeeAttendances;
+    public function getIsletEmployeeAttendances(): Collection {
+        return $this->isletEmployeeAttendances;
     }
 
-    public function addIlotEmployeeAttendance(IlotEmployeeAttendance $ilotEmployeeAttendance): self {
-        if (!$this->ilotEmployeeAttendances->contains($ilotEmployeeAttendance)) {
-            $this->ilotEmployeeAttendances->add($ilotEmployeeAttendance);
-            $ilotEmployeeAttendance->setIlot($this);
+    public function addIsletEmployeeAttendance(IsletEmployeeAttendance $isletEmployeeAttendance): self {
+        if (!$this->isletEmployeeAttendances->contains($isletEmployeeAttendance)) {
+            $this->isletEmployeeAttendances->add($isletEmployeeAttendance);
+            $isletEmployeeAttendance->setIslet($this);
         }
 
         return $this;
     }
 
-    public function removeIlotEmployeeAttendance(IlotEmployeeAttendance $ilotEmployeeAttendance): self {
-        if ($this->ilotEmployeeAttendances->removeElement($ilotEmployeeAttendance)) {
+    public function removeIsletEmployeeAttendance(IsletEmployeeAttendance $isletEmployeeAttendance): self {
+        if ($this->isletEmployeeAttendances->removeElement($isletEmployeeAttendance)) {
             // set the owning side to null (unless already changed)
-            if ($ilotEmployeeAttendance->getIlot() === $this) {
-                $ilotEmployeeAttendance->setIlot(null);
+            if ($isletEmployeeAttendance->getIslet() === $this) {
+                $isletEmployeeAttendance->setIslet(null);
             }
         }
 
@@ -139,7 +139,7 @@ class Ilot {
     public function addWeeklySchedule(WeeklySchedule $weeklySchedule): self {
         if (!$this->weeklySchedules->contains($weeklySchedule)) {
             $this->weeklySchedules->add($weeklySchedule);
-            $weeklySchedule->setIlot($this);
+            $weeklySchedule->setIslet($this);
         }
 
         return $this;
@@ -148,8 +148,8 @@ class Ilot {
     public function removeWeeklySchedule(WeeklySchedule $weeklySchedule): self {
         if ($this->weeklySchedules->removeElement($weeklySchedule)) {
             // set the owning side to null (unless already changed)
-            if ($weeklySchedule->getIlot() === $this) {
-                $weeklySchedule->setIlot(null);
+            if ($weeklySchedule->getIslet() === $this) {
+                $weeklySchedule->setIslet(null);
             }
         }
 

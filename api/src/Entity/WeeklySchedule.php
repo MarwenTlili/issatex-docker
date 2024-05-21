@@ -52,7 +52,7 @@ class WeeklySchedule {
     #[Groups(['Schedule_Collection', 'Schedule_Get', 'DailyProduction_Collection', 'DailyProduction_Get'])]
     #[ORM\ManyToOne(inversedBy: 'weeklySchedules')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Ilot $ilot = null;
+    private ?Islet $islet = null;
 
     #[Groups(['Schedule_Collection', 'Schedule_Get'])]
     #[ORM\OneToMany(mappedBy: 'weeklySchedule', targetEntity: DailyProduction::class, orphanRemoval: true)]
@@ -106,12 +106,12 @@ class WeeklySchedule {
         return $this;
     }
 
-    public function getIlot(): ?Ilot {
-        return $this->ilot;
+    public function getIslet(): ?Islet {
+        return $this->islet;
     }
 
-    public function setIlot(?Ilot $ilot): self {
-        $this->ilot = $ilot;
+    public function setIslet(?Islet $islet): self {
+        $this->islet = $islet;
 
         return $this;
     }

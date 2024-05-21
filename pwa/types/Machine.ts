@@ -10,7 +10,7 @@ export class Machine implements Item {
         public name?: string,
         public category?: string,
         public brand?: string,
-        public ilot?: string
+        public islet?: string
     ) {
         this["@id"] = _id
     }
