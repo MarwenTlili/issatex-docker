@@ -7,6 +7,7 @@ import { Article } from "../../types/Article"
 import Template from "../Template"
 import Link from "next/link"
 import ImageElement from "./ImageElement"
+import { useSession } from "next-auth/react"
 
 interface Props {
     article: Article
@@ -16,6 +17,7 @@ interface Props {
 export const Show: FunctionComponent<Props> = ({ article, text }) => {
     const [error, setError] = useState<string | null>(null)
     const router = useRouter()
+    const { data: session } = useSession()
 
     const handleDelete = async () => {
         if (!article["@id"]) return
@@ -46,25 +48,26 @@ export const Show: FunctionComponent<Props> = ({ article, text }) => {
                     </div>
 
                     <div className="w-full md:w-4/5 p-4">
-                        <Link
-                            href={getItemPath(article["@id"], "/articles/[id]/edit")}
-                            className="font-mono text-lg text-cyan-600/100 hover:text-indigo-800"
-                        >
-                            Edit
-                        </Link>
-
-                        <div className="flex flex-row justify-end">
-                            {article && article.manufacturingOrders?.length === 0 && (
-                                <>
-                                    <button
-                                        onClick={handleDelete}
-                                        className="font-mono text-lg text-red-500 hover:text-indigo-800 ml-2"
-                                    >
-                                        Delete
-                                    </button>
-                                </>
-                            )}
-                        </div>
+                        {session?.user.roles.includes("ROLE_CLIENT") && (
+                            <div className="flex flex-row justify-between">
+                                <Link
+                                    href={getItemPath(article["@id"], "/articles/[id]/edit")}
+                                    className="font-mono text-lg text-cyan-600/100 hover:text-indigo-800"
+                                >
+                                    Edit
+                                </Link>
+                                {article && article.manufacturingOrders?.length === 0 && (
+                                    <>
+                                        <button
+                                            onClick={handleDelete}
+                                            className="font-mono text-lg text-red-500 hover:text-indigo-800 ml-2"
+                                        >
+                                            Delete
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        )}
 
                         <div className="flex justify-center">
                             <ImageElement key={article.id} id={article.image} />

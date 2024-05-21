@@ -67,18 +67,34 @@ export const List: FunctionComponent<Props> = ({ weeklyschedules, totalItems, pe
                                     </div>
                                     <div className="font-sans">
                                         Order:
-                                        <span className="ml-2 font-sans prose">
-                                            {weeklyschedule.manufacturingOrder && (
-                                                (weeklyschedule.manufacturingOrder as ManufacturingOrder).id
-                                            )}
-                                        </span>
+                                        <Link
+                                            href={getItemPath(weeklyschedule.manufacturingOrder?.["@id"], "/manufacturing-orders/[id]")}
+                                            className="font-mono text-lg text-cyan-600/100 hover:text-indigo-800"
+                                        >
+                                            <span className="ml-2 font-sans">
+                                                {weeklyschedule.manufacturingOrder && (
+                                                    weeklyschedule.manufacturingOrder.id
+                                                )}
+                                            </span>
+                                        </Link>
                                     </div>
                                     <div className="font-sans">
                                         Article:
+                                        <Link
+                                            href={getItemPath((weeklyschedule.manufacturingOrder?.article as Article)?.["@id"], "/articles/[id]")}
+                                            className="font-mono text-lg text-cyan-600/100 hover:text-indigo-800"
+                                        >
+                                            <span className="ml-2 font-sans">
+                                                {weeklyschedule.manufacturingOrder && (
+                                                    ((weeklyschedule.manufacturingOrder as ManufacturingOrder).article as Article)?.designation
+                                                )}
+                                            </span>
+                                        </Link>
+                                    </div>
+                                    <div className="font-sans">
+                                        Production (days):
                                         <span className="ml-2 font-sans prose">
-                                            {weeklyschedule.manufacturingOrder && (
-                                                ((weeklyschedule.manufacturingOrder as ManufacturingOrder).article as Article)?.designation
-                                            )}
+                                            {weeklyschedule.dailyProductions?.length}
                                         </span>
                                     </div>
                                     <div className="font-sans">
@@ -93,7 +109,7 @@ export const List: FunctionComponent<Props> = ({ weeklyschedules, totalItems, pe
                                     <Link
                                         href={{
                                             pathname: "/daily-productions/create",
-                                            query: { weeklySchedule: weeklyschedule["@id"]}
+                                            query: { weeklySchedule: weeklyschedule["@id"] }
                                         }}
                                         className="bg-cyan-500 hover:bg-cyan-700 text-white text-sm font-bold py-2 px-4 rounded whitespace-nowrap"
                                     >

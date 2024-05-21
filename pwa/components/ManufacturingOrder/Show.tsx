@@ -11,6 +11,7 @@ import useSWR from "swr"
 import { TechnicalDocument } from "../../types/TechnicalDocument"
 import { ManufacturingOrderSize } from "../../types/ManufacturingOrderSize"
 import { Size } from "../../types/Size"
+import { useSession } from "next-auth/react"
 
 /**
  * TechnicalDocument Component
@@ -85,6 +86,7 @@ interface Props {
 export const Show: FunctionComponent<Props> = ({ manufacturingOrder, article, text }) => {
     const [error, setError] = useState<string | null>(null)
     const router = useRouter()
+    const { data: session } = useSession()
 
     const handleDelete = async () => {
         if (!manufacturingOrder["@id"]) return
@@ -119,12 +121,14 @@ export const Show: FunctionComponent<Props> = ({ manufacturingOrder, article, te
                     dangerouslySetInnerHTML={{ __html: text }}
                 />
             </Head>
-            <Link
-                href="/manufacturing-orders"
-                className="text-sm text-cyan-500 font-bold hover:text-cyan-700"
-            >
-                {"< Back to list"}
-            </Link>
+            {session?.user.roles.includes("ROLE_CLIENT") && (
+                <Link
+                    href="/manufacturing-orders"
+                    className="text-sm text-cyan-500 font-bold hover:text-cyan-700"
+                >
+                    {"< Back to list"}
+                </Link>
+            )}
             <div className="text-2xl mb-2 block md:flex">
                 <p>
                     <strong>Article:</strong> {article?.model}
@@ -299,23 +303,26 @@ export const Show: FunctionComponent<Props> = ({ manufacturingOrder, article, te
                     {error}
                 </div>
             )}
-            <div className="flex space-x-2 mt-4 items-center justify-end">
-                <Link
-                    href={getItemPath(
-                        manufacturingOrder["@id"],
-                        "/manufacturing-orders/[id]/edit"
-                    )}
-                    className="inline-block mt-2 border-2 border-cyan-500 bg-cyan-500 hover:border-cyan-700 hover:bg-cyan-700 text-xs text-white font-bold py-2 px-4 rounded"
-                >
-                    Edit
-                </Link>
-                <button
-                    onClick={handleDelete}
-                    className="inline-block mt-2 border-2 border-red-400 hover:border-red-700 hover:text-red-700 text-xs text-red-400 font-bold py-2 px-4 rounded"
-                >
-                    Delete
-                </button>
-            </div>
+
+            {session?.user.roles.includes("ROLE_CLIENT") && (
+                <div className="flex space-x-2 mt-4 items-center justify-end">
+                    <Link
+                        href={getItemPath(
+                            manufacturingOrder["@id"],
+                            "/manufacturing-orders/[id]/edit"
+                        )}
+                        className="inline-block mt-2 border-2 border-cyan-500 bg-cyan-500 hover:border-cyan-700 hover:bg-cyan-700 text-xs text-white font-bold py-2 px-4 rounded"
+                    >
+                        Edit
+                    </Link>
+                    <button
+                        onClick={handleDelete}
+                        className="inline-block mt-2 border-2 border-red-400 hover:border-red-700 hover:text-red-700 text-xs text-red-400 font-bold py-2 px-4 rounded"
+                    >
+                        Delete
+                    </button>
+                </div>
+            )}
         </div>
     )
 }

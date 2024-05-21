@@ -34,7 +34,7 @@ class Size {
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
     private ?Ulid $id = null;
 
-    #[Groups(['Size_Get', 'Size_Collection', 'Schedule_Collection', 'Quantity_Collection', 'DailyProduction_Get'])]
+    #[Groups(['Size_Get', 'Size_Collection', 'Schedule_Collection', 'Schedule_Get', 'Quantity_Collection', 'DailyProduction_Get'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 

@@ -29,16 +29,16 @@ class DailyProductionQuantity {
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
     private ?Ulid $id = null;
 
-    #[Groups(['Quantity_Get', 'Quantity_Collection', 'DailyProduction_Get'])]
+    #[Groups(['Quantity_Get', 'Quantity_Collection', 'DailyProduction_Get', 'Schedule_Collection', 'Schedule_Get'])]
     #[ORM\Column]
     private ?int $quantity = null;
 
-    #[Groups(['Quantity_Get', 'Quantity_Collection', 'DailyProduction_Get'])]
+    #[Groups(['Quantity_Get', 'Quantity_Collection', 'DailyProduction_Get', 'Schedule_Collection', 'Schedule_Get'])]
     #[ORM\ManyToOne(inversedBy: 'dailyProductionQuantities')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Size $size = null;
 
-    #[Groups(['Quantity_Get', 'Quantity_Collection', 'DailyProduction_Get'])]
+    #[Groups(['Quantity_Get', 'Quantity_Collection', 'DailyProduction_Get', 'Schedule_Collection', 'Schedule_Get'])]
     #[ORM\ManyToOne(inversedBy: 'dailyProductionQuantities')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Choice $choice = null;

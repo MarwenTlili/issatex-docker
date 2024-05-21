@@ -31,7 +31,7 @@ class Choice {
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
     private ?Ulid $id = null;
 
-    #[Groups(['Choice_Get', 'Choice_Collection', 'Quantity_Collection', 'DailyProduction_Get'])]
+    #[Groups(['Choice_Get', 'Choice_Collection', 'Quantity_Collection', 'DailyProduction_Get', 'Schedule_Collection', 'Schedule_Get'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 

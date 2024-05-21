@@ -35,7 +35,7 @@ class ManufacturingOrderSize {
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
     private ?Ulid $id = null;
 
-    #[Groups(['Schedule_Collection'])]
+    #[Groups(['Schedule_Collection', 'Schedule_Get'])]
     #[ORM\Column]
     private ?int $quantity = null;
 
@@ -43,7 +43,7 @@ class ManufacturingOrderSize {
     #[ORM\JoinColumn(nullable: false)]
     private ?ManufacturingOrder $manufacturingOrder = null;
 
-    #[Groups(['Schedule_Collection'])]
+    #[Groups(['Schedule_Collection', 'Schedule_Get'])]
     #[ORM\ManyToOne(inversedBy: 'manufacturingOrderSizes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Size $size = null;

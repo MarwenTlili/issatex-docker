@@ -39,13 +39,13 @@ class DailyProduction {
     #[ORM\JoinColumn(nullable: false)]
     private ?WeeklySchedule $weeklySchedule = null;
 
-    #[Groups(['DailyProduction_Collection', 'DailyProduction_Get'])]
+    #[Groups(['DailyProduction_Collection', 'DailyProduction_Get', 'Schedule_Collection', 'Schedule_Get'])]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[UniqueDate(field: 'weeklySchedule')]
     #[DateInRangeOfEntityAttributes(targetEntity: 'weeklySchedule', startAtField: 'startAt', endAtField: 'endAt')]
     private ?\DateTimeInterface $day = null;
 
-    #[Groups(['DailyProduction_Collection', 'DailyProduction_Get'])]
+    #[Groups(['DailyProduction_Collection', 'DailyProduction_Get', 'Schedule_Collection', 'Schedule_Get'])]
     #[ORM\OneToMany(mappedBy: 'dailyProduction', targetEntity: DailyProductionQuantity::class, orphanRemoval: true)]
     private Collection $dailyProductionQuantities;
 

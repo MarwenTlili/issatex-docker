@@ -44,7 +44,7 @@ class WeeklySchedule {
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $observation = null;
 
-    #[Groups(['Schedule_Collection', 'Schedule_Get'])]
+    #[Groups(['Schedule_Collection', 'Schedule_Get', 'Schedule_Get'])]
     #[ORM\OneToOne(inversedBy: 'weeklySchedule', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?ManufacturingOrder $manufacturingOrder = null;
