@@ -28,7 +28,11 @@ class Islet {
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
     private ?Ulid $id = null;
 
-    #[Groups(['Schedule_Collection', 'Schedule_Get', 'DailyProduction_Collection', 'DailyProduction_Get'])]
+    #[Groups([
+        'Schedule_Collection', 'Schedule_Get', 'DailyProduction_Collection',
+        'DailyProduction_Get', 'Attendance_Collection', 'Attendance_Get',
+        'IsletEmployeeAttendance_GetCollection',
+    ])]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $name = null;
 

@@ -42,15 +42,31 @@ class Employee {
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
     private ?Ulid $id = null;
 
+    #[Groups([
+        'Attendance_Collection', 'Attendance_Get',
+        'IsletEmployeeAttendance_GetCollection',
+    ])]
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
 
+    #[Groups([
+        'Attendance_Collection', 'Attendance_Get',
+        'IsletEmployeeAttendance_GetCollection',
+    ])]
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
+    #[Groups([
+        'Attendance_Collection', 'Attendance_Get',
+        'IsletEmployeeAttendance_GetCollection',
+    ])]
     #[ORM\Column(length: 255)]
     private ?string $registrationCode = null;
 
+    #[Groups([
+        'Attendance_Collection', 'Attendance_Get',
+        'IsletEmployeeAttendance_GetCollection',
+    ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $category = null;
 

@@ -69,3 +69,32 @@ export const formatDateForInput = (date: string | undefined) => {
 
     return formattedDate;
 }
+
+/**
+ * 
+ * @param dateString string
+ * @returns boolean
+ * @example
+ * isISODateTimeString("2023-05-30T15:30:00Z")       // true
+ * isISODateTimeString("2023-05-30")                 // false
+ */
+export function isISODateTimeString(dateString: string) {
+    // Regular expression for ISO 8601 date and time format
+    const isoRegex = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(Z|[+-]\d{2}:\d{2})?$/;
+
+    // Test the string against the regular expression
+    return isoRegex.test(dateString);
+}
+
+/**
+ * 
+ * @param isoString string
+ * @returns time string
+ * @example "1970-01-01T17:00:00+00:00" => "17:00"
+ */
+export function getTimeFromISODateTime(isoString: string) {
+    const date = new Date(isoString)
+    const hours = String(date.getUTCHours()).padStart(2, '0')
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0')
+    return `${hours}:${minutes}`
+}
