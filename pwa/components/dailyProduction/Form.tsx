@@ -1,5 +1,4 @@
 import { ChangeEvent, FunctionComponent, useEffect, useState } from "react"
-import Link from "next/link"
 import { useRouter } from "next/router"
 import { ErrorMessage, Field, Formik, FormikHelpers } from "formik"
 import { useMutation } from "react-query"
@@ -133,7 +132,6 @@ export const Form: FunctionComponent<Props> = ({
                     onSuccess: (dailyProduction) => {
                         setStatus({ isValid: true, msg: `Production ${isCreation ? "created" : "updated"}.` })
                         setSubmitting(false)
-                        router.push("/daily-productions")
                     },
                     onError: (error: FetchError | Error) => {
                         if ("fields" in error) {
@@ -165,12 +163,6 @@ export const Form: FunctionComponent<Props> = ({
 
     return (
         <div className="container mx-auto px-4 max-w-2xl mt-4">
-            <Link
-                href="/daily-productions"
-                className="text-sm text-cyan-500 font-bold hover:text-cyan-700"
-            >
-                {`< Back to list`}
-            </Link>
             <h1 className="sm:text-1xl font-sans my-2">
                 {dailyProduction
                     ? `Edit Daily Production: ${dailyProduction.id}`

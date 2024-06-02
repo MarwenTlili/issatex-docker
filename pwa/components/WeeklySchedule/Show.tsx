@@ -8,6 +8,8 @@ import { Article } from "../../types/Article";
 import { DailyProductionQuantity } from "../../types/DailyProductionQuantity";
 import { Size } from "../../types/Size";
 import { Choice } from "../../types/Choice";
+import { fetch, getItemPath } from "../../utils/dataAccess";
+import { DailyProduction } from "../../types/DailyProduction";
 
 interface Props {
     weeklyschedule: WeeklySchedule;
@@ -18,6 +20,17 @@ interface Props {
 
 export const Show: FunctionComponent<Props> = ({ weeklyschedule, text, sizes, choices }) => {
     const [error, setError] = useState<string | null>(null);
+
+    const handleProductionDelete = async (production: DailyProduction) => {
+        if (!production["@id"]) return;
+        if (!window.confirm("Are you sure you want to delete this item?")) return;
+
+        try {
+            await fetch(production["@id"], { method: "DELETE" });
+        } catch (error) {
+            setError("Error when deleting the resource.");
+        }
+    };
 
     if (!weeklyschedule) {
         setError(`Error when showing the resource: weeklyschedule`);
@@ -83,6 +96,17 @@ export const Show: FunctionComponent<Props> = ({ weeklyschedule, text, sizes, ch
                             dangerouslySetInnerHTML={{ __html: weeklyschedule.observation ?? "" }}
                         />
                     </div>
+                    <div className="mb-4">
+                        <Link
+                            href={{
+                                pathname: "/daily-productions/create",
+                                query: { weeklySchedule: weeklyschedule["@id"] }
+                            }}
+                            className="bg-cyan-500 hover:bg-cyan-700 text-white text-sm font-bold py-2 px-4 rounded whitespace-nowrap"
+                        >
+                            Add production
+                        </Link>
+                    </div>
                     {/* if there is productions to display */}
                     {(weeklyschedule.dailyProductions && weeklyschedule.dailyProductions?.length > 0) && (
                         <div className="mb-4">
@@ -99,9 +123,24 @@ export const Show: FunctionComponent<Props> = ({ weeklyschedule, text, sizes, ch
                                             {/* EN(BR): Mon Mar 25 2024 |   25/05/2024  */}
                                             {/* EN(US): Mon Mar 25 2024 |   05/25/2024 */}
                                             {/* FR:     25 mai 2024     |   25/05/2024 */}
-                                            <span>{new Date(prod.day || '').toDateString()}</span>
 
-                                            {/* {new Intl.DateTimeFormat(navigator.language).format(new Date(prod.day || ''))} */}
+                                            <div className="flex justify-between border border-gray-100 md:w-60">
+                                                <div>{new Date(prod.day || '').toDateString()}</div>
+                                                <div>
+                                                    <Link
+                                                        href={getItemPath(prod["@id"], "/daily-productions/[id]/edit")}
+                                                        className="font-mono text-orange-800/100 hover:text-indigo-800 ml-2"
+                                                    >
+                                                        Edit
+                                                    </Link>
+                                                    <button
+                                                        className="font-mono text-red-400/100 hover:text-red-400 ml-2"
+                                                        onClick={() => handleProductionDelete(prod)}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </div>
 
                                             <table className="w-full md:w-auto border border-sky-500">
                                                 <thead className="border border-sky-500">
