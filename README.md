@@ -57,8 +57,9 @@ php bin/console lexik:jwt:generate-keypair
 
 >api/public
 ```
-mkdir -p uploads/media uploads/tech_docs uploads/articles
-chmod -R 777 api/public/uploads/
+docker exec -it issatex-php sh
+mkdir -p public/uploads/media public/uploads/tech_docs public/uploads/articles
+chmod -R 777 public/uploads/
 ```
 
 >issatex-docker/
